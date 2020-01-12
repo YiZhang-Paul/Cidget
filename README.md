@@ -1,29 +1,7 @@
-# cidget
+[![Build status](https://dev.azure.com/yizhang9206/Cidget/_apis/build/status/Cidget%20Merge%20(Development))](https://dev.azure.com/yizhang9206/Cidget/_build/latest?definitionId=1)
 
-## Project setup
-```
-npm install
-```
+'Cidget' (CI/CD Widget) is a desktop widget tool that integrates source code hosting services (such as GitHub) and CI/CD pipelines (such as Azure Devops).
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+The tool will display pending pull requests, ongoing CI builds and deployments in realtime, and users can navigate to corresponding repository/pipeline from the widget.
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your unit tests
-```
-npm run test:unit
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+It also popups notifications for other activities in code repositories. For instance, when pull request is merged to a branch, or when a pull request is closed.
