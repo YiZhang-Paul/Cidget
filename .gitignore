@@ -5,6 +5,7 @@ coverage
 .nyc_output
 note.txt
 config
+test-results.xml
 
 # local env files
 .env.local

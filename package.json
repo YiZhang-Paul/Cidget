@@ -2,9 +2,18 @@
     "name": "cidget",
     "version": "0.1.0",
     "private": true,
+    "nyc": {
+        "reporter": [
+            "text",
+            "text-summary",
+            "cobertura",
+            "html"
+        ],
+        "report-dir": "./coverage"
+    },
     "scripts": {
         "lint": "vue-cli-service lint --no-fix",
-        "test": "nyc vue-cli-service test:unit",
+        "test": "nyc vue-cli-service test:unit --reporter mocha-junit-reporter",
         "build": "npm run lint && vue-cli-service electron:build --publish never",
         "serve": "npm run lint && vue-cli-service electron:serve"
     },
@@ -44,6 +53,7 @@
         "eslint": "^5.16.0",
         "eslint-plugin-vue": "^5.0.0",
         "istanbul-instrumenter-loader": "^3.0.1",
+        "mocha-junit-reporter": "^1.23.2",
         "node-sass": "^4.12.0",
         "nyc": "^15.0.0",
         "sass-loader": "^8.0.0",
