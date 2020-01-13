@@ -64,17 +64,17 @@ export default class GithubRepositoryProvider implements IRepositoryProvider<any
 
     private toRepository(data: any): IRepository {
         return ({
-            id: _.id,
-            name: _.name,
-            description: _.description,
-            createdOn: new Date(_.created_at),
-            defaultBranch: _.default_branch,
-            hooksUrl: _.hooks_url,
-            language: _.language,
-            license: _.license?.name,
-            owner: ({ name: _.owner.login, avatar: _.owner.avatar_url }) as IUser,
-            isPrivate: _.private,
-            url: _.url
+            id: data.id,
+            name: data.name,
+            description: data.description,
+            createdOn: new Date(data.created_at),
+            defaultBranch: data.default_branch,
+            hooksUrl: data.hooks_url,
+            language: data.language,
+            license: data.license?.name,
+            owner: ({ name: data.owner.login, avatar: data.owner.avatar_url }) as IUser,
+            isPrivate: data.private,
+            url: data.url
         }) as IRepository;
     }
 
