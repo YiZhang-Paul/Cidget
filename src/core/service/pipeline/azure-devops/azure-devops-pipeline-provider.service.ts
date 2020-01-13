@@ -2,7 +2,7 @@ import * as config from 'config';
 import { getPersonalAccessTokenHandler, WebApi } from 'azure-devops-node-api';
 
 import IUser from '../../../interface/general/user.interface';
-import IRepository from '../../../interface/general/repository.interface';
+import IRepository from '../../../interface/pipeline/repository.interface';
 import IBuildPipeline from '../../../interface/pipeline/build-pipeline.interface';
 import IReleasePipeline from '../../../interface/pipeline/release-pipeline.interface';
 import IPipelineProvider from '../../../interface/pipeline/pipeline-provider.interface';
@@ -42,14 +42,14 @@ export default class AzureDevopsPipelineProvider implements IPipelineProvider<IA
             organization
         };
 
-        return {
+        return ({
             name: definition.name,
             id: definition.id,
             project: definition.project?.name,
             owner,
             createdOn: definition.createdDate,
             repository
-        } as IBuildPipeline;
+        }) as IBuildPipeline;
     }
 
     public async fetchReleaseDefinition({ project, id }: IAzureDevopsQueryContext): Promise<IReleasePipeline | null> {
@@ -66,13 +66,13 @@ export default class AzureDevopsPipelineProvider implements IPipelineProvider<IA
             email: definition.createdBy?.uniqueName
         };
 
-        return {
+        return ({
             name: definition.name,
             id: definition.id,
             project: definition.artifacts?.[0].definitionReference?.project.name,
             triggeredBy: definition.artifacts?.[0].definitionReference?.definition.name,
             owner,
             createdOn: definition.createdOn
-        } as IReleasePipeline;
+        }) as IReleasePipeline;
     }
 }
