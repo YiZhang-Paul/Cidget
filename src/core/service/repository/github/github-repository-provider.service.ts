@@ -18,19 +18,13 @@ export default class GithubRepositoryProvider implements IRepositoryProvider<any
         const endpoint = `${url}/user/repos?type=all`;
         const { data } = await axios.default.get(endpoint, { headers: this.headers });
 
-        return (data || []).map((_: any) => ({
-            id: _.id,
-            name: _.name,
-            description: _.description,
-            createdOn: new Date(_.created_at),
-            defaultBranch: _.default_branch,
-            hooksUrl: _.hooks_url,
-            language: _.language,
-            license: _.license?.name,
-            owner: ({ name: _.owner.login, avatar: _.owner.avatar_url }) as IUser,
-            isPrivate: _.private,
-            url: _.url
-        }) as IRepository);
+        return (data || []).map(this.toRepository.bind(this));
+    }
+
+    public async listRepository(project: string): Promise<IRepository | null> {
+        const repositories = await this.listRepositories();
+
+        return repositories.find(_ => _.name === project) ?? null;
     }
 
     public async listWebhooks(project: string): Promise<IWebhook[]> {
@@ -68,6 +62,22 @@ export default class GithubRepositoryProvider implements IRepositoryProvider<any
         return this.toWebhook(data);
     }
 
+    private toRepository(data: any): IRepository {
+        return ({
+            id: _.id,
+            name: _.name,
+            description: _.description,
+            createdOn: new Date(_.created_at),
+            defaultBranch: _.default_branch,
+            hooksUrl: _.hooks_url,
+            language: _.language,
+            license: _.license?.name,
+            owner: ({ name: _.owner.login, avatar: _.owner.avatar_url }) as IUser,
+            isPrivate: _.private,
+            url: _.url
+        }) as IRepository;
+    }
+
     private toWebhook(data: any): IWebhook {
         return ({
             id: data.id,
@@ -78,6 +88,6 @@ export default class GithubRepositoryProvider implements IRepositoryProvider<any
             events: data.events,
             createdOn: new Date(data.created_at),
             isActive: data.active
-        }) as IWebhook
+        }) as IWebhook;
     }
 }
