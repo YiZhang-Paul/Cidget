@@ -1,5 +1,6 @@
 import Vue from 'vue';
 
+import './socket';
 import App from './app';
 
 Vue.config.productionTip = false;

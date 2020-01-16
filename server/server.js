@@ -11,6 +11,6 @@ server.listen(port, () => console.log(`listening on port ${port}.`));
 socket.on('connection', () => console.log('socket connected.'));
 
 express.post('/', (req, res) => {
-    console.log(req.body);
+    socket.emit('data', req.body);
     res.sendStatus(200);
 });
