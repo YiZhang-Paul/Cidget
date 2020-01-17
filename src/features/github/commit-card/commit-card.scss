@@ -1,0 +1,50 @@
+.commit-card-container {
+    width: 550px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    background-color: white;
+
+    .avatar {
+        margin-left: 10px;
+        border-radius: 6px;
+    }
+
+    .content {
+        margin-left: 10px;
+
+        i {
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-right: 1px;
+        }
+
+        .add {
+            color: green;
+        }
+
+        .remove {
+            color: red;
+        }
+
+        .modify {
+            color: rgb(88, 131, 189);
+        }
+
+        .message, .name {
+            color: rgb(16, 108, 230);
+            font-size: 1.03em;
+
+            &:hover {
+                cursor: pointer;
+                color: rgb(151, 21, 93);
+            }
+        }
+
+        .message {
+            color: rgb(68, 68, 68);
+            text-decoration: underline;
+        }
+    }
+}
