@@ -16,6 +16,7 @@ function createWindow() {
         height: 600,
         transparent: true,
         frame: false,
+        alwaysOnTop: true,
         webPreferences: {
             nodeIntegration: true
         }
