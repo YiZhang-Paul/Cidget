@@ -21,27 +21,27 @@ export default class GithubRepositoryProvider implements IRepositoryProvider<any
         return (data || []).map(this.toRepository.bind(this));
     }
 
-    public async listRepository(project: string): Promise<IRepository | null> {
+    public async listRepository(name: string): Promise<IRepository | null> {
         const repositories = await this.listRepositories();
 
-        return repositories.find(_ => _.name === project) ?? null;
+        return repositories.find(_ => _.name === name) ?? null;
     }
 
-    public async listWebhooks(project: string): Promise<IWebhook[]> {
-        const endpoint = `${url}/repos/${user}/${project}/hooks`;
+    public async listWebhooks(name: string): Promise<IWebhook[]> {
+        const endpoint = `${url}/repos/${user}/${name}/hooks`;
         const { data } = await axios.default.get(endpoint, { headers: this.headers });
 
         return (data || []).map(this.toWebhook.bind(this));
     }
 
-    public async getWebhook(project: string, callback: string): Promise<IWebhook | null> {
-        const hooks = await this.listWebhooks(project);
+    public async getWebhook(name: string, callback: string): Promise<IWebhook | null> {
+        const hooks = await this.listWebhooks(name);
 
         return hooks.find(_ => _.callback === callback) ?? null;
     }
 
-    public async addWebhook(project: string, context: any): Promise<IWebhook> {
-        const existingHook = await this.getWebhook(project, context.callback);
+    public async addWebhook(name: string, context: any): Promise<IWebhook> {
+        const existingHook = await this.getWebhook(name, context.callback);
 
         if (existingHook) {
             return existingHook;
@@ -56,7 +56,7 @@ export default class GithubRepositoryProvider implements IRepositoryProvider<any
             }
         };
 
-        const endpoint = `${url}/repos/${user}/${project}/hooks`;
+        const endpoint = `${url}/repos/${user}/${name}/hooks`;
         const { data } = await axios.default.post(endpoint, body, { headers: this.headers });
 
         return this.toWebhook(data);
