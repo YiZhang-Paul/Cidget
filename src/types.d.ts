@@ -1,9 +1,14 @@
 declare module '*.css' {
-    const exported = ''
+    const exported: any;
     export default exported
 }
 
+declare module "*.scss" {
+    const exported: any;
+    export default exported;
+}
+
 declare module '*.png' {
-    const exported = ''
+    const exported: any;
     export default exported
 }

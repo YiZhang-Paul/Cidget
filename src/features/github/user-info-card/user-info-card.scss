@@ -1,0 +1,9 @@
+.user-info-card-container {
+    display: flex;
+    flex-direction: column;
+
+    .name:hover, .gist:hover {
+        cursor: pointer;
+        color: rgb(151, 21, 93);
+    }
+}

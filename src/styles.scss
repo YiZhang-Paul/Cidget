@@ -1,23 +1,20 @@
+$drag-bar-height: 25px;
+
 html, body {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-body {
-    position: relative;
+.drag-bar {
+    width: 100vw;
+    height: $drag-bar-height;
+    -webkit-app-region: drag;
+    background-color: rgba(110, 110, 110, 0.2);
+}
 
-    .drag-bar {
-        position: absolute;
-        width: 100vw;
-        height: 25px;
-        -webkit-app-region: drag;
-        background-color: rgba(110, 110, 110, 0.2);
-    }
-
-    #app {
-        position: absolute;
-        width: 100vw;
-        height: 100vh;
-    }
+#app {
+    width: 100vw;
+    height: calc(100vh - #{$drag-bar-height});
 }
