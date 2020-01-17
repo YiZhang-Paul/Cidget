@@ -12,7 +12,7 @@ let commitService: GithubCommitService;
 
 const mutations = {
     addCommit(state: State, commit: ICommit<IGithubUser>): void {
-        state.commits.push(commit);
+        state.commits.unshift(commit);
     }
 };
 
