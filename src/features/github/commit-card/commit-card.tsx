@@ -12,9 +12,7 @@ import './commit-card.scss';
 
 @Component
 export default class CommitCard extends tsx.Component<any> {
-    @Prop() public initiator!: IGithubUser;
-    @Prop() public commit!: ICommit;
-    @Prop() public repository!: IRepository;
+    @Prop() public commit!: ICommit<IGithubUser, IRepository>;
 
     private get added(): number {
         return (this.commit.added ?? []).length;
@@ -49,7 +47,7 @@ export default class CommitCard extends tsx.Component<any> {
     }
 
     private toProfile(): void {
-        shell.openExternal(this.initiator.profileUrl);
+        shell.openExternal(this.commit.initiator.profileUrl);
     }
 
     private toCommit(): void {
@@ -57,21 +55,21 @@ export default class CommitCard extends tsx.Component<any> {
     }
 
     private toBranch(): void {
-        shell.openExternal(`${this.repository.url}/tree/${this.commit.branch}`);
+        shell.openExternal(`${this.commit.repository.url}/tree/${this.commit.branch}`);
     }
 
     private toRepository(): void {
-        shell.openExternal(this.repository.url);
+        shell.openExternal(this.commit.repository.url);
     }
 
     public render(): any {
         const avatar = (
             <el-popover placement="bottom-start" width="180" trigger="hover">
-                <UserInfoCard initiator={this.initiator} />
+                <UserInfoCard initiator={this.commit.initiator} />
                 <el-avatar class="avatar"
                     shape="square"
                     size={50}
-                    src={this.initiator.avatar}
+                    src={this.commit.initiator.avatar}
                     slot="reference">
                 </el-avatar>
             </el-popover>
@@ -88,16 +86,16 @@ export default class CommitCard extends tsx.Component<any> {
 
         const commitInfo = (
             <div>
-                <a class="name" onClick={this.toProfile}>{this.initiator.name}</a>
+                <a class="name" onClick={this.toProfile}>{this.commit.initiator.name}</a>
                 <span> pushed to </span>
                 <a class="branch" onClick={this.toBranch}>
                     <i class="fas fa-code-branch"></i>{this.commit.branch}
                 </a>
 
                 <el-popover placement="bottom" width="180" trigger="hover">
-                    <RepositoryInfoCard repository={this.repository} />
+                    <RepositoryInfoCard repository={this.commit.repository} />
                     <a class="name" onClick={this.toRepository} slot="reference">
-                        {` @${this.repository.name}`}
+                        {` @${this.commit.repository.name}`}
                     </a>
                 </el-popover>
 
