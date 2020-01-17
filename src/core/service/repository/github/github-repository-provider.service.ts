@@ -26,7 +26,7 @@ export default class GithubRepositoryProvider implements IRepositoryProvider<any
         return repositories.find(_ => _.name === name) ?? null;
     }
 
-    private toRepository(data: any): IRepository {
+    public toRepository(data: any): IRepository {
         return ({
             id: data.id,
             name: data.name,
