@@ -14,6 +14,8 @@ export default class GithubCommitService {
 
     public async toCommit(payload: any): Promise<ICommit<IGithubUser>> {
         const { ref, sender, repository, compare, head_commit } = payload;
+        const repositories = await axios.default.get(`${sender.url}/repos`);
+        const followers = await axios.default.get(`${sender.url}/followers`);
         const gists = await axios.default.get(`${sender.url}/gists`);
 
         const initiator = ({
@@ -21,6 +23,8 @@ export default class GithubCommitService {
             avatar: sender.avatar_url,
             email: head_commit.committer.email,
             profileUrl: sender.html_url,
+            repositoryCount: (repositories.data || []).length,
+            followerCount: (followers.data || []).length,
             gistCount: (gists.data || []).length,
             gistUrl: sender.html_url.replace(/^(https:\/\/)/, '$1gist.')
         }) as IGithubUser;

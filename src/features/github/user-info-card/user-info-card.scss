@@ -2,8 +2,22 @@
     display: flex;
     flex-direction: column;
 
-    .name:hover, .gist:hover {
+    a:hover {
         cursor: pointer;
         color: rgb(151, 21, 93);
+    }
+
+    .statistics {
+        display: flex;
+        flex-direction: row;
+        justify-content: start;
+
+        a i {
+            margin-right: 2px;
+        }
+
+        a:not(:first-child) {
+            margin-left: 10px;
+        }
     }
 }
