@@ -56,6 +56,10 @@ export default class CommitCard extends tsx.Component<any> {
         shell.openExternal(this.commit.commitUrl);
     }
 
+    private toBranch(): void {
+        shell.openExternal(`${this.repository.url}/tree/${this.commit.branch}`);
+    }
+
     private toRepository(): void {
         shell.openExternal(this.repository.url);
     }
@@ -85,13 +89,18 @@ export default class CommitCard extends tsx.Component<any> {
         const commitInfo = (
             <div>
                 <a class="name" onClick={this.toProfile}>{this.initiator.name}</a>
-                <span> committed @</span>
+                <span> pushed to </span>
+                <a class="branch" onClick={this.toBranch}>
+                    <i class="fas fa-code-branch"></i>{this.commit.branch}
+                </a>
+
                 <el-popover placement="bottom" width="180" trigger="hover">
                     <RepositoryInfoCard repository={this.repository} />
                     <a class="name" onClick={this.toRepository} slot="reference">
-                        {this.repository.name}
+                        {` @${this.repository.name}`}
                     </a>
                 </el-popover>
+
                 <el-tooltip placement="right" effect="light" content={this.localeCommitTime}>
                     <span> {this.relativeCommitTime}</span>
                 </el-tooltip>

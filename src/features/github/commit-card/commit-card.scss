@@ -32,7 +32,7 @@
             color: rgb(88, 131, 189);
         }
 
-        .message, .name {
+        .message, .branch, .name {
             color: rgb(16, 108, 230);
             font-size: 1.03em;
 
@@ -45,6 +45,14 @@
         .message {
             color: rgb(68, 68, 68);
             text-decoration: underline;
+        }
+
+        .branch {
+            color: rgb(145, 74, 228);
+
+            i {
+                margin-right: 3px;
+            }
         }
     }
 }
