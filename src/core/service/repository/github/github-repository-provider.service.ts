@@ -31,7 +31,7 @@ export default class GithubRepositoryProvider implements IRepositoryProvider<any
             id: data.id,
             name: data.name,
             description: data.description,
-            createdOn: new Date(data.created_at),
+            createdOn: new Date(data.created_at * 1000),
             defaultBranch: data.default_branch,
             hooksUrl: data.hooks_url,
             language: data.language,
