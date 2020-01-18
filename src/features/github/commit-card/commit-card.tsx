@@ -7,6 +7,7 @@ import ICommit from '../../../core/interface/general/commit.interface';
 import IRepository from '../../../core/interface/repository/repository.interface';
 import UserAvatar from '../../../shared/components/generic/user-avatar/user-avatar';
 import ChangeStatsSummary from '../../../shared/components/generic/change-stats-summary/change-stats-summary';
+import BranchBadge from '../../../shared/components/repository/branch-badge/branch-badge';
 import RepositoryInfoCard from '../../../shared/components/repository/repository-info-card/repository-info-card';
 import UserInfoCard from '../user-info-card/user-info-card';
 
@@ -30,6 +31,10 @@ export default class CommitCard extends tsx.Component<any> {
 
     private get modified(): number {
         return (this.commit.modified ?? []).length;
+    }
+
+    private get branchUrl(): string {
+        return `${this.commit.repository.url}/tree/${this.commit.branch}`;
     }
 
     private get localeCommitTime(): string {
@@ -58,10 +63,6 @@ export default class CommitCard extends tsx.Component<any> {
 
     private toCommit(): void {
         shell.openExternal(this.commit.commitUrl);
-    }
-
-    private toBranch(): void {
-        shell.openExternal(`${this.commit.repository.url}/tree/${this.commit.branch}`);
     }
 
     private toRepository(): void {
@@ -94,11 +95,7 @@ export default class CommitCard extends tsx.Component<any> {
                     <span> pushed to </span>
                 </div>
 
-                <div class="branch-container">
-                    <a class="branch" onClick={this.toBranch}>
-                        <i class="fas fa-code-branch"></i>{this.commit.branch}
-                    </a>
-                </div>
+                <BranchBadge class="branch-badge" name={this.commit.branch} url={this.branchUrl} />
 
                 <el-popover disabled={true} placement="bottom" width="100" trigger="hover">
                     <RepositoryInfoCard repository={this.commit.repository} />
