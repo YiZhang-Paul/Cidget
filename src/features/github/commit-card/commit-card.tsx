@@ -5,6 +5,7 @@ import { shell } from 'electron';
 import IGithubUser from '../../../core/interface/repository/github/github-user.interface';
 import ICommit from '../../../core/interface/general/commit.interface';
 import IRepository from '../../../core/interface/repository/repository.interface';
+import UserAvatar from '../../../shared/components/generic/user-avatar/user-avatar';
 import RepositoryInfoCard from '../../../shared/components/repository/repository-info-card/repository-info-card';
 import UserInfoCard from '../user-info-card/user-info-card';
 
@@ -67,18 +68,6 @@ export default class CommitCard extends tsx.Component<any> {
     }
 
     public render(): any {
-        const avatar = (
-            <el-popover disabled={true} placement="bottom-start" width="150" trigger="hover">
-                <UserInfoCard initiator={this.commit.initiator} />
-                <el-avatar class="avatar"
-                    shape="square"
-                    size={50}
-                    src={this.commit.initiator.avatar}
-                    slot="reference">
-                </el-avatar>
-            </el-popover>
-        );
-
         const commitMessage = (
             <div class="commit-message">
                 <div class="message-container">
@@ -124,9 +113,15 @@ export default class CommitCard extends tsx.Component<any> {
             </div>
         );
 
+        const initiator = this.commit.initiator;
+
         return (
             <div class="commit-card-container">
-                {avatar}
+
+                <UserAvatar class="user-avatar" url={initiator.avatar} showPopover={false}>
+                    <UserInfoCard initiator={initiator} />
+                </UserAvatar>
+
                 <div class="content">
                     {commitMessage}
                     {commitInfo}
