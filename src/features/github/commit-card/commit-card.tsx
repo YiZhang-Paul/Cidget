@@ -5,8 +5,8 @@ import { shell } from 'electron';
 import IGithubUser from '../../../core/interface/repository/github/github-user.interface';
 import ICommit from '../../../core/interface/general/commit.interface';
 import IRepository from '../../../core/interface/repository/repository.interface';
+import RepositoryInfoCard from '../../../shared/components/repository/repository-info-card/repository-info-card';
 import UserInfoCard from '../user-info-card/user-info-card';
-import RepositoryInfoCard from '../repository-info-card/repository-info-card';
 
 import './commit-card.scss';
 
