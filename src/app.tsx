@@ -17,10 +17,12 @@ import Store from './store';
 export default class App extends tsx.Component<any> {
     private commits!: ICommit<IGithubUser>[];
 
-    private getCommitCard(id: string): any {
-        const commit = this.commits.find(_ => _.id === id) ?? null;
+    private getCommitCard(props: any): any {
+        const commit = this.commits.find(_ => _.id === props.item.text);
+        const close = <i class="fas fa-times-circle close" onClick={props.close}></i>
+        const commitCard = <CommitCard commit={commit} />;
 
-        return commit ? <CommitCard commit={commit} /> : null;
+        return commit ? <div class="notification-wrapper">{close}{commitCard}</div> : null;
     }
 
     public render(): any {
@@ -29,7 +31,7 @@ export default class App extends tsx.Component<any> {
                 group="notification"
                 position="top left"
                 width={550}
-                scopedSlots={{ body: (_: any) => this.getCommitCard(_.item.text) }}>
+                scopedSlots={{ body: (_: any) => this.getCommitCard(_) }}>
             </notifications>
         );
     }

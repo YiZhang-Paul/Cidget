@@ -27,3 +27,19 @@ html, body {
 .vue-notification-wrapper {
     margin-bottom: 5px;
 }
+
+.notification-wrapper {
+    position: relative;
+
+    .close {
+        top: 6px;
+        right: 6px;
+        position: absolute;
+        color: lightgrey;
+        cursor: pointer;
+
+        &:hover {
+            color: rgb(235, 86, 86);
+        }
+    }
+}
