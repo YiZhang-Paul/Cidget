@@ -67,34 +67,8 @@
             display: flex;
             flex-direction: row;
 
-            .time {
+            .time-summary {
                 width: 100px;
-                padding: 0 5px 2px 5px;
-                margin: 2px 0 0 3px;
-                font-size: 0.9em;
-                font-weight: 500;
-                position: relative;
-
-                .relative-time, .locale-time {
-                    position: absolute;
-                    -webkit-transition: opacity 0.4s;
-                    transition: opacity 0.4s;
-                }
-
-                .locale-time {
-                    opacity: 0;
-                }
-
-                &:hover {
-
-                    .locale-time {
-                        opacity: 1;
-                    }
-
-                    .relative-time {
-                        opacity: 0;
-                    }
-                }
             }
         }
     }

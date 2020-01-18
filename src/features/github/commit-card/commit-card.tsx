@@ -8,6 +8,7 @@ import IRepository from '../../../core/interface/repository/repository.interface
 import UserAvatar from '../../../shared/components/generic/user-avatar/user-avatar';
 import ChangeStatsSummary from '../../../shared/components/generic/change-stats-summary/change-stats-summary';
 import BranchBadge from '../../../shared/components/repository/branch-badge/branch-badge';
+import TextSummary from '../../../shared/components/generic/text-summary/text-summary';
 import RepositoryInfoCard from '../../../shared/components/repository/repository-info-card/repository-info-card';
 import UserInfoCard from '../user-info-card/user-info-card';
 
@@ -104,10 +105,10 @@ export default class CommitCard extends tsx.Component<any> {
                     </a>
                 </el-popover>
 
-                <div class="time">
-                    <div class="relative-time">{this.relativeCommitTime}</div>
-                    <div class="locale-time">{this.localeCommitTime}</div>
-                </div>
+                <TextSummary class="time-summary"
+                    summary={this.relativeCommitTime}
+                    detail={this.localeCommitTime}>
+                </TextSummary>
             </div>
         );
 
