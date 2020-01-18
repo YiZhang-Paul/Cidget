@@ -14,6 +14,10 @@ import './commit-card.scss';
 export default class CommitCard extends tsx.Component<any> {
     @Prop() public commit!: ICommit<IGithubUser, IRepository>;
 
+    private get showMessageTooltip(): boolean {
+        return this.commit.message.length >= 50;
+    }
+
     private get added(): number {
         return (this.commit.added ?? []).length;
     }
@@ -27,7 +31,7 @@ export default class CommitCard extends tsx.Component<any> {
     }
 
     private get localeCommitTime(): string {
-        return this.commit.time.toLocaleString();
+        return this.commit.time.toLocaleTimeString();
     }
 
     private get relativeCommitTime(): string {
@@ -64,7 +68,7 @@ export default class CommitCard extends tsx.Component<any> {
 
     public render(): any {
         const avatar = (
-            <el-popover placement="bottom-start" width="150" trigger="hover">
+            <el-popover disabled={true} placement="bottom-start" width="150" trigger="hover">
                 <UserInfoCard initiator={this.commit.initiator} />
                 <el-avatar class="avatar"
                     shape="square"
@@ -76,32 +80,47 @@ export default class CommitCard extends tsx.Component<any> {
         );
 
         const commitMessage = (
-            <div>
-                <a class="message" onClick={this.toCommit}>{this.commit.message}</a>
-                <span> <i class="el-icon-caret-top add"></i>{this.added}</span>
-                <span> <i class="el-icon-caret-bottom remove"></i>{this.removed}</span>
-                <span> <i class="el-icon-d-caret modify"></i>{this.modified}</span>
+            <div class="commit-message">
+                <div class="message-container">
+                    <el-tooltip disabled={!this.showMessageTooltip}
+                        placement="top-start"
+                        effect="light"
+                        content={this.commit.message}>
+                        <a class="message" onClick={this.toCommit}>{this.commit.message}</a>
+                    </el-tooltip>
+                </div>
+                <div class="changes-container">
+                    <span> <i class="el-icon-caret-top add"></i>{this.added}</span>
+                    <span> <i class="el-icon-caret-bottom remove"></i>{this.removed}</span>
+                    <span> <i class="el-icon-d-caret modify"></i>{this.modified}</span>
+                </div>
             </div>
         );
 
         const commitInfo = (
-            <div>
-                <a class="name" onClick={this.toProfile}>{this.commit.initiator.name}</a>
-                <span> pushed to </span>
-                <a class="branch" onClick={this.toBranch}>
-                    <i class="fas fa-code-branch"></i>{this.commit.branch}
-                </a>
+            <div class="commit-info">
+                <div>
+                    <a class="name" onClick={this.toProfile}>{this.commit.initiator.name}</a>
+                    <span> pushed to </span>
+                </div>
 
-                <el-popover placement="bottom" width="100" trigger="hover">
+                <div class="branch-container">
+                    <a class="branch" onClick={this.toBranch}>
+                        <i class="fas fa-code-branch"></i>{this.commit.branch}
+                    </a>
+                </div>
+
+                <el-popover disabled={true} placement="bottom" width="100" trigger="hover">
                     <RepositoryInfoCard repository={this.commit.repository} />
                     <a class="name" onClick={this.toRepository} slot="reference">
                         {` @${this.commit.repository.name}`}
                     </a>
                 </el-popover>
 
-                <el-tooltip placement="right" effect="light" content={this.localeCommitTime}>
-                    <span> {this.relativeCommitTime}</span>
-                </el-tooltip>
+                <div class="time">
+                    <div class="relative-time">{this.relativeCommitTime}</div>
+                    <div class="locale-time">{this.localeCommitTime}</div>
+                </div>
             </div>
         );
 

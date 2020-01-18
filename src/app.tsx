@@ -18,8 +18,12 @@ export default class App extends tsx.Component<any> {
     private commits!: ICommit<IGithubUser>[];
 
     public render(): any {
+        const commits = this.commits.map(_ => {
+            return <CommitCard class="commit-card" key={_.time.getTime()} commit={_} />;
+        });
+
         return (
-            <div>{this.commits.map(_ => <CommitCard class="commit-card" commit={_} />)}</div>
+            <div>{commits}</div>
         );
     }
 }

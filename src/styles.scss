@@ -19,6 +19,10 @@ html, body {
     height: calc(100vh - #{$drag-bar-height});
 }
 
+.commit-card:first-child {
+    margin-top: 20px;
+}
+
 .commit-card {
     margin-bottom: 5px;
 }
