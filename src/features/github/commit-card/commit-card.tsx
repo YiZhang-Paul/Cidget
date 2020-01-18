@@ -2,14 +2,14 @@ import { Component, Prop } from 'vue-property-decorator';
 import * as tsx from 'vue-tsx-support';
 import { shell } from 'electron';
 
-import IGithubUser from '../../../core/interface/repository/github/github-user.interface';
 import ICommit from '../../../core/interface/general/commit.interface';
+import IGithubUser from '../../../core/interface/repository/github/github-user.interface';
 import IRepository from '../../../core/interface/repository/repository.interface';
 import UserAvatar from '../../../shared/components/generic/user-avatar/user-avatar';
 import ChangeStatsSummary from '../../../shared/components/generic/change-stats-summary/change-stats-summary';
 import BranchBadge from '../../../shared/components/repository/branch-badge/branch-badge';
-import TextSummary from '../../../shared/components/generic/text-summary/text-summary';
 import RepositoryBadge from '../../../shared/components/repository/repository-badge/repository-badge';
+import RelativeTimeDisplay from '../../../shared/components/generic/relative-time-display/relative-time-display';
 import UserInfoCard from '../user-info-card/user-info-card';
 
 import './commit-card.scss';
@@ -36,26 +36,6 @@ export default class CommitCard extends tsx.Component<any> {
 
     private get branchUrl(): string {
         return `${this.commit.repository.url}/tree/${this.commit.branch}`;
-    }
-
-    private get localeCommitTime(): string {
-        return this.commit.time.toLocaleTimeString();
-    }
-
-    private get relativeCommitTime(): string {
-        const checks: [string, number][] = [
-            ['year', 60 * 60 * 24 * 365],
-            ['month', 60 * 60 * 24 * 30],
-            ['day', 60 * 60 * 24],
-            ['hour', 60 * 60],
-            ['minute', 60]
-        ];
-
-        const passed = (Date.now() - this.commit.time.getTime()) / 1000;
-        const [unit, threshold] = checks.find(_ => passed >= _[1]) || ['second', 1];
-        const total = Math.round(passed / threshold);
-
-        return `${total} ${unit}${total > 1 ? 's' : ''} ago`;
     }
 
     private toProfile(): void {
@@ -93,13 +73,8 @@ export default class CommitCard extends tsx.Component<any> {
                 </div>
 
                 <BranchBadge class="branch-badge" name={this.commit.branch} url={this.branchUrl} />
-
                 <RepositoryBadge class="repository-badge" repository={this.commit.repository} showPopover={false} />
-
-                <TextSummary class="time-summary"
-                    summary={this.relativeCommitTime}
-                    detail={this.localeCommitTime}>
-                </TextSummary>
+                <RelativeTimeDisplay class="relative-time-display" time={this.commit.time} />
             </div>
         );
 
