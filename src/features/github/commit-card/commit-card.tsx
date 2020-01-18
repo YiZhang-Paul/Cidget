@@ -6,6 +6,7 @@ import ICommit from '../../../core/interface/general/commit.interface';
 import IGithubUser from '../../../core/interface/repository/github/github-user.interface';
 import IRepository from '../../../core/interface/repository/repository.interface';
 import UserAvatar from '../../../shared/components/generic/user-avatar/user-avatar';
+import WeblinkDisplay from '../../../shared/components/generic/weblink-display/weblink-display';
 import ChangeStatsSummary from '../../../shared/components/generic/change-stats-summary/change-stats-summary';
 import BranchBadge from '../../../shared/components/repository/branch-badge/branch-badge';
 import RepositoryBadge from '../../../shared/components/repository/repository-badge/repository-badge';
@@ -17,10 +18,6 @@ import './commit-card.scss';
 @Component
 export default class CommitCard extends tsx.Component<any> {
     @Prop() public commit!: ICommit<IGithubUser, IRepository>;
-
-    private get showMessageTooltip(): boolean {
-        return this.commit.message.length >= 50;
-    }
 
     private get added(): number {
         return (this.commit.added ?? []).length;
@@ -42,54 +39,40 @@ export default class CommitCard extends tsx.Component<any> {
         shell.openExternal(this.commit.initiator.profileUrl);
     }
 
-    private toCommit(): void {
-        shell.openExternal(this.commit.commitUrl);
-    }
-
     public render(): any {
-        const commitMessage = (
-            <div class="commit-message">
-                <div class="message-container">
-                    <el-tooltip disabled={!this.showMessageTooltip}
-                        placement="top-start"
-                        effect="light"
-                        content={this.commit.message}>
-                        <a class="message" onClick={this.toCommit}>{this.commit.message}</a>
-                    </el-tooltip>
-                </div>
-                <ChangeStatsSummary class="change-summary"
-                    added={this.added}
-                    removed={this.removed}
-                    modified={this.modified}>
-                </ChangeStatsSummary>
-            </div>
-        );
-
-        const commitInfo = (
-            <div class="commit-info">
-                <div>
-                    <a class="name" onClick={this.toProfile}>{this.commit.initiator.name}</a>
-                    <span> pushed to </span>
-                </div>
-
-                <BranchBadge class="branch-badge" name={this.commit.branch} url={this.branchUrl} />
-                <RepositoryBadge class="repository-badge" repository={this.commit.repository} showPopover={false} />
-                <RelativeTimeDisplay class="relative-time-display" time={this.commit.time} />
-            </div>
-        );
-
-        const initiator = this.commit.initiator;
+        const [commit, initiator] = [this.commit, this.commit.initiator];
 
         return (
             <div class="commit-card-container">
-
-                <UserAvatar class="user-avatar" url={initiator.avatar} showPopover={false}>
+                 <UserAvatar class="user-avatar" url={initiator.avatar} showPopover={false}>
                     <UserInfoCard initiator={initiator} />
                 </UserAvatar>
 
                 <div class="content">
-                    {commitMessage}
-                    {commitInfo}
+                    <div class="commit-message-container">
+                        <WeblinkDisplay text={commit.message} url={commit.commitUrl} />
+
+                        <ChangeStatsSummary class="change-summary"
+                            added={this.added}
+                            removed={this.removed}
+                            modified={this.modified}>
+                        </ChangeStatsSummary>
+                    </div>
+
+                    <div class="commit-info-container">
+                        <div>
+                            <a class="name" onClick={this.toProfile}>{initiator.name}</a>
+                            <span> pushed to </span>
+                        </div>
+
+                        <BranchBadge class="branch-badge"
+                            name={commit.branch}
+                            url={this.branchUrl}>
+                        </BranchBadge>
+
+                        <RepositoryBadge repository={commit.repository} showPopover={false} />
+                        <RelativeTimeDisplay time={commit.time} />
+                    </div>
                 </div>
             </div>
         );
