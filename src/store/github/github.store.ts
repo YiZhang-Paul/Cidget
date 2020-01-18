@@ -22,14 +22,23 @@ const mutations = {
 
 const actions = {
     async addCommit(context: ActionContext<State, any>, payload: any): Promise<void> {
-        const { commit } = context;
-        commit('addCommit', await commitService.toCommit(payload));
+        const { commit, getters } = context;
+        const githubCommit = await commitService.toCommit(payload);
+
+        if (!getters.hasCommit(githubCommit)) {
+            commit('addCommit', githubCommit);
+        }
     }
 };
 
 const getters = {
     getCommits(state: State): ICommit<IGithubUser>[] {
         return state.commits;
+    },
+    hasCommit(state: State): Function {
+        return (commit: ICommit<IGithubUser>): boolean => {
+            return state.commits.some(_ => _.time.getTime() === commit.time.getTime());
+        };
     }
 };
 
