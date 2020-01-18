@@ -6,6 +6,7 @@ import IGithubUser from '../../../core/interface/repository/github/github-user.i
 import ICommit from '../../../core/interface/general/commit.interface';
 import IRepository from '../../../core/interface/repository/repository.interface';
 import UserAvatar from '../../../shared/components/generic/user-avatar/user-avatar';
+import ChangeStatsSummary from '../../../shared/components/generic/change-stats-summary/change-stats-summary';
 import RepositoryInfoCard from '../../../shared/components/repository/repository-info-card/repository-info-card';
 import UserInfoCard from '../user-info-card/user-info-card';
 
@@ -78,11 +79,11 @@ export default class CommitCard extends tsx.Component<any> {
                         <a class="message" onClick={this.toCommit}>{this.commit.message}</a>
                     </el-tooltip>
                 </div>
-                <div class="changes-container">
-                    <span> <i class="el-icon-caret-top add"></i>{this.added}</span>
-                    <span> <i class="el-icon-caret-bottom remove"></i>{this.removed}</span>
-                    <span> <i class="el-icon-d-caret modify"></i>{this.modified}</span>
-                </div>
+                <ChangeStatsSummary class="change-summary"
+                    added={this.added}
+                    removed={this.removed}
+                    modified={this.modified}>
+                </ChangeStatsSummary>
             </div>
         );
 

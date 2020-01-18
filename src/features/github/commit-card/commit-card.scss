@@ -59,22 +59,8 @@
                 color: rgb(68, 68, 68);
             }
 
-            .changes-container {
-                font-size: 0.9em;
-                padding-top: 2.5px;
+            .change-summary {
                 margin-left: 7px;
-
-                .add {
-                    color: green;
-                }
-
-                .remove {
-                    color: red;
-                }
-
-                .modify {
-                    color: rgb(88, 131, 189);
-                }
             }
         }
 

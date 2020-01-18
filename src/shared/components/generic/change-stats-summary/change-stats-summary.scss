@@ -1,0 +1,16 @@
+.change-stats-summary-container {
+    font-size: 0.9em;
+    padding-top: 2.5px;
+
+    .add {
+        color: green;
+    }
+
+    .remove {
+        color: red;
+    }
+
+    .modify {
+        color: rgb(88, 131, 189);
+    }
+}
