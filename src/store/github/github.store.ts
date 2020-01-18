@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import { ActionContext, StoreOptions } from 'vuex';
 
 import ICommit from '../../core/interface/general/commit.interface';
@@ -27,6 +28,7 @@ const actions = {
 
         if (!getters.hasCommit(githubCommit)) {
             commit('addCommit', githubCommit);
+            Vue.notify({ group: 'notification', text: githubCommit.id, duration: 10000 });
         }
     }
 };

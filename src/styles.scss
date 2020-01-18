@@ -19,10 +19,11 @@ html, body {
     height: calc(100vh - #{$drag-bar-height});
 }
 
-.commit-card:first-child {
-    margin-top: 20px;
+.notification {
+    margin-top: 50px;
+    z-index: 0;
 }
 
-.commit-card {
+.vue-notification-wrapper {
     margin-bottom: 5px;
 }
