@@ -4,10 +4,18 @@ import * as config from 'config';
 import IUser from '../../../interface/general/user.interface';
 import IRepository from '../../../interface/repository/repository.interface';
 import IRepositoryProvider from '../../../interface/repository/repository-provider.interface';
+import IAbbreviationResolver from '../../../interface/general/abbreviation-resolver.interface';
 
 const { url, token } = config.get<any>('repository').github;
 
 export default class GithubRepositoryProvider implements IRepositoryProvider<any> {
+    private _languageResolver: IAbbreviationResolver;
+    private _licenseResolver: IAbbreviationResolver;
+
+    constructor(languageResolver: IAbbreviationResolver, licenseResolver: IAbbreviationResolver) {
+        this._languageResolver = languageResolver;
+        this._licenseResolver = licenseResolver;
+    }
 
     private get headers(): { [key: string]: string } {
         return ({ Authorization: `token ${token}` });
@@ -34,8 +42,14 @@ export default class GithubRepositoryProvider implements IRepositoryProvider<any
             createdOn: new Date(data.created_at * 1000),
             defaultBranch: data.default_branch,
             hooksUrl: data.hooks_url,
-            language: data.language,
-            license: data.license?.name,
+            language: {
+                name: data.language,
+                abbr: this._languageResolver.resolve(data.language)
+            },
+            license: {
+                name: data.license?.name,
+                abbr: this._licenseResolver.resolve(data.license?.name)
+            },
             owner: ({ name: data.owner.login, avatar: data.owner.avatar_url }) as IUser,
             isPrivate: data.private,
             url: data.url

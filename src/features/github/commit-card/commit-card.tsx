@@ -64,7 +64,7 @@ export default class CommitCard extends tsx.Component<any> {
 
     public render(): any {
         const avatar = (
-            <el-popover placement="bottom-start" width="180" trigger="hover">
+            <el-popover placement="bottom-start" width="150" trigger="hover">
                 <UserInfoCard initiator={this.commit.initiator} />
                 <el-avatar class="avatar"
                     shape="square"
@@ -92,7 +92,7 @@ export default class CommitCard extends tsx.Component<any> {
                     <i class="fas fa-code-branch"></i>{this.commit.branch}
                 </a>
 
-                <el-popover placement="bottom" width="180" trigger="hover">
+                <el-popover placement="bottom" width="100" trigger="hover">
                     <RepositoryInfoCard repository={this.commit.repository} />
                     <a class="name" onClick={this.toRepository} slot="reference">
                         {` @${this.commit.repository.name}`}

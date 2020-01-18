@@ -2,7 +2,6 @@ import * as axios from 'axios';
 
 import ICommit from '../../../interface/general/commit.interface';
 import IGithubUser from '../../../interface/repository/github/github-user.interface';
-
 import IRepositoryProvider from '../../../interface/repository/repository-provider.interface';
 
 export default class GithubCommitService {

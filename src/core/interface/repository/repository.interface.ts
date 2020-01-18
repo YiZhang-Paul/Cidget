@@ -10,6 +10,6 @@ export default interface IRepository {
     createdOn: Date;
     defaultBranch?: string;
     hooksUrl: string;
-    language: string;
-    license?: string;
+    language: { name: string; abbr: string };
+    license?: { name: string; abbr: string };
 }
