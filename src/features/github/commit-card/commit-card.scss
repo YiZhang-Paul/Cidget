@@ -5,6 +5,7 @@
     align-items: center;
     border-radius: 5px;
     background-color: white;
+    cursor: default;
 
     .avatar {
         margin-left: 10px;
@@ -20,9 +21,7 @@
             margin-right: 1px;
         }
 
-        .message,
-        .name,
-        .branch {
+        .message, .name, .branch {
             color: rgb(16, 108, 230);
             font-size: 1.03em;
 
@@ -112,7 +111,7 @@
             }
 
             .time {
-                width: 140px;
+                width: 100px;
                 padding: 0 5px 2px 5px;
                 margin: 2px 0 0 3px;
                 font-size: 0.9em;
@@ -120,6 +119,7 @@
                 position: relative;
 
                 .relative-time, .locale-time {
+                    position: absolute;
                     -webkit-transition: opacity 0.4s;
                     transition: opacity 0.4s;
                 }
@@ -137,10 +137,6 @@
                     .relative-time {
                         opacity: 0;
                     }
-                }
-
-                div {
-                    position: absolute;
                 }
             }
         }
