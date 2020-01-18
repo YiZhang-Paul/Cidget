@@ -36,9 +36,7 @@ const getters = {
         return state.commits;
     },
     hasCommit(state: State): Function {
-        return (commit: ICommit<IGithubUser>): boolean => {
-            return state.commits.some(_ => _.time.getTime() === commit.time.getTime());
-        };
+        return (commit: ICommit<IGithubUser>): boolean => state.commits.some(_ => _.id === commit.id);
     }
 };
 

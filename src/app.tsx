@@ -19,7 +19,7 @@ export default class App extends tsx.Component<any> {
 
     public render(): any {
         const commits = this.commits.map(_ => {
-            return <CommitCard class="commit-card" key={_.time.getTime()} commit={_} />;
+            return <CommitCard class="commit-card" key={_.id} commit={_} />;
         });
 
         return (

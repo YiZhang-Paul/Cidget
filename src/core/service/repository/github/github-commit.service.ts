@@ -29,6 +29,7 @@ export default class GithubCommitService {
         }) as IGithubUser;
 
         return ({
+            id: head_commit.id,
             initiator: initiator,
             repository: this._repositoryProvider.toRepository(repository),
             branch: ref.split('/').slice(-1)[0],
