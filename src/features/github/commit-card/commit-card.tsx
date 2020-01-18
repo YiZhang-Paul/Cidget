@@ -9,7 +9,7 @@ import UserAvatar from '../../../shared/components/generic/user-avatar/user-avat
 import ChangeStatsSummary from '../../../shared/components/generic/change-stats-summary/change-stats-summary';
 import BranchBadge from '../../../shared/components/repository/branch-badge/branch-badge';
 import TextSummary from '../../../shared/components/generic/text-summary/text-summary';
-import RepositoryInfoCard from '../../../shared/components/repository/repository-info-card/repository-info-card';
+import RepositoryBadge from '../../../shared/components/repository/repository-badge/repository-badge';
 import UserInfoCard from '../user-info-card/user-info-card';
 
 import './commit-card.scss';
@@ -66,10 +66,6 @@ export default class CommitCard extends tsx.Component<any> {
         shell.openExternal(this.commit.commitUrl);
     }
 
-    private toRepository(): void {
-        shell.openExternal(this.commit.repository.url);
-    }
-
     public render(): any {
         const commitMessage = (
             <div class="commit-message">
@@ -98,12 +94,7 @@ export default class CommitCard extends tsx.Component<any> {
 
                 <BranchBadge class="branch-badge" name={this.commit.branch} url={this.branchUrl} />
 
-                <el-popover disabled={true} placement="bottom" width="100" trigger="hover">
-                    <RepositoryInfoCard repository={this.commit.repository} />
-                    <a class="name" onClick={this.toRepository} slot="reference">
-                        {` @${this.commit.repository.name}`}
-                    </a>
-                </el-popover>
+                <RepositoryBadge class="repository-badge" repository={this.commit.repository} showPopover={false} />
 
                 <TextSummary class="time-summary"
                     summary={this.relativeCommitTime}
