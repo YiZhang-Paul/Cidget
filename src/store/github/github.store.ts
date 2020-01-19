@@ -48,6 +48,7 @@ const actions = {
     async addPullRequest(context: ActionContext<State, any>, payload: any): Promise<void> {
         const { commit, getters } = context;
         const pullRequest = await pullRequestService.toPullRequest(payload);
+        const shouldPersist = pullRequest.action !== 'closed' && pullRequest.action !== 'merged';
 
         if (!getters.hasPullRequest(pullRequest)) {
             commit('addPullRequests', pullRequest);
@@ -55,7 +56,7 @@ const actions = {
             Vue.notify({
                 group: 'notification',
                 text: `pull-request|${pullRequest.id}`,
-                duration: -1
+                duration: shouldPersist ? -1 : 12000
             });
         }
     }
