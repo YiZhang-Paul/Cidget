@@ -34,7 +34,7 @@ export default class GithubPullRequestService {
 
         return ({
             id: String(pull_request.id),
-            action: action,
+            action: pull_request.merged ? 'merged' : action,
             initiator,
             repository: this._repositoryProvider.toRepository(repository),
             branch: {
