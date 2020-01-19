@@ -1,26 +1,34 @@
 import { Container } from 'inversify';
 
 import IRepositoryProvider from '../interface/repository/repository-provider.interface';
+import IAbbreviationResolver from '../interface/general/abbreviation-resolver.interface';
+import LanguageNameResolver from '../service/resolver/language-name-resolver';
+import LicenseNameResolver from '../service/resolver/license-name-resolver';
 import GithubRepositoryProvider from '../service/repository/github/github-repository-provider.service';
 import GithubCommitService from '../service/repository/github/github-commit.service';
 import GithubPullRequestService from '../service/repository/github/github-pull-request.service';
-import LanguageNameResolver from '../service/resolver/language-name-resolver';
-import LicenseNameResolver from '../service/resolver/license-name-resolver';
 
 import Types from './types';
 
 const container = new Container();
 
 container
+    .bind<IAbbreviationResolver>(Types.IAbbreviationResolver)
+    .to(LanguageNameResolver)
+    .inSingletonScope()
+    .whenTargetNamed('language')
+
+container
+    .bind<IAbbreviationResolver>(Types.IAbbreviationResolver)
+    .to(LicenseNameResolver)
+    .inSingletonScope()
+    .whenTargetNamed('license')
+
+container
     .bind<IRepositoryProvider<any>>(Types.IRepositoryProvider)
     .to(GithubRepositoryProvider)
     .inSingletonScope()
     .whenTargetNamed('github');
-
-container
-    .bind<GithubRepositoryProvider>(Types.GithubRepositoryProvider)
-    .to(GithubRepositoryProvider)
-    .inSingletonScope();
 
 container
     .bind<GithubCommitService>(Types.GithubCommitService)
@@ -30,16 +38,6 @@ container
 container
     .bind<GithubPullRequestService>(Types.GithubPullRequestService)
     .to(GithubPullRequestService)
-    .inSingletonScope();
-
-container
-    .bind<LanguageNameResolver>(Types.LanguageNameResolver)
-    .to(LanguageNameResolver)
-    .inSingletonScope();
-
-container
-    .bind<LicenseNameResolver>(Types.LicenseNameResolver)
-    .to(LicenseNameResolver)
     .inSingletonScope();
 
 container

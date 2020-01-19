@@ -1,18 +1,24 @@
 import * as axios from 'axios';
 import * as config from 'config';
+import { injectable, inject, named } from 'inversify';
 
+import Types from '../../../ioc/types';
 import IUser from '../../../interface/general/user.interface';
 import IRepository from '../../../interface/repository/repository.interface';
 import IRepositoryProvider from '../../../interface/repository/repository-provider.interface';
-import IAbbreviationResolver from '../../../interface/general/abbreviation-resolver.interface';
+import IAbbreviationResolver from '@/core/interface/general/abbreviation-resolver.interface';
 
 const { url, token } = config.get<any>('repository').github;
 
+@injectable()
 export default class GithubRepositoryProvider implements IRepositoryProvider<any> {
     private _languageResolver: IAbbreviationResolver;
     private _licenseResolver: IAbbreviationResolver;
 
-    constructor(languageResolver: IAbbreviationResolver, licenseResolver: IAbbreviationResolver) {
+    constructor(
+        @inject(Types.IAbbreviationResolver) @named('language') languageResolver: IAbbreviationResolver,
+        @inject(Types.IAbbreviationResolver) @named('license') licenseResolver: IAbbreviationResolver
+    ) {
         this._languageResolver = languageResolver;
         this._licenseResolver = licenseResolver;
     }
