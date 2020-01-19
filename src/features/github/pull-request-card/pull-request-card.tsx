@@ -32,6 +32,11 @@ export default class PullRequestCard extends tsx.Component<any> {
 
     public render(): any {
         const [pullRequest, initiator] = [this.pullRequest, this.pullRequest.initiator];
+        let mergeIcon = 'el-icon-refresh';
+
+        if (pullRequest.mergeable !== null) {
+            mergeIcon = pullRequest.mergeable ? 'el-icon-check' : 'el-icon-close';
+        }
 
         return (
             <div class="pull-request-card-container">
@@ -50,6 +55,8 @@ export default class PullRequestCard extends tsx.Component<any> {
                             text={`PR#${pullRequest.number} ${pullRequest.message}`}
                             url={pullRequest.pullRequestUrl}>
                         </WeblinkDisplay>
+
+                        <i class={mergeIcon}></i>
 
                         <ChangeStatsSummary class="change-summary"
                             added={pullRequest.added}
