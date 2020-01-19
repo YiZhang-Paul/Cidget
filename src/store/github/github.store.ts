@@ -33,14 +33,14 @@ const mutations = {
 const actions = {
     async addCommit(context: ActionContext<State, any>, payload: any): Promise<void> {
         const { commit, getters } = context;
-        const githubCommit = await commitService.toCommit(payload);
+        const push = await commitService.toCommit(payload);
 
-        if (!getters.hasCommit(githubCommit)) {
-            commit('addCommit', githubCommit);
+        if (!getters.hasCommit(push) && push.initiator.name !== 'web-flow') {
+            commit('addCommit', push);
 
             Vue.notify({
                 group: 'notification',
-                text: `commit|${githubCommit.id}`,
+                text: `commit|${push.id}`,
                 duration: 12000
             });
         }
