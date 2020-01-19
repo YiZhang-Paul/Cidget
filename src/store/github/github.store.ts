@@ -25,7 +25,11 @@ const mutations = {
     addCommit(state: State, commit: ICommit<IGithubUser>): void {
         state.commits.unshift(commit);
     },
-    addPullRequests(state: State, pullRequest: IPullRequest<IGithubUser>): void {
+    addPullRequest(state: State, pullRequest: IPullRequest<IGithubUser>): void {
+        state.pullRequests.unshift(pullRequest);
+    },
+    updatePullRequest(state: State, pullRequest: IPullRequest<IGithubUser>): void {
+        state.pullRequests = state.pullRequests.filter(_ => _.id !== pullRequest.id);
         state.pullRequests.unshift(pullRequest);
     }
 };
@@ -40,8 +44,8 @@ const actions = {
 
             Vue.notify({
                 group: 'notification',
-                text: `commit|${push.id}`,
-                duration: 12000
+                duration: 12000,
+                data: { type: 'commit', id: push.id }
             });
         }
     },
@@ -49,16 +53,14 @@ const actions = {
         const { commit, getters } = context;
         const pullRequest = await pullRequestService.toPullRequest(payload);
         const shouldPersist = pullRequest.action !== 'closed' && pullRequest.action !== 'merged';
+        const action = !getters.hasPullRequest(pullRequest) ? 'addPullRequest' : 'updatePullRequest';
+        commit(action, pullRequest);
 
-        if (!getters.hasPullRequest(pullRequest)) {
-            commit('addPullRequests', pullRequest);
-
-            Vue.notify({
-                group: 'notification',
-                text: `pull-request|${pullRequest.id}`,
-                duration: shouldPersist ? -1 : 12000
-            });
-        }
+        Vue.notify({
+            group: 'notification',
+            duration: shouldPersist ? -1 : 12000,
+            data: { type: 'pull-request', id: pullRequest.id }
+        });
     }
 };
 
