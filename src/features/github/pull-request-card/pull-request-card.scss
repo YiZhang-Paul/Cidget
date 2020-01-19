@@ -1,5 +1,5 @@
 .pull-request-card-container {
-    width: 550px;
+    width: 640px;
     height: 80px;
     display: flex;
     align-items: center;
@@ -17,6 +17,8 @@
         .pull-request-message-container, .pull-request-info-container {
             display: flex;
             flex-direction: row;
+            align-items: center;
+            margin-top: 2px;
 
             .name {
                 cursor: pointer;
@@ -28,12 +30,25 @@
                 }
             }
 
-            .message {
+            .merge-icon, .right-arrow {
+                font-size: 0.85em;
+            }
+
+            .merge-icon {
+                margin-left: 3px;
+            }
+
+            .pull-request-message {
+                max-width: 205px;
                 margin-left: 6px;
             }
 
             .change-summary {
                 margin-left: 8px;
+            }
+
+            .branch-badge, .right-arrow {
+                margin-top: 3px;
             }
         }
     }

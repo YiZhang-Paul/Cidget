@@ -51,12 +51,12 @@ export default class PullRequestCard extends tsx.Component<any> {
                             <span> {pullRequest.action} </span>
                         </div>
 
-                        <WeblinkDisplay class="message"
+                        <WeblinkDisplay class="pull-request-message"
                             text={`PR#${pullRequest.number} ${pullRequest.message}`}
                             url={pullRequest.pullRequestUrl}>
                         </WeblinkDisplay>
 
-                        <i class={mergeIcon}></i>
+                        <i class={`${mergeIcon} merge-icon`}></i>
 
                         <ChangeStatsSummary class="change-summary"
                             added={pullRequest.added}
@@ -71,7 +71,7 @@ export default class PullRequestCard extends tsx.Component<any> {
                             url={this.sourceBranchUrl}>
                         </BranchBadge>
 
-                        <i class="el-icon-right"></i>
+                        <i class="el-icon-right right-arrow"></i>
 
                         <BranchBadge class="branch-badge"
                             name={pullRequest.branch.base}
