@@ -10,7 +10,7 @@ export default class WeblinkDisplay extends tsx.Component<any> {
     @Prop() public url!: string;
     @Prop({ default: 'top-start' }) public tooltipPosition!: string;
     @Prop({ default: false }) public isDarkMode!: boolean;
-    @Prop() private _showTooltip = false;
+    @Prop({ default: false }) private _showTooltip!: boolean;
 
     @Ref('container') public container!: HTMLElement;
 

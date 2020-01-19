@@ -1,4 +1,4 @@
-.commit-card-container {
+.pull-request-card-container {
     width: 550px;
     height: 80px;
     display: flex;
@@ -14,7 +14,7 @@
     .content {
         margin-left: 12px;
 
-        .commit-message-container, .commit-info-container {
+        .pull-request-message-container, .pull-request-info-container {
             display: flex;
             flex-direction: row;
 
@@ -28,12 +28,12 @@
                 }
             }
 
-            .change-summary {
-                margin-left: 8px;
+            .message {
+                margin-left: 6px;
             }
 
-            .branch-badge {
-                margin-top: 3px;
+            .change-summary {
+                margin-left: 8px;
             }
         }
     }

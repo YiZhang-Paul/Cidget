@@ -4,7 +4,6 @@ import { shell } from 'electron';
 
 import ICommit from '../../../core/interface/general/commit.interface';
 import IGithubUser from '../../../core/interface/repository/github/github-user.interface';
-import IRepository from '../../../core/interface/repository/repository.interface';
 import UserAvatar from '../../../shared/components/generic/user-avatar/user-avatar';
 import WeblinkDisplay from '../../../shared/components/generic/weblink-display/weblink-display';
 import ChangeStatsSummary from '../../../shared/components/generic/change-stats-summary/change-stats-summary';
@@ -17,7 +16,7 @@ import './commit-card.scss';
 
 @Component
 export default class CommitCard extends tsx.Component<any> {
-    @Prop() public commit!: ICommit<IGithubUser, IRepository>;
+    @Prop() public commit!: ICommit<IGithubUser>;
 
     private get added(): number {
         return (this.commit.added ?? []).length;
@@ -44,7 +43,7 @@ export default class CommitCard extends tsx.Component<any> {
 
         return (
             <div class="commit-card-container">
-                 <UserAvatar class="user-avatar" url={initiator.avatar} showPopover={false}>
+                <UserAvatar class="user-avatar" url={initiator.avatar} showPopover={false}>
                     <UserInfoCard initiator={initiator} />
                 </UserAvatar>
 

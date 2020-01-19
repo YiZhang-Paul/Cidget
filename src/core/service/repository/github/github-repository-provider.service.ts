@@ -35,11 +35,13 @@ export default class GithubRepositoryProvider implements IRepositoryProvider<any
     }
 
     public toRepository(data: any): IRepository {
+        const createdAt = data.created_at;
+
         return ({
             id: data.id,
             name: data.name,
             description: data.description,
-            createdOn: new Date(data.created_at * 1000),
+            createdOn: new Date(isNaN(createdAt) ? createdAt : createdAt * 1000),
             defaultBranch: data.default_branch,
             hooksUrl: data.hooks_url,
             language: {
@@ -52,7 +54,7 @@ export default class GithubRepositoryProvider implements IRepositoryProvider<any
             },
             owner: ({ name: data.owner.login, avatar: data.owner.avatar_url }) as IUser,
             isPrivate: data.private,
-            url: data.url
+            url: data.html_url
         }) as IRepository;
     }
 }
