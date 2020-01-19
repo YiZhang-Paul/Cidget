@@ -55,7 +55,7 @@ const actions = {
             Vue.notify({
                 group: 'notification',
                 text: `pull-request|${pullRequest.id}`,
-                duration: -1
+                duration: pullRequest.action === 'closed' ? 12000 : -1
             });
         }
     }
