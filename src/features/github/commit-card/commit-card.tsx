@@ -49,7 +49,10 @@ export default class CommitCard extends tsx.Component<any> {
 
                 <div class="content">
                     <div class="commit-message-container">
-                        <WeblinkDisplay text={commit.message} url={commit.commitUrl} />
+                        <WeblinkDisplay class="commit-message"
+                            text={commit.message}
+                            url={commit.commitUrl}>
+                        </WeblinkDisplay>
 
                         <ChangeStatsSummary class="change-summary"
                             added={this.added}
