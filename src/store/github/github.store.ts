@@ -48,7 +48,6 @@ const actions = {
     async addPullRequest(context: ActionContext<State, any>, payload: any): Promise<void> {
         const { commit, getters } = context;
         const pullRequest = await pullRequestService.toPullRequest(payload);
-        console.log(pullRequest);
 
         if (!getters.hasPullRequest(pullRequest)) {
             commit('addPullRequests', pullRequest);

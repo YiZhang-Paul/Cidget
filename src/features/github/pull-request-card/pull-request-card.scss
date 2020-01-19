@@ -30,17 +30,26 @@
                 }
             }
 
-            .merge-icon, .right-arrow {
+            .right-arrow {
                 font-size: 0.85em;
-            }
-
-            .merge-icon {
-                margin-left: 3px;
+                font-weight: bold;
             }
 
             .pull-request-message {
-                max-width: 205px;
+                max-width: 199px;
                 margin-left: 6px;
+            }
+
+            .pending {
+                border-right: 6px solid rgb(11, 100, 202);
+            }
+
+            .mergeable {
+                border-right: 6px solid rgb(18, 194, 18);
+            }
+
+            .not-mergeable {
+                border-right: 6px solid rgb(226, 7, 7);
             }
 
             .change-summary {
