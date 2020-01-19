@@ -17,6 +17,7 @@ export default interface IPullRequest<TUser = IUser, TRepository = IRepository> 
     createdOn: Date;
     updatedOn: Date;
     mergeable: boolean | null;
+    merged: boolean;
     commits: number;
     added: number;
     removed: number;

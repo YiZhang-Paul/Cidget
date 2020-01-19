@@ -32,6 +32,11 @@ export default class PullRequestCard extends tsx.Component<any> {
 
     public render(): any {
         const [pullRequest, initiator] = [this.pullRequest, this.pullRequest.initiator];
+        let messageClass = 'pending';
+
+        if (pullRequest.mergeable !== null) {
+            messageClass = pullRequest.mergeable ? 'mergeable' : 'not-mergeable';
+        }
 
         return (
             <div class="pull-request-card-container">
@@ -46,7 +51,7 @@ export default class PullRequestCard extends tsx.Component<any> {
                             <span> {pullRequest.action} </span>
                         </div>
 
-                        <WeblinkDisplay class="message"
+                        <WeblinkDisplay class={`pull-request-message ${messageClass}`}
                             text={`PR#${pullRequest.number} ${pullRequest.message}`}
                             url={pullRequest.pullRequestUrl}>
                         </WeblinkDisplay>
@@ -64,7 +69,7 @@ export default class PullRequestCard extends tsx.Component<any> {
                             url={this.sourceBranchUrl}>
                         </BranchBadge>
 
-                        <i class="el-icon-right"></i>
+                        <i class="el-icon-right right-arrow"></i>
 
                         <BranchBadge class="branch-badge"
                             name={pullRequest.branch.base}

@@ -1,5 +1,5 @@
 .commit-card-container {
-    width: 550px;
+    width: 640px;
     height: 80px;
     display: flex;
     align-items: center;
@@ -17,6 +17,8 @@
         .commit-message-container, .commit-info-container {
             display: flex;
             flex-direction: row;
+            align-items: center;
+            margin-top: 2px;
 
             .name {
                 cursor: pointer;
@@ -26,6 +28,10 @@
                 &:hover {
                     color: rgb(151, 21, 93);
                 }
+            }
+
+            .commit-message {
+                max-width: 425px;
             }
 
             .change-summary {
