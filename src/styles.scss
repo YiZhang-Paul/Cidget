@@ -1,3 +1,51 @@
-body {
-    background-color: rgb(49, 66, 104);
+$drag-bar-height: 25px;
+
+html, body {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.drag-bar {
+    width: 100vw;
+    height: $drag-bar-height;
+    -webkit-app-region: drag;
+    background-color: rgba(110, 110, 110, 0.2);
+}
+
+#app {
+    width: 100vw;
+    height: calc(100vh - #{$drag-bar-height});
+}
+
+.notification {
+    margin-top: 50px;
+    z-index: 0;
+}
+
+.vue-notification-wrapper {
+    margin-bottom: 5px;
+    border-radius: 5px;
+    -webkit-box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.35);
+    -moz-box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.35);
+    box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.35);
+}
+
+.notification-wrapper {
+    position: relative;
+
+    .close {
+        top: 7px;
+        right: 6px;
+        position: absolute;
+        color: lightgrey;
+        -webkit-transition: color 0.4s;
+        transition: color 0.4s;
+        cursor: pointer;
+
+        &:hover {
+            color: rgb(235, 86, 86);
+        }
+    }
 }

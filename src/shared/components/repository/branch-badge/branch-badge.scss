@@ -1,0 +1,29 @@
+.branch-badge-container {
+    padding: 0 5px 2.5px 5px;
+    margin: 0 3px 0 3px;
+    font-size: 0.85em;
+    border-radius: 4px;
+    background-color: rgb(75, 145, 238);
+    -webkit-box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2);
+
+    &:hover {
+        background-color: rgb(55, 127, 223);
+        -webkit-box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.25);
+        -moz-box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.25);
+        box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.25);
+    }
+
+    .url {
+        cursor: pointer;
+        color: rgb(255, 255, 255);
+
+        i {
+            font-size: 0.78em;
+            font-weight: bold;
+            color: rgb(148, 243, 70);
+            margin-right: 3.5px;
+        }
+    }
+}

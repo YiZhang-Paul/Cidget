@@ -1,0 +1,28 @@
+.text-summary-container {
+    padding: 0 5px 2px 5px;
+    margin: 2px 0 0 3px;
+    font-size: 0.9em;
+    font-weight: 500;
+    position: relative;
+
+    &:hover {
+
+        .detail {
+            opacity: 1;
+        }
+
+        .summary {
+            opacity: 0;
+        }
+    }
+
+    .summary, .detail {
+        position: absolute;
+        -webkit-transition: opacity 0.4s;
+        transition: opacity 0.4s;
+    }
+
+    .detail {
+        opacity: 0;
+    }
+}
