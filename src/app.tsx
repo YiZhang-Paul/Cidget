@@ -1,4 +1,4 @@
-import { Component } from 'vue-property-decorator';
+import { Component, Ref } from 'vue-property-decorator';
 import * as tsx from 'vue-tsx-support';
 import { mapGetters } from 'vuex';
 
@@ -12,17 +12,18 @@ import Store from './store';
 @Component({
     computed: {
         ...mapGetters(Store.githubStoreName, {
-            commits: 'getCommits',
-            pullRequests: 'getPullRequests'
+            _commits: 'getCommits',
+            _pullRequests: 'getPullRequests'
         })
     }
 })
 export default class App extends tsx.Component<any> {
-    private commits!: ICommit<IGithubUser>[];
-    private pullRequests!: IPullRequest<IGithubUser>[];
+    @Ref('notification') private _notification: any;
+    private _commits!: ICommit<IGithubUser>[];
+    private _pullRequests!: IPullRequest<IGithubUser>[];
 
     private getCard(props: any): any {
-        const [type, id] = props.item.text.split('|');
+        const { type, id } = props.item.data;
 
         switch(type) {
             case 'commit':
@@ -34,8 +35,22 @@ export default class App extends tsx.Component<any> {
         return null;
     }
 
+    private updatePullRequestCard(id: string): void {
+        const cards = this._notification._data.list.filter((_: any) => _.data.id === id);
+
+        if (cards.length <= 1) {
+            return;
+        }
+        // destroy all other existing cards
+        cards.slice(0, -1).forEach((_: any) => this._notification.destroyById(_.id));
+        const index = this._notification._data.list.findIndex((_: any) => _.data.id == id);
+        // move current card to start of the list
+        this._notification._data.list.splice(index, 1);
+        this._notification._data.list.unshift(cards.slice(-1)[0]);
+    }
+
     private getCommitCard(id: string, closeHandler: any): any {
-        const commit = this.commits.find(_ => _.id === id);
+        const commit = this._commits.find(_ => _.id === id);
         const close = <i class="fas fa-times-circle close" onClick={closeHandler}></i>
         const commitCard = <CommitCard commit={commit} />;
 
@@ -43,7 +58,8 @@ export default class App extends tsx.Component<any> {
     }
 
     private getPullRequestCard(id: string, closeHandler: any): any {
-        const pullRequest = this.pullRequests.find(_ => _.id === id);
+        this.updatePullRequestCard(id);
+        const pullRequest = this._pullRequests.find(_ => _.id === id);
         const close = <i class="fas fa-times-circle close" onClick={closeHandler}></i>
         const pullRequestCard = <PullRequestCard pullRequest={pullRequest} />;
 
@@ -53,6 +69,7 @@ export default class App extends tsx.Component<any> {
     public render(): any {
         return (
             <notifications class="notification"
+                ref="notification"
                 group="notification"
                 position="top left"
                 width={640}
