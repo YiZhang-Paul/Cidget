@@ -1,7 +1,9 @@
 import * as config from 'config';
+import { injectable } from 'inversify';
 
-import IAbbreviationResolver from '../../../core/interface/general/abbreviation-resolver.interface';
+import IAbbreviationResolver from '../../interface/general/abbreviation-resolver.interface';
 
+@injectable()
 export default abstract class NameResolverBase implements IAbbreviationResolver {
     private _lookup = new Map<string, string>();
 
