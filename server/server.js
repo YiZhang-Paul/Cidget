@@ -10,7 +10,12 @@ express.use(bodyParser.json());
 server.listen(port, () => console.log(`listening on port ${port}.`));
 socket.on('connection', () => console.log('socket connected.'));
 
-express.post('/', (req, res) => {
-    socket.emit('data', req.body);
+express.post('/github/push', (req, res) => {
+    socket.emit('github-push', req.body);
+    res.sendStatus(200);
+});
+
+express.post('/github/pull_request', (req, res) => {
+    socket.emit('github-pull-request', req.body);
     res.sendStatus(200);
 });
