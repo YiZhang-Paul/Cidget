@@ -7,8 +7,13 @@ const socket = socketClient('http://localhost:8888');
 socket.on('connect', () => logger.log('socket connected.'));
 socket.on('disconnect', () => logger.log('socket disconnected.'));
 
-socket.on('data', (json: any) => {
+socket.on('github-push', (json: any) => {
     const action = `${Store.githubStoreName}/addCommit`;
     const payload = JSON.parse(json.payload);
+    Store.store.dispatch(action, payload);
+});
+
+socket.on('github-pull-request', (payload: any) => {
+    const action = `${Store.githubStoreName}/addPullRequest`;
     Store.store.dispatch(action, payload);
 });
