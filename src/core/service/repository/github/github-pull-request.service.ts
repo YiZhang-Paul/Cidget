@@ -1,13 +1,16 @@
 import * as axios from 'axios';
+import { injectable, inject, named } from 'inversify';
 
+import Types from '../../../ioc/types';
 import IGithubUser from '../../../interface/repository/github/github-user.interface';
 import IPullRequest from '../../../interface/general/pull-request.interface';
 import IRepositoryProvider from '../../../interface/repository/repository-provider.interface';
 
+@injectable()
 export default class GithubPullRequestService {
     private _repositoryProvider: IRepositoryProvider<any>;
 
-    constructor(repositoryProvider: IRepositoryProvider<any>) {
+    constructor(@inject(Types.IRepositoryProvider) @named('github') repositoryProvider: IRepositoryProvider<any>) {
         this._repositoryProvider = repositoryProvider;
     }
 
