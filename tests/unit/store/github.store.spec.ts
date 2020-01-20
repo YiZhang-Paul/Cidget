@@ -1,7 +1,7 @@
 import 'reflect-metadata';
+import Vue from 'vue';
 import Vuex, { Store } from "vuex";
-import { createLocalVue } from '@vue/test-utils';
-import { expect } from 'chai';
+import VueNotification from 'vue-notification';
 import { stub } from 'sinon';
 
 import Types from '../../../src/core/ioc/types';
@@ -13,14 +13,15 @@ import IPullRequest from '../../../src/core/interface/general/pull-request.inter
 import GithubCommitService from '../../../src/core/service/repository/github/github-commit.service';
 import GithubPullRequestService from '../../../src/core/service/repository/github/github-pull-request.service';
 
-createLocalVue().use(Vuex);
+Vue.use(Vuex);
+Vue.use(VueNotification);
 
-context('github store unit test', () => {
+describe('github store unit test', () => {
     let store: Store<any>;
     let commitServiceStub: any;
     let pullRequestServiceStub: any;
 
-    beforeEach('stub setup', () => {
+    beforeEach(() => {
         Container.snapshot();
 
         commitServiceStub = stub({
@@ -42,31 +43,25 @@ context('github store unit test', () => {
         Container
             .rebind<GithubPullRequestService>(Types.GithubPullRequestService)
             .toConstantValue(pullRequestServiceStub);
-    });
 
-    beforeEach('test setup', () => {
         store = new Store(createStore());
     });
 
-    afterEach('test teardown', () => {
+    afterEach(() => {
         Container.restore();
     });
 
     describe('addCommit', () => {
-        it('should add commit when it is not already included', async () => {
+        test('should add commit when it is not already included', async () => {
             const commit = { id: '147', initiator: { name: 'john' } };
             commitServiceStub.toCommit.resolves(commit);
-            store.state.commit = [];
+            store.state.commits = [];
 
             await store.dispatch('addCommit', {});
 
-            expect(store.state.commit.length).to.equal(1);
-            expect(store.state.commit[0].id).to.equal('147');
-            expect(store.state.commit[0].initiator.name).to.equal('john');
+            expect(store.state.commits.length).toBe(1);
+            expect(store.state.commits[0].id).toBe('147');
+            expect(store.state.commits[0].initiator.name).toBe('john');
         });
-
-        it('should ', () => {});
-        it('should ', () => {});
-        it('should ', () => {});
     });
 });

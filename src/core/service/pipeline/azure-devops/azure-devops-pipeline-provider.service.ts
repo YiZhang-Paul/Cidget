@@ -1,4 +1,3 @@
-import * as config from 'config';
 import { getPersonalAccessTokenHandler, WebApi } from 'azure-devops-node-api';
 
 import IUser from '../../../interface/general/user.interface';
@@ -8,7 +7,7 @@ import IReleasePipeline from '../../../interface/pipeline/release-pipeline.inter
 import IPipelineProvider from '../../../interface/pipeline/pipeline-provider.interface';
 import IAzureDevopsQueryContext from '../../../interface/pipeline/azure-devops/azure-devops-query-context.interface';
 
-const { url, token } = config.get<any>('cicd').azureDevops;
+const { url, token } = require('config').get('cicd').azureDevops;
 const azureApi = new WebApi(url, getPersonalAccessTokenHandler(token));
 
 export default class AzureDevopsPipelineProvider implements IPipelineProvider<IAzureDevopsQueryContext> {
