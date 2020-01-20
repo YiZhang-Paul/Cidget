@@ -1,9 +1,10 @@
+import 'reflect-metadata';
 import { Container } from 'inversify';
 
 import IRepositoryProvider from '../interface/repository/repository-provider.interface';
 import IAbbreviationResolver from '../interface/general/abbreviation-resolver.interface';
-import LanguageNameResolver from '../service/resolver/language-name-resolver';
-import LicenseNameResolver from '../service/resolver/license-name-resolver';
+import LanguageNameResolver from '../service/resolver/language-name-resolver/language-name-resolver';
+import LicenseNameResolver from '../service/resolver/license-name-resolver/license-name-resolver';
 import GithubRepositoryProvider from '../service/repository/github/github-repository-provider.service';
 import GithubCommitService from '../service/repository/github/github-commit.service';
 import GithubPullRequestService from '../service/repository/github/github-pull-request.service';
@@ -29,6 +30,16 @@ container
     .to(GithubRepositoryProvider)
     .inSingletonScope()
     .whenTargetNamed('github');
+
+container
+    .bind<LanguageNameResolver>(Types.LanguageNameResolver)
+    .to(LanguageNameResolver)
+    .inSingletonScope();
+
+container
+    .bind<LicenseNameResolver>(Types.LicenseNameResolver)
+    .to(LicenseNameResolver)
+    .inSingletonScope();
 
 container
     .bind<GithubCommitService>(Types.GithubCommitService)
