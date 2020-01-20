@@ -36,7 +36,7 @@ export default class App extends tsx.Component<any> {
     }
 
     private updatePullRequestCard(id: string): void {
-        const cards = this._cards._data.list.filter((_: any) => _.data.id === id);
+        const cards = this._cards.$data.list.filter((_: any) => _.data.id === id);
 
         if (cards.length !== 2) {
             return;
@@ -45,9 +45,9 @@ export default class App extends tsx.Component<any> {
         // destroy out of date card
         this._cards.destroyById(previous.id);
         // move up to date card to start of the list and reuse previous id for animation
-        const index = this._cards._data.list.findIndex((_: any) => _.data.id === id);
-        this._cards._data.list.splice(index, 1);
-        this._cards._data.list.unshift(current);
+        const index = this._cards.$data.list.findIndex((_: any) => _.data.id === id);
+        this._cards.$data.list.splice(index, 1);
+        this._cards.$data.list.unshift(current);
         current.id = previous.id;
     }
 
