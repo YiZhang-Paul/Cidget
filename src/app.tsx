@@ -18,7 +18,7 @@ import Store from './store';
     }
 })
 export default class App extends tsx.Component<any> {
-    @Ref('notification') private _notification: any;
+    @Ref('cards') private _cards: any;
     private _commits!: ICommit<IGithubUser>[];
     private _pullRequests!: IPullRequest<IGithubUser>[];
 
@@ -36,17 +36,19 @@ export default class App extends tsx.Component<any> {
     }
 
     private updatePullRequestCard(id: string): void {
-        const cards = this._notification._data.list.filter((_: any) => _.data.id === id);
+        const cards = this._cards.$data.list.filter((_: any) => _.data.id === id);
 
-        if (cards.length <= 1) {
+        if (cards.length !== 2) {
             return;
         }
-        // destroy all other existing cards
-        cards.slice(0, -1).forEach((_: any) => this._notification.destroyById(_.id));
-        const index = this._notification._data.list.findIndex((_: any) => _.data.id == id);
-        // move current card to start of the list
-        this._notification._data.list.splice(index, 1);
-        this._notification._data.list.unshift(cards.slice(-1)[0]);
+        const [current, previous] = cards;
+        // destroy out of date card
+        this._cards.destroyById(previous.id);
+        // move up to date card to start of the list and reuse previous id for animation
+        const index = this._cards.$data.list.findIndex((_: any) => _.data.id === id);
+        this._cards.$data.list.splice(index, 1);
+        this._cards.$data.list.unshift(current);
+        current.id = previous.id;
     }
 
     private getCommitCard(id: string, closeHandler: any): any {
@@ -69,7 +71,7 @@ export default class App extends tsx.Component<any> {
     public render(): any {
         return (
             <notifications class="notification"
-                ref="notification"
+                ref="cards"
                 group="notification"
                 position="top left"
                 width={640}
