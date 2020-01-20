@@ -4,14 +4,15 @@ import Vuex, { Store } from 'vuex';
 import VueNotification from 'vue-notification';
 import { assert as sinonExpect, stub, spy } from 'sinon';
 
-import Types from '../../../src/core/ioc/types';
-import Container from '../../../src/core/ioc/container';
-import { createStore } from '../../../src/store/github/github.store';
-import IGithubUser from '../../../src/core/interface/repository/github/github-user.interface';
-import ICommit from '../../../src/core/interface/general/commit.interface';
-import IPullRequest from '../../../src/core/interface/general/pull-request.interface';
-import GithubCommitService from '../../../src/core/service/repository/github/github-commit.service';
-import GithubPullRequestService from '../../../src/core/service/repository/github/github-pull-request.service';
+import Types from '../../core/ioc/types';
+import Container from '../../core/ioc/container';
+import IGithubUser from '../../core/interface/repository/github/github-user.interface';
+import ICommit from '../../core/interface/general/commit.interface';
+import IPullRequest from '../../core/interface/general/pull-request.interface';
+import GithubCommitService from '../../core/service/repository/github/github-commit.service';
+import GithubPullRequestService from '../../core/service/repository/github/github-pull-request.service';
+
+import { createStore } from './github.store';
 
 Vue.use(Vuex);
 Vue.use(VueNotification);
