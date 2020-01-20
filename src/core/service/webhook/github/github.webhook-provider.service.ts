@@ -1,10 +1,9 @@
 import * as axios from 'axios';
-import * as config from 'config';
 
 import IWebhook from '../../../interface/webhook/webhook.interface';
 import IWebhookProvider from '../../../interface/webhook/webhook-provider.interface';
 
-const { url, token, user } = config.get<any>('repository').github;
+const { url, token, user } = require('config').get('repository').github;
 
 export default class GithubWebhookProviderService implements IWebhookProvider<any> {
 

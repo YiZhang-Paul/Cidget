@@ -7,7 +7,3 @@ module.exports = {
         "@babel/plugin-proposal-optional-chaining"
     ]
 }
-
-if (process.env.NODE_ENV === 'test') {
-    module.exports.plugins = ['babel-plugin-istanbul'];
-}
