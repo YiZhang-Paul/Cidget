@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "lint": "vue-cli-service lint --no-fix",
-        "test:unit": "vue-cli-service test:unit",
+        "test": "vue-cli-service test:unit",
         "build": "npm run lint && vue-cli-service electron:build --publish never",
         "serve:client": "npm run lint && vue-cli-service electron:serve",
         "serve:server": "node server/server.js"
