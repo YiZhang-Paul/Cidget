@@ -4,8 +4,9 @@ node_modules
 coverage
 .nyc_output
 note.txt
-config
 test-results.xml
+config/*
+!config/test.json
 
 # local env files
 .env.local
