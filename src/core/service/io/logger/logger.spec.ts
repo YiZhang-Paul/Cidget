@@ -1,18 +1,18 @@
-import { assert as sinonExpect, spy } from 'sinon';
+import { assert as sinonExpect, stub } from 'sinon';
 
 import Logger from './logger';
 
 describe('logger unit test', () => {
     let logger: Logger;
-    let logSpy: any;
+    let logStub: any;
 
     beforeEach(() => {
-        logSpy = spy(console, 'log');
+        logStub = stub(console, 'log');
         logger = new Logger();
     });
 
     afterEach(() => {
-        logSpy.restore();
+        logStub.restore();
     });
 
     describe('log', () => {
@@ -21,7 +21,7 @@ describe('logger unit test', () => {
 
             logger.log();
 
-            sinonExpect.calledOnce(logSpy);
+            sinonExpect.calledOnce(logStub);
         });
 
         test('should not log under production mode', () => {
@@ -29,7 +29,7 @@ describe('logger unit test', () => {
 
             logger.log();
 
-            sinonExpect.notCalled(logSpy);
+            sinonExpect.notCalled(logStub);
         });
 
         test('should not log under test mode', () => {
@@ -37,7 +37,7 @@ describe('logger unit test', () => {
 
             logger.log();
 
-            sinonExpect.notCalled(logSpy);
+            sinonExpect.notCalled(logStub);
         });
     });
 });
