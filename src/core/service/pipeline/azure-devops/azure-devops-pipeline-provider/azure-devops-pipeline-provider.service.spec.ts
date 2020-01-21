@@ -16,26 +16,12 @@ describe('azure devops pipeline provider unit test', () => {
 
     beforeEach(() => {
         Container.snapshot();
-
-        buildApiStub = stub({
-            async getDefinition(): Promise<any> {
-                return null;
-            }
-        });
-
-        releaseApiStub = stub({
-            async getReleaseDefinition(): Promise<any> {
-                return null;
-            }
-        });
+        buildApiStub = stub({ async getDefinition(): Promise<any> { return null; } });
+        releaseApiStub = stub({ async getReleaseDefinition(): Promise<any> { return null; } });
 
         apiProviderStub = stub({
-            async getBuildApi(): Promise<IBuildApi> {
-                return buildApiStub;
-            },
-            async getReleaseApi(): Promise<IReleaseApi> {
-                return releaseApiStub;
-            }
+            async getBuildApi(): Promise<IBuildApi> { return buildApiStub; },
+            async getReleaseApi(): Promise<IReleaseApi> { return releaseApiStub; }
         } as AzureDevopsApiProvider);
 
         Container

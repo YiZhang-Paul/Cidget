@@ -1,11 +1,14 @@
 import 'reflect-metadata';
 import { Container } from 'inversify';
 
+import IHttpClient from '../interface/general/http-client.interface';
 import IRepositoryProvider from '../interface/repository/repository-provider.interface';
 import IAbbreviationResolver from '../interface/general/abbreviation-resolver.interface';
+import HttpClient from '../service/io/http-client/http-client';
 import LanguageNameResolver from '../service/resolver/language-name-resolver/language-name-resolver';
 import LicenseNameResolver from '../service/resolver/license-name-resolver/license-name-resolver';
 import GithubRepositoryProvider from '../service/repository/github/github-repository-provider.service';
+import GithubWebhookProviderService from '../service/webhook/github/github.webhook-provider.service';
 import GithubCommitService from '../service/repository/github/github-commit.service';
 import GithubPullRequestService from '../service/repository/github/github-pull-request.service';
 import AzureDevopsApiProvider from '../service/pipeline/azure-devops/azure-devops-api-provider/azure-devops-api-provider.service';
@@ -14,6 +17,11 @@ import AzureDevopsPipelineProvider from '../service/pipeline/azure-devops/azure-
 import Types from './types';
 
 const container = new Container();
+
+container
+    .bind<IHttpClient>(Types.IHttpClient)
+    .to(HttpClient)
+    .inSingletonScope();
 
 container
     .bind<IAbbreviationResolver>(Types.IAbbreviationResolver)
@@ -41,6 +49,11 @@ container
 container
     .bind<LicenseNameResolver>(Types.LicenseNameResolver)
     .to(LicenseNameResolver)
+    .inSingletonScope();
+
+container
+    .bind<GithubWebhookProviderService>(Types.GithubWebhookProviderService)
+    .to(GithubWebhookProviderService)
     .inSingletonScope();
 
 container

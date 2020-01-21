@@ -1,11 +1,19 @@
-import * as axios from 'axios';
+import { injectable, inject } from 'inversify';
 
+import Types from '../../../ioc/types';
 import IWebhook from '../../../interface/webhook/webhook.interface';
 import IWebhookProvider from '../../../interface/webhook/webhook-provider.interface';
+import IHttpClient from '../../../interface/general/http-client.interface';
 
 const { url, token, user } = require('config').get('repository').github;
 
+@injectable()
 export default class GithubWebhookProviderService implements IWebhookProvider<any> {
+    private _httpClient!: IHttpClient;
+
+    constructor(@inject(Types.IHttpClient) httpClient: IHttpClient) {
+        this._httpClient = httpClient;
+    }
 
     private get headers(): { [key: string]: string } {
         return ({ Authorization: `token ${token}` });
@@ -13,7 +21,7 @@ export default class GithubWebhookProviderService implements IWebhookProvider<an
 
     public async listWebhooks(name: string): Promise<IWebhook[]> {
         const endpoint = `${url}/repos/${user}/${name}/hooks`;
-        const { data } = await axios.default.get(endpoint, { headers: this.headers });
+        const { data } = await this._httpClient.get(endpoint, { headers: this.headers });
 
         return (data || []).map(this.toWebhook.bind(this));
     }
@@ -41,7 +49,7 @@ export default class GithubWebhookProviderService implements IWebhookProvider<an
         };
 
         const endpoint = `${url}/repos/${user}/${name}/hooks`;
-        const { data } = await axios.default.post(endpoint, body, { headers: this.headers });
+        const { data } = await this._httpClient.post(endpoint, body, { headers: this.headers });
 
         return this.toWebhook(data);
     }
