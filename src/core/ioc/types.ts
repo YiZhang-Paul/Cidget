@@ -7,6 +7,7 @@ export default {
     GithubWebhookProviderService: Symbol.for('GithubWebhookProviderService'),
     GithubCommitService: Symbol.for('GithubCommitService'),
     GithubPullRequestService: Symbol.for('GithubPullRequestService'),
+    GithubRepositoryProvider: Symbol.for('GithubRepositoryProvider'),
     AzureDevopsApiProvider: Symbol.for('AzureDevopsApiProvider'),
     AzureDevopsPipelineProvider: Symbol.for('AzureDevopsPipelineProvider'),
     ResolverType: Symbol.for('ResolverType')

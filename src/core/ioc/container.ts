@@ -7,7 +7,7 @@ import IAbbreviationResolver from '../interface/general/abbreviation-resolver.in
 import HttpClient from '../service/io/http-client/http-client';
 import LanguageNameResolver from '../service/resolver/language-name-resolver/language-name-resolver';
 import LicenseNameResolver from '../service/resolver/license-name-resolver/license-name-resolver';
-import GithubRepositoryProvider from '../service/repository/github/github-repository-provider.service';
+import GithubRepositoryProvider from '../service/repository/github/github-repository-provider/github-repository-provider.service';
 import GithubWebhookProviderService from '../service/webhook/github/github.webhook-provider.service';
 import GithubCommitService from '../service/repository/github/github-commit.service';
 import GithubPullRequestService from '../service/repository/github/github-pull-request.service';
@@ -49,6 +49,11 @@ container
 container
     .bind<LicenseNameResolver>(Types.LicenseNameResolver)
     .to(LicenseNameResolver)
+    .inSingletonScope();
+
+container
+    .bind<GithubRepositoryProvider>(Types.GithubRepositoryProvider)
+    .to(GithubRepositoryProvider)
     .inSingletonScope();
 
 container
