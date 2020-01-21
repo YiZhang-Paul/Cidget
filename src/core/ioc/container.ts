@@ -8,6 +8,8 @@ import LicenseNameResolver from '../service/resolver/license-name-resolver/licen
 import GithubRepositoryProvider from '../service/repository/github/github-repository-provider.service';
 import GithubCommitService from '../service/repository/github/github-commit.service';
 import GithubPullRequestService from '../service/repository/github/github-pull-request.service';
+import AzureDevopsApiProvider from '../service/pipeline/azure-devops/azure-devops-api-provider/azure-devops-api-provider.service';
+import AzureDevopsPipelineProvider from '../service/pipeline/azure-devops/azure-devops-pipeline-provider/azure-devops-pipeline-provider.service';
 
 import Types from './types';
 
@@ -49,6 +51,16 @@ container
 container
     .bind<GithubPullRequestService>(Types.GithubPullRequestService)
     .to(GithubPullRequestService)
+    .inSingletonScope();
+
+container
+    .bind<AzureDevopsApiProvider>(Types.AzureDevopsApiProvider)
+    .to(AzureDevopsApiProvider)
+    .inSingletonScope();
+
+container
+    .bind<AzureDevopsPipelineProvider>(Types.AzureDevopsPipelineProvider)
+    .to(AzureDevopsPipelineProvider)
     .inSingletonScope();
 
 container

@@ -1,22 +1,24 @@
-import { getPersonalAccessTokenHandler, WebApi } from 'azure-devops-node-api';
+import { injectable, inject } from 'inversify';
 
-import IUser from '../../../interface/general/user.interface';
-import IRepository from '../../../interface/pipeline/repository.interface';
-import IBuildPipeline from '../../../interface/pipeline/build-pipeline.interface';
-import IReleasePipeline from '../../../interface/pipeline/release-pipeline.interface';
-import IPipelineProvider from '../../../interface/pipeline/pipeline-provider.interface';
-import IAzureDevopsQueryContext from '../../../interface/pipeline/azure-devops/azure-devops-query-context.interface';
+import Types from '../../../../ioc/types';
+import IUser from '../../../../interface/general/user.interface';
+import IRepository from '../../../../interface/pipeline/repository.interface';
+import IBuildPipeline from '../../../../interface/pipeline/build-pipeline.interface';
+import IReleasePipeline from '../../../../interface/pipeline/release-pipeline.interface';
+import IPipelineProvider from '../../../../interface/pipeline/pipeline-provider.interface';
+import IAzureDevopsQueryContext from '../../../../interface/pipeline/azure-devops/azure-devops-query-context.interface';
+import AzureDevopsApiProvider from '../azure-devops-api-provider/azure-devops-api-provider.service';
 
-const { url, token } = require('config').get('cicd').azureDevops;
-const azureApi = new WebApi(url, getPersonalAccessTokenHandler(token));
-
+@injectable()
 export default class AzureDevopsPipelineProvider implements IPipelineProvider<IAzureDevopsQueryContext> {
+    private _apiProvider!: AzureDevopsApiProvider;
 
-    private _buildApiPromise = azureApi.getBuildApi();
-    private _releaseApiPromise = azureApi.getReleaseApi();
+    constructor(@inject(Types.AzureDevopsApiProvider) apiProvider: AzureDevopsApiProvider) {
+        this._apiProvider = apiProvider;
+    }
 
     public async fetchBuildDefinition({ project, id }: IAzureDevopsQueryContext): Promise<IBuildPipeline | null> {
-        const api = await this._buildApiPromise;
+        const api = await this._apiProvider.getBuildApi();
         const definition = await api.getDefinition(project, id);
 
         if (!definition) {
@@ -52,7 +54,7 @@ export default class AzureDevopsPipelineProvider implements IPipelineProvider<IA
     }
 
     public async fetchReleaseDefinition({ project, id }: IAzureDevopsQueryContext): Promise<IReleasePipeline | null> {
-        const api = await this._releaseApiPromise;
+        const api = await this._apiProvider.getReleaseApi();
         const definition = await api.getReleaseDefinition(project, id);
 
         if (!definition) {
