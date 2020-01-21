@@ -9,7 +9,7 @@ const { url, token, user } = require('config').get('repository').github;
 
 @injectable()
 export default class GithubWebhookProviderService implements IWebhookProvider<any> {
-    private _httpClient!: IHttpClient;
+    private _httpClient: IHttpClient;
 
     constructor(@inject(Types.IHttpClient) httpClient: IHttpClient) {
         this._httpClient = httpClient;

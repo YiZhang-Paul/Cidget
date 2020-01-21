@@ -11,7 +11,7 @@ import AzureDevopsApiProvider from '../azure-devops-api-provider/azure-devops-ap
 
 @injectable()
 export default class AzureDevopsPipelineProvider implements IPipelineProvider<IAzureDevopsQueryContext> {
-    private _apiProvider!: AzureDevopsApiProvider;
+    private _apiProvider: AzureDevopsApiProvider;
 
     constructor(@inject(Types.AzureDevopsApiProvider) apiProvider: AzureDevopsApiProvider) {
         this._apiProvider = apiProvider;
