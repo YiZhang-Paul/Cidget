@@ -18,5 +18,9 @@ describe('language name resolver unit test', () => {
         test('should return N/A when no abbreviation found', () => {
             expect(resolver.resolve('ABCScript')).toBe('N/A');
         });
+
+        test('should return N/A on default', () => {
+            expect(resolver.resolve()).toBe('N/A');
+        });
     });
 });
