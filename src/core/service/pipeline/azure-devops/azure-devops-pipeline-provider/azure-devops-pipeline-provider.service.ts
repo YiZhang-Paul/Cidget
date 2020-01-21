@@ -27,26 +27,26 @@ export default class AzureDevopsPipelineProvider implements IPipelineProvider<IA
 
         const owner: IUser = {
             name: definition.authoredBy?.displayName ?? '',
-            avatar: definition.authoredBy?.imageUrl,
-            email: definition.authoredBy?.uniqueName
+            avatar: definition.authoredBy?.imageUrl ?? '',
+            email: definition.authoredBy?.uniqueName ?? ''
         };
 
         const organization: IUser = {
             name: definition.repository?.properties?.orgName ?? '',
-            avatar: definition.repository?.properties?.ownerAvatarUrl
+            avatar: definition.repository?.properties?.ownerAvatarUrl ?? ''
         };
 
         const repository: IRepository = {
             name: definition.repository?.name ?? '',
             type: definition.repository?.type ?? 'unknown',
-            defaultBranch: definition.repository?.defaultBranch,
+            defaultBranch: definition.repository?.defaultBranch ?? '',
             organization
         };
 
         return ({
             name: definition.name,
             id: definition.id,
-            project: definition.project?.name,
+            project: definition.project?.name ?? '',
             owner,
             createdOn: definition.createdDate,
             repository
@@ -63,15 +63,15 @@ export default class AzureDevopsPipelineProvider implements IPipelineProvider<IA
 
         const owner: IUser = {
             name: definition.createdBy?.displayName ?? '',
-            avatar: definition.createdBy?.imageUrl,
-            email: definition.createdBy?.uniqueName
+            avatar: definition.createdBy?.imageUrl ?? '',
+            email: definition.createdBy?.uniqueName ?? ''
         };
 
         return ({
             name: definition.name,
             id: definition.id,
-            project: definition.artifacts?.[0].definitionReference?.project.name,
-            triggeredBy: definition.artifacts?.[0].definitionReference?.definition.name,
+            project: definition.artifacts?.[0].definitionReference?.project.name ?? '',
+            triggeredBy: definition.artifacts?.[0].definitionReference?.definition.name ?? '',
             owner,
             createdOn: definition.createdOn
         }) as IReleasePipeline;
