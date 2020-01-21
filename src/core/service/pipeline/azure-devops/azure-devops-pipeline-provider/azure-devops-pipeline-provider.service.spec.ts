@@ -6,7 +6,7 @@ import Types from '../../../../ioc/types';
 import Container from '../../../../ioc/container';
 import AzureDevopsApiProvider from '../azure-devops-api-provider/azure-devops-api-provider.service';
 
-import AzureDevopsPipelineProvider from "./azure-devops-pipeline-provider.service";
+import AzureDevopsPipelineProvider from './azure-devops-pipeline-provider.service';
 
 describe('azure devops pipeline provider unit test', () => {
     let pipelineProvider: AzureDevopsPipelineProvider;

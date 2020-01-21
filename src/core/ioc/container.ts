@@ -10,7 +10,7 @@ import LicenseNameResolver from '../service/resolver/license-name-resolver/licen
 import GithubRepositoryProvider from '../service/repository/github/github-repository-provider/github-repository-provider.service';
 import GithubWebhookProviderService from '../service/webhook/github/github.webhook-provider.service';
 import GithubCommitService from '../service/repository/github/github-commit/github-commit.service';
-import GithubPullRequestService from '../service/repository/github/github-pull-request.service';
+import GithubPullRequestService from '../service/repository/github/github-pull-request/github-pull-request.service';
 import AzureDevopsApiProvider from '../service/pipeline/azure-devops/azure-devops-api-provider/azure-devops-api-provider.service';
 import AzureDevopsPipelineProvider from '../service/pipeline/azure-devops/azure-devops-pipeline-provider/azure-devops-pipeline-provider.service';
 

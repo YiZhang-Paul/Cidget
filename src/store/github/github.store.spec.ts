@@ -9,7 +9,7 @@ import IGithubUser from '../../core/interface/repository/github/github-user.inte
 import ICommit from '../../core/interface/general/commit.interface';
 import IPullRequest from '../../core/interface/general/pull-request.interface';
 import GithubCommitService from '../../core/service/repository/github/github-commit/github-commit.service';
-import GithubPullRequestService from '../../core/service/repository/github/github-pull-request.service';
+import GithubPullRequestService from '../../core/service/repository/github/github-pull-request/github-pull-request.service';
 
 import { createStore } from './github.store';
 

@@ -6,7 +6,7 @@ import IHttpClient from '../../../../interface/general/http-client.interface';
 import IRepository from '../../../../interface/repository/repository.interface';
 import IRepositoryProvider from '../../../../interface/repository/repository-provider.interface';
 
-import GithubCommitService from "./github-commit.service";
+import GithubCommitService from './github-commit.service';
 
 describe('github commit service unit test', () => {
     let service: GithubCommitService;
