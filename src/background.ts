@@ -1,5 +1,5 @@
-import { app, protocol, BrowserWindow } from 'electron'
-import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
+import { app, protocol, BrowserWindow } from 'electron';
+import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 // Keep a global reference of the window object, if you don't, the window will
@@ -17,10 +17,15 @@ function createWindow() {
         transparent: true,
         frame: false,
         alwaysOnTop: true,
+        resizable: false,
+        maximizable: false,
+        minimizable: false,
         webPreferences: {
             nodeIntegration: true
         }
-    })
+    });
+
+    win.setIgnoreMouseEvents(true, { forward: true });
 
     if (process.env.WEBPACK_DEV_SERVER_URL) {
         // Load the url of the dev server if in development mode

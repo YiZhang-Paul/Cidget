@@ -10,8 +10,11 @@ import Store from './store';
 Vue.config.productionTip = false;
 Vue.use(VueNotification);
 
-const _ = new Vue({
+let _ = new Vue({
     el: '#app',
     store: Store.store,
     render: _ => _(App)
 });
+
+const TransparencyMouseFix = require('electron-transparency-mouse-fix');
+_ = new TransparencyMouseFix({ log: true, fixPointerEvents: 'auto' });
