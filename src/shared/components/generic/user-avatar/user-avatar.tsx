@@ -12,6 +12,10 @@ export default class UserAvatar extends tsx.Component<any> {
     @Prop({ default: 150 }) public popoverWidth!: number;
     @Prop({ default: true }) public showPopover!: boolean;
 
+    private get shape(): string {
+        return this.isCircle ? 'circle' : 'square';
+    }
+
     public render(): any {
         return (
             <el-popover class="user-avatar-container"
@@ -24,7 +28,7 @@ export default class UserAvatar extends tsx.Component<any> {
                 <el-avatar class="avatar"
                     src={this.url}
                     size={this.size}
-                    shape={this.isCircle ? 'circle' : 'square'}
+                    shape={this.shape}
                     slot="reference">
                 </el-avatar>
 
