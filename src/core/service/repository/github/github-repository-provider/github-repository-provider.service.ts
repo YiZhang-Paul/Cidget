@@ -1,23 +1,26 @@
-import * as axios from 'axios';
 import { injectable, inject, named } from 'inversify';
 
-import Types from '../../../ioc/types';
-import IUser from '../../../interface/general/user.interface';
-import IRepository from '../../../interface/repository/repository.interface';
-import IRepositoryProvider from '../../../interface/repository/repository-provider.interface';
-import IAbbreviationResolver from '@/core/interface/general/abbreviation-resolver.interface';
+import Types from '../../../../ioc/types';
+import IUser from '../../../../interface/general/user.interface';
+import IHttpClient from '../../../../interface/general/http-client.interface';
+import IRepository from '../../../../interface/repository/repository.interface';
+import IRepositoryProvider from '../../../../interface/repository/repository-provider.interface';
+import IAbbreviationResolver from '../../../../interface/general/abbreviation-resolver.interface';
 
 const { url, token } = require('config').get('repository').github;
 
 @injectable()
 export default class GithubRepositoryProvider implements IRepositoryProvider<any> {
+    private _httpClient: IHttpClient;
     private _languageResolver: IAbbreviationResolver;
     private _licenseResolver: IAbbreviationResolver;
 
     constructor(
+        @inject(Types.IHttpClient) httpClient: IHttpClient,
         @inject(Types.IAbbreviationResolver) @named('language') languageResolver: IAbbreviationResolver,
         @inject(Types.IAbbreviationResolver) @named('license') licenseResolver: IAbbreviationResolver
     ) {
+        this._httpClient = httpClient;
         this._languageResolver = languageResolver;
         this._licenseResolver = licenseResolver;
     }
@@ -28,7 +31,7 @@ export default class GithubRepositoryProvider implements IRepositoryProvider<any
 
     public async listRepositories(): Promise<IRepository[]> {
         const endpoint = `${url}/user/repos?type=all`;
-        const { data } = await axios.default.get(endpoint, { headers: this.headers });
+        const { data } = await this._httpClient.get(endpoint, { headers: this.headers });
 
         return (data || []).map(this.toRepository.bind(this));
     }
@@ -54,7 +57,7 @@ export default class GithubRepositoryProvider implements IRepositoryProvider<any
                 abbr: this._languageResolver.resolve(data.language)
             },
             license: {
-                name: data.license?.name,
+                name: data.license?.name ?? '',
                 abbr: this._licenseResolver.resolve(data.license?.name)
             },
             owner: ({ name: data.owner.login, avatar: data.owner.avatar_url }) as IUser,

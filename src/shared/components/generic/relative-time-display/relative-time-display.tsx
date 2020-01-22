@@ -7,7 +7,7 @@ import './relative-time-display.scss';
 
 @Component
 export default class RelativeTimeDisplay extends tsx.Component<any> {
-    @Prop({ default: new Date() }) public time!: Date;
+    @Prop({ default: () => new Date() }) public time!: Date;
 
     private get relativeTime(): string {
         const checks: [string, number][] = [

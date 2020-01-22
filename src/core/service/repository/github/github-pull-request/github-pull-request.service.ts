@@ -1,16 +1,21 @@
-import * as axios from 'axios';
 import { injectable, inject, named } from 'inversify';
 
-import Types from '../../../ioc/types';
-import IGithubUser from '../../../interface/repository/github/github-user.interface';
-import IPullRequest from '../../../interface/general/pull-request.interface';
-import IRepositoryProvider from '../../../interface/repository/repository-provider.interface';
+import Types from '../../../../ioc/types';
+import IGithubUser from '../../../../interface/repository/github/github-user.interface';
+import IPullRequest from '../../../../interface/general/pull-request.interface';
+import IHttpClient from '../../../../interface/general/http-client.interface';
+import IRepositoryProvider from '../../../../interface/repository/repository-provider.interface';
 
 @injectable()
 export default class GithubPullRequestService {
+    private _httpClient: IHttpClient;
     private _repositoryProvider: IRepositoryProvider<any>;
 
-    constructor(@inject(Types.IRepositoryProvider) @named('github') repositoryProvider: IRepositoryProvider<any>) {
+    constructor(
+        @inject(Types.IHttpClient) httpClient: IHttpClient,
+        @inject(Types.IRepositoryProvider) @named('github') repositoryProvider: IRepositoryProvider<any>
+    ) {
+        this._httpClient = httpClient;
         this._repositoryProvider = repositoryProvider;
     }
 
@@ -21,9 +26,9 @@ export default class GithubPullRequestService {
     public async toPullRequest(payload: any): Promise<IPullRequest<IGithubUser>> {
         const { action, repository, pull_request } = payload;
         const user = pull_request.merged ? pull_request.merged_by : pull_request.user;
-        const repositories = await axios.default.get(`${user.url}/repos`);
-        const followers = await axios.default.get(`${user.url}/followers`);
-        const gists = await axios.default.get(`${user.url}/gists`);
+        const repositories = await this._httpClient.get(`${user.url}/repos`);
+        const followers = await this._httpClient.get(`${user.url}/followers`);
+        const gists = await this._httpClient.get(`${user.url}/gists`);
 
         const initiator = ({
             name: user.login,

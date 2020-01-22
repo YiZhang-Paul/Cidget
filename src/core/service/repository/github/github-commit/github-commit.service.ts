@@ -1,24 +1,29 @@
-import * as axios from 'axios';
 import { injectable, inject, named } from 'inversify';
 
-import Types from '../../../ioc/types';
-import ICommit from '../../../interface/general/commit.interface';
-import IGithubUser from '../../../interface/repository/github/github-user.interface';
-import IRepositoryProvider from '../../../interface/repository/repository-provider.interface';
+import Types from '../../../../ioc/types';
+import ICommit from '../../../../interface/general/commit.interface';
+import IGithubUser from '../../../../interface/repository/github/github-user.interface';
+import IHttpClient from '../../../../interface/general/http-client.interface';
+import IRepositoryProvider from '../../../../interface/repository/repository-provider.interface';
 
 @injectable()
 export default class GithubCommitService {
+    private _httpClient: IHttpClient;
     private _repositoryProvider: IRepositoryProvider<any>;
 
-    constructor(@inject(Types.IRepositoryProvider) @named('github') repositoryProvider: IRepositoryProvider<any>) {
+    constructor(
+        @inject(Types.IHttpClient) httpClient: IHttpClient,
+        @inject(Types.IRepositoryProvider) @named('github') repositoryProvider: IRepositoryProvider<any>
+    ) {
+        this._httpClient = httpClient;
         this._repositoryProvider = repositoryProvider;
     }
 
     public async toCommit(payload: any): Promise<ICommit<IGithubUser>> {
         const { ref, sender, repository, compare, head_commit } = payload;
-        const repositories = await axios.default.get(`${sender.url}/repos`);
-        const followers = await axios.default.get(`${sender.url}/followers`);
-        const gists = await axios.default.get(`${sender.url}/gists`);
+        const repositories = await this._httpClient.get(`${sender.url}/repos`);
+        const followers = await this._httpClient.get(`${sender.url}/followers`);
+        const gists = await this._httpClient.get(`${sender.url}/gists`);
 
         const initiator = ({
             name: head_commit.committer.username,

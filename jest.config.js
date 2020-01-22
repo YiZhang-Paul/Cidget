@@ -10,6 +10,7 @@ module.exports = {
         '!src/background.ts',
         '!src/element-ui.js',
         '!src/main.ts',
+        '!src/socket.ts',
         '!src/store/index.ts'
     ]
 };
