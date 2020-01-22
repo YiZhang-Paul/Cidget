@@ -35,11 +35,11 @@ export default class App extends tsx.Component<any> {
         return null;
     }
 
-    private updatePullRequestCard(id: string): void {
+    private updatePullRequestCard(id: string): boolean {
         const cards = this._cards.$data.list.filter((_: any) => _.data.id === id);
 
         if (cards.length !== 2) {
-            return;
+            return false;
         }
         const [current, previous] = cards;
         // destroy out of date card
@@ -49,6 +49,8 @@ export default class App extends tsx.Component<any> {
         this._cards.$data.list.splice(index, 1);
         this._cards.$data.list.unshift(current);
         current.id = previous.id;
+
+        return true;
     }
 
     private getCommitCard(id: string, closeHandler: any): any {
@@ -60,10 +62,19 @@ export default class App extends tsx.Component<any> {
     }
 
     private getPullRequestCard(id: string, closeHandler: any): any {
-        this.updatePullRequestCard(id);
+        const identifier = `pr_card_${id}`;
+
+        if (this.updatePullRequestCard(id)) {
+            Array.prototype.forEach.call(document.getElementsByClassName(identifier), _ => {
+                _.classList.remove('updated-card');
+                setTimeout(() => _.classList.add('updated-card'));
+            });
+
+            return null;
+        }
         const pullRequest = this._pullRequests.find(_ => _.id === id);
         const close = <i class="fas fa-times-circle close" onClick={closeHandler}></i>
-        const pullRequestCard = <PullRequestCard pullRequest={pullRequest} />;
+        const pullRequestCard = <PullRequestCard class={identifier} pullRequest={pullRequest} />;
 
         return pullRequest ? <div class="notification-wrapper">{close}{pullRequestCard}</div> : null;
     }
