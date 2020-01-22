@@ -4,22 +4,17 @@ import Types from '../../../ioc/types';
 import IWebhook from '../../../interface/webhook/webhook.interface';
 import IWebhookProvider from '../../../interface/webhook/webhook-provider.interface';
 import IHttpClient from '../../../interface/general/http-client.interface';
-import AzureDevopsPipelineProvider from '../../pipeline/azure-devops/azure-devops-pipeline-provider/azure-devops-pipeline-provider.service';
+import IAzureDevopsWebhookContext from '@/core/interface/webhook/azure-devops/azure-devops-webhook-context.interface';
 
 const { url, token } = require('config').get('cicd').azureDevops;
 
 @injectable()
-export default class AzureDevopsWebhookProviderService implements IWebhookProvider<any> {
+export default class AzureDevopsWebhookProviderService implements IWebhookProvider<IAzureDevopsWebhookContext> {
     private _httpClient: IHttpClient;
-    private _pipelineProvider: AzureDevopsPipelineProvider;
     private _endpoint = `${url}/_apis/hooks/subscriptions?api-version=5.0`;
 
-    constructor(
-        @inject(Types.IHttpClient) httpClient: IHttpClient,
-        @inject(Types.AzureDevopsPipelineProvider) pipelineProvider: AzureDevopsPipelineProvider
-    ) {
+    constructor(@inject(Types.IHttpClient) httpClient: IHttpClient) {
         this._httpClient = httpClient;
-        this._pipelineProvider = pipelineProvider;
     }
 
     private get headers(): { [key: string]: any } {
@@ -46,32 +41,36 @@ export default class AzureDevopsWebhookProviderService implements IWebhookProvid
 
         return hooks.find(_ => _.callback === callback) ?? null;
     }
-    // TODO move paramters out
-    // TODO check existing
-    public async addWebhook(name: string, context: any): Promise<IWebhook> {
-        const pipeline = await this._pipelineProvider.fetchBuildDefinition({ project: 'cidget', id: 2 });
+
+    public async addWebhook(name: string, context: IAzureDevopsWebhookContext): Promise<IWebhook> {
+        const existingHook = await this.getWebhook(name, context.callback);
+
+        if (existingHook) {
+            return existingHook;
+        }
+        const project = await this.getProject(name);
+
+        if (!project) {
+            throw new Error(`project with name ${name} does not exist.`);
+        }
 
         const body = {
-            publisherId: 'pipelines',
-            eventType: 'ms.vss-pipelines.run-state-changed-event',
+            publisherId: context.publisherId,
+            eventType: context.eventType,
             consumerId: 'webHooks',
             consumerActionId: 'httpRequest',
-            publisherInputs: {
-                projectId: pipeline?.project.id,
-            },
-            consumerInputs: {
-                url: 'https://4dc011f9.ngrok.io/azure-devops/pipeline'
-            }
+            publisherInputs: { projectId: project.id },
+            consumerInputs: { url: context.callback }
         };
 
         const { data } = await this._httpClient.post(this._endpoint, body, { headers: this.headers });
-        console.log('second');
-        console.log(data);
+
         return this.toWebhook(data);
     }
 
     private async getProject(idOrName: string): Promise<{ id: string; name: string } | null> {
-        const { data } = await this._httpClient.get(`${url}/_apis/projects/${idOrName}`);
+        const endpoint = `${url}/_apis/projects/${idOrName}`;
+        const { data } = await this._httpClient.get(endpoint);
 
         return data ? ({ id: data.id, name: data.name }) : null;
     }
