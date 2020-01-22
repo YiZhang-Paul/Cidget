@@ -11,6 +11,7 @@ import GithubRepositoryProvider from '../service/repository/github/github-reposi
 import GithubWebhookProviderService from '../service/webhook/github/github-webhook-provider.service';
 import GithubCommitService from '../service/repository/github/github-commit/github-commit.service';
 import GithubPullRequestService from '../service/repository/github/github-pull-request/github-pull-request.service';
+import AzureDevopsWebhookProviderService from '../service/webhook/azure-devops/azure-devops-webhook-provider.service';
 import AzureDevopsApiProvider from '../service/pipeline/azure-devops/azure-devops-api-provider/azure-devops-api-provider.service';
 import AzureDevopsPipelineProvider from '../service/pipeline/azure-devops/azure-devops-pipeline-provider/azure-devops-pipeline-provider.service';
 
@@ -69,6 +70,11 @@ container
 container
     .bind<GithubPullRequestService>(Types.GithubPullRequestService)
     .to(GithubPullRequestService)
+    .inSingletonScope();
+
+container
+    .bind<AzureDevopsWebhookProviderService>(Types.AzureDevopsWebhookProviderService)
+    .to(AzureDevopsWebhookProviderService)
     .inSingletonScope();
 
 container
