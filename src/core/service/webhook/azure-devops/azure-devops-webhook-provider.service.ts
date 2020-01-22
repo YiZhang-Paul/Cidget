@@ -40,9 +40,11 @@ export default class AzureDevopsWebhookProviderService implements IWebhookProvid
             .map(this.toWebhook.bind(this))
             .filter((_: IWebhook) => _.project === project.id);
     }
-    // TODO
+
     public async getWebhook(name: string, callback: string): Promise<IWebhook | null> {
-        return null;
+        const hooks = await this.listWebhooks(name);
+
+        return hooks.find(_ => _.callback === callback) ?? null;
     }
     // TODO move paramters out
     // TODO check existing
