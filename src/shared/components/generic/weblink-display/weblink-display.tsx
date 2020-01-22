@@ -14,6 +14,10 @@ export default class WeblinkDisplay extends tsx.Component<any> {
 
     @Ref('container') public container!: HTMLElement;
 
+    private get colorMode(): string {
+        return this.isDarkMode ? 'dark' : 'light';
+    }
+
     public mounted(): void {
         this._showTooltip = this.container.offsetWidth < this.container.scrollWidth;
     }
@@ -23,7 +27,7 @@ export default class WeblinkDisplay extends tsx.Component<any> {
             <div class="weblink-display-container" ref="container">
                 <el-tooltip disabled={!this._showTooltip}
                     placement={this.tooltipPosition}
-                    effect={this.isDarkMode ? 'dark' : 'light'}
+                    effect={this.colorMode}
                     content={this.text}>
 
                     <a class="url" onClick={() => shell.openExternal(this.url)}>

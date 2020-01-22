@@ -2,7 +2,7 @@ import { shallowMount, Wrapper } from '@vue/test-utils';
 
 import UserAvatar from './user-avatar';
 
-describe('user avatar unit test', () => {
+describe('user avatar component unit test', () => {
     let wrapper: Wrapper<UserAvatar>;
 
     beforeEach(() => {
