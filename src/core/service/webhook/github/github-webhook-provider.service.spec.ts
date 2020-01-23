@@ -4,7 +4,7 @@ import Types from '../../../ioc/types';
 import Container from '../../../ioc/container';
 import IHttpClient from '../../../interface/general/http-client.interface';
 
-import GithubWebhookProviderService from './github.webhook-provider.service';
+import GithubWebhookProviderService from './github-webhook-provider.service';
 
 describe('github webhook provider service unit test', () => {
     let service: GithubWebhookProviderService;

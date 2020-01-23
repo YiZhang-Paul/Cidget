@@ -49,7 +49,7 @@ const actions = {
         const { commit, getters } = context;
         const pullRequest = await pullRequestService.toPullRequest(payload);
         const shouldPersist = pullRequest.action !== 'closed' && pullRequest.action !== 'merged';
-        const action = !getters.hasPullRequest(pullRequest) ? 'addPullRequest' : 'updatePullRequest';
+        const action = getters.hasPullRequest(pullRequest) ? 'updatePullRequest' : 'addPullRequest';
         commit(action, pullRequest);
 
         Vue.notify({

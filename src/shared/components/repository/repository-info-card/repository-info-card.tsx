@@ -23,14 +23,14 @@ export default class RepositoryInfoCard extends tsx.Component<any> {
         const typeIcon = this.repository.isPrivate ? 'el-icon-lock private' : 'el-icon-view public';
         const licenseIcon = <i class="el-icon-collection-tag license"></i>;
         const license = <div>{licenseIcon}{this.repository.license?.abbr}</div>;
-        const color = this._colors?.get(this.repository.language.abbr.toLowerCase()) || 'grey';
+        const color = this._colors?.get(this.repository.language?.abbr.toLowerCase()) || 'grey';
 
         return (
             <div class="repository-info-card-container">
                 <div><i class={typeIcon}></i></div>
                 <div>
                     <i class="language fas fa-circle" style={{ 'color': color }}></i>
-                    {this.repository.language.abbr}
+                    {this.repository.language?.abbr}
                 </div>
                 {this.repository.license ? license : ''}
             </div>

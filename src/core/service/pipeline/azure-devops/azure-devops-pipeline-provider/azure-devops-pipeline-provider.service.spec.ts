@@ -45,6 +45,7 @@ describe('azure devops pipeline provider unit test', () => {
                 name: 'pipeline_name',
                 createdDate: '2020-01-03T06:45:41.370Z',
                 project: {
+                    id: 'project_id',
                     name: 'project_name'
                 },
                 authoredBy: {
@@ -63,7 +64,7 @@ describe('azure devops pipeline provider unit test', () => {
                 }
             }
 
-            query = { project: 'project_name', id: 'project_id' };
+            query = { project: 'project_name', id: 'definition_id' };
             apiProviderStub.getBuildApi.resolves(buildApiStub);
             buildApiStub.getDefinition.resolves(response);
         });
@@ -73,7 +74,8 @@ describe('azure devops pipeline provider unit test', () => {
 
             expect(result?.name).toBe('pipeline_name');
             expect(result?.id).toBe('pipeline_id');
-            expect(result?.project).toBe('project_name');
+            expect(result?.project.id).toBe('project_id');
+            expect(result?.project.name).toBe('project_name');
             expect(result?.owner.name).toBe('john f doe');
             expect(result?.owner.avatar).toBe('https://www.example.com/image_1');
             expect(result?.owner.email).toBe('john.doe@gmail.com');
@@ -95,7 +97,8 @@ describe('azure devops pipeline provider unit test', () => {
             expect(result?.owner.name).toBe('');
             expect(result?.owner.avatar).toBe('');
             expect(result?.owner.email).toBe('');
-            expect(result?.project).toBe('');
+            expect(result?.project.id).toBe('');
+            expect(result?.project.name).toBe('');
             expect(result?.repository.organization.name).toBe('');
             expect(result?.repository.organization.avatar).toBe('');
             expect(result?.repository.name).toBe('');
@@ -147,7 +150,7 @@ describe('azure devops pipeline provider unit test', () => {
                 ]
             }
 
-            query = { project: 'project_name', id: 'project_id' };
+            query = { project: 'project_name', id: 'definition_id' };
             apiProviderStub.getReleaseApi.resolves(releaseApiStub);
             releaseApiStub.getReleaseDefinition.resolves(response);
         });

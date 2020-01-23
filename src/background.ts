@@ -1,5 +1,5 @@
-import { app, protocol, BrowserWindow } from 'electron'
-import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
+import { app, protocol, BrowserWindow } from 'electron';
+import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 // Keep a global reference of the window object, if you don't, the window will
@@ -12,15 +12,22 @@ protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: tru
 function createWindow() {
     // Create the browser window.
     win = new BrowserWindow({
+        x: 0,
+        y: 0,
         width: 800,
         height: 600,
         transparent: true,
         frame: false,
         alwaysOnTop: true,
+        resizable: false,
+        maximizable: false,
+        minimizable: false,
         webPreferences: {
             nodeIntegration: true
         }
-    })
+    });
+
+    win.setIgnoreMouseEvents(true, { forward: true });
 
     if (process.env.WEBPACK_DEV_SERVER_URL) {
         // Load the url of the dev server if in development mode

@@ -19,3 +19,8 @@ express.post('/github/pull_request', (req, res) => {
     socket.emit('github-pull-request', req.body);
     res.sendStatus(200);
 });
+
+express.post('/azure-devops/pipeline', (req, res) => {
+    socket.emit('azure-devops-pipeline', req.body);
+    res.sendStatus(200);
+});

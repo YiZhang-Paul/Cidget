@@ -5,6 +5,8 @@ import { shell } from 'electron';
 import IRepository from '../../../../core/interface/repository/repository.interface';
 import RepositoryInfoCard from '../repository-info-card/repository-info-card';
 
+import './repository-badge.scss';
+
 @Component
 export default class RepositoryBadge extends tsx.Component<any> {
     @Prop() public repository!: IRepository;
@@ -25,7 +27,7 @@ export default class RepositoryBadge extends tsx.Component<any> {
                 trigger="hover">
 
                 <RepositoryInfoCard repository={this.repository} />
-                <a class="name" onClick={this.toRepository} slot="reference">
+                <a class="repository-name" onClick={this.toRepository} slot="reference">
                     {` @${this.repository.name}`}
                 </a>
 

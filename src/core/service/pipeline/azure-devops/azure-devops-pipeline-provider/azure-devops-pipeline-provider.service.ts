@@ -46,7 +46,10 @@ export default class AzureDevopsPipelineProvider implements IPipelineProvider<IA
         return ({
             name: definition.name,
             id: definition.id,
-            project: definition.project?.name ?? '',
+            project: {
+                id: definition.project?.id ?? '',
+                name: definition.project?.name ?? ''
+            },
             owner,
             createdOn: definition.createdDate,
             repository
