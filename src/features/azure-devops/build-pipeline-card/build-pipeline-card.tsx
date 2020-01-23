@@ -16,7 +16,9 @@ export default class BuildPipelineCard extends tsx.Component<any> {
     @Prop() public build!: ICiBuild;
 
     private get status(): string {
-        return this.build.result || `is ${this.build.status}`;
+        const status = this.build.result || `is ${this.build.status}`;
+
+        return status.replace('inProgress', 'running');
     }
 
     private get elapsedSeconds(): number {
