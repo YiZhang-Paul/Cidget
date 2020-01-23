@@ -79,13 +79,13 @@ export default class BuildPipelineCard extends tsx.Component<any> {
 
                     <div class="build-pipeline-info-container">
                         <span>Triggered by</span>
-                        {/* // TODO: include branch information */}
+
                         <BranchBadge class="branch-badge"
-                            name={this.build.repository.branch}
-                            url={'https://www.google.com'}>
+                            name={this.build.triggeredBy.branch.name}
+                            url={this.build.triggeredBy.branch.url}>
                         </BranchBadge>
-                        {/* // TODO: include repository information */}
-                        <RepositoryBadge repository={this.build.repository} showPopover={false} />
+
+                        <RepositoryBadge repository={this.build.triggeredBy} showPopover={false} />
                         <RelativeTimeDisplay time={this.timestamp} />
                     </div>
                 </div>

@@ -25,11 +25,27 @@ export default class AzureDevopsCiBuildService {
                 name: resource.pipeline.name,
                 url: run._links['pipeline.web'].href
             },
-            repository: {
-                type: repository.repository.type,
-                name: repository.repository.fullName.split('/').slice(-1)[0],
-                branch: repository.refName.split('/').slice(-1)[0]
-            }
+            triggeredBy: this.getRepository(repository)
         }) as ICiBuild;
+    }
+
+    private getRepository(data: any): any {
+        const { repository, refName } = data;
+
+        if (repository.type.toLowerCase() === 'github') {
+            const url = `https://github.com/${repository.fullName}`;
+            const branch = refName.split('/').slice(-1)[0];
+
+            return ({
+                type: repository.type,
+                name: repository.fullName.split('/').slice(-1)[0],
+                url,
+                branch: {
+                    name: branch,
+                    url: `${url}/tree/${branch}`
+                }
+            });
+        }
+        return null;
     }
 }
