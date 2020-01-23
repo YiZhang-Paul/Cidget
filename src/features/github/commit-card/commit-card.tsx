@@ -43,7 +43,9 @@ export default class CommitCard extends tsx.Component<any> {
 
         return (
             <div class="commit-card-container">
-                <UserAvatar class="user-avatar" url={initiator.avatar} showPopover={false}>
+                <UserAvatar class="user-avatar"
+                    url={require('../../../../public/images/github-logo.png')}
+                    showPopover={false}>
                     <UserInfoCard initiator={initiator} />
                 </UserAvatar>
 

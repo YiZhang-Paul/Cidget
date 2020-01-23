@@ -40,7 +40,9 @@ export default class PullRequestCard extends tsx.Component<any> {
 
         return (
             <div class="pull-request-card-container">
-                <UserAvatar class="user-avatar" url={initiator.avatar} showPopover={false}>
+                <UserAvatar class="user-avatar"
+                    url={require('../../../../public/images/github-logo.png')}
+                    showPopover={false}>
                     <UserInfoCard initiator={initiator} />
                 </UserAvatar>
 

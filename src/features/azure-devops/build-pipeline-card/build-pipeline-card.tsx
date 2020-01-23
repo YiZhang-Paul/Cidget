@@ -56,7 +56,7 @@ export default class BuildPipelineCard extends tsx.Component<any> {
         return (
             <div class="build-pipeline-card-container">
                 <UserAvatar class="service-provider-avatar"
-                    url='https://pbs.twimg.com/profile_images/1145617831905681408/XNKktHjN_400x400.png'
+                    url={require('../../../../public/images/azure-devops-logo.png')}
                     showPopover={false}>
                 </UserAvatar>
 
