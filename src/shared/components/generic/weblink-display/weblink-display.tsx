@@ -7,10 +7,11 @@ import './weblink-display.scss';
 @Component
 export default class WeblinkDisplay extends tsx.Component<any> {
     @Prop() public text!: string;
+    @Prop() public tooltip!: string;
     @Prop() public url!: string;
     @Prop({ default: 'top-start' }) public tooltipPosition!: string;
     @Prop({ default: false }) public isDarkMode!: boolean;
-    @Prop({ default: false }) private _showTooltip!: boolean;
+    @Prop({ default: true }) private _showTooltip!: boolean;
 
     @Ref('container') public container!: HTMLElement;
 
@@ -19,7 +20,9 @@ export default class WeblinkDisplay extends tsx.Component<any> {
     }
 
     public mounted(): void {
-        this._showTooltip = this.container.offsetWidth < this.container.scrollWidth;
+        if (!this.tooltip) {
+            this._showTooltip = this.container.offsetWidth < this.container.scrollWidth;
+        }
     }
 
     public render(): any {
@@ -28,7 +31,7 @@ export default class WeblinkDisplay extends tsx.Component<any> {
                 <el-tooltip disabled={!this._showTooltip}
                     placement={this.tooltipPosition}
                     effect={this.colorMode}
-                    content={this.text}>
+                    content={this.tooltip || this.text}>
 
                     <a class="url" onClick={() => shell.openExternal(this.url)}>
                         {this.text}
