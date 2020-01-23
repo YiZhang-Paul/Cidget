@@ -7,12 +7,11 @@
     background-color: white;
     cursor: default;
 
-    .user-avatar {
+    .user-avatar, .content {
         margin-left: 12px;
     }
 
     .content {
-        margin-left: 12px;
 
         .commit-message-container, .commit-info-container {
             display: flex;
