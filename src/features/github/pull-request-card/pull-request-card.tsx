@@ -4,13 +4,12 @@ import { shell } from 'electron';
 
 import IGithubUser from '../../../core/interface/repository/github/github-user.interface';
 import IPullRequest from '../../../core/interface/general/pull-request.interface';
-import UserAvatar from '../../../shared/components/generic/user-avatar/user-avatar';
+import NotificationCard from '../../../shared/components/generic/notification-card/notification-card';
 import WeblinkDisplay from '../../../shared/components/generic/weblink-display/weblink-display';
 import ChangeStatsSummary from '../../../shared/components/generic/change-stats-summary/change-stats-summary';
 import BranchBadge from '../../../shared/components/repository/branch-badge/branch-badge';
 import RepositoryBadge from '../../../shared/components/repository/repository-badge/repository-badge';
 import RelativeTimeDisplay from '../../../shared/components/generic/relative-time-display/relative-time-display';
-import UserInfoCard from '../user-info-card/user-info-card';
 
 import './pull-request-card.scss';
 
@@ -39,50 +38,42 @@ export default class PullRequestCard extends tsx.Component<any> {
         }
 
         return (
-            <div class="pull-request-card-container">
-                <UserAvatar class="user-avatar"
-                    url={require('../../../../public/images/github-logo.png')}
-                    showPopover={false}>
-                    <UserInfoCard initiator={initiator} />
-                </UserAvatar>
-
-                <div class="content">
-                    <div class="pull-request-message-container">
-                        <div>
-                            <a class="name" onClick={this.toProfile}>{initiator.name}</a>
-                            <span> {pullRequest.action} </span>
-                        </div>
-
-                        <WeblinkDisplay class={`pull-request-message ${messageClass}`}
-                            text={`PR#${pullRequest.number} ${pullRequest.message}`}
-                            url={pullRequest.pullRequestUrl}>
-                        </WeblinkDisplay>
-
-                        <ChangeStatsSummary class="change-summary"
-                            added={pullRequest.added}
-                            removed={pullRequest.removed}
-                            modified={pullRequest.modified}>
-                        </ChangeStatsSummary>
+            <NotificationCard logoUrl={require('../../../../public/images/github-logo.png')}>
+                <div class="pull-request-message-container">
+                    <div>
+                        <a class="name" onClick={this.toProfile}>{initiator.name}</a>
+                        <span> {pullRequest.action} </span>
                     </div>
 
-                    <div class="pull-request-info-container">
-                        <BranchBadge class="branch-badge"
-                            name={pullRequest.branch.source}
-                            url={this.sourceBranchUrl}>
-                        </BranchBadge>
+                    <WeblinkDisplay class={`pull-request-message ${messageClass}`}
+                        text={`PR#${pullRequest.number} ${pullRequest.message}`}
+                        url={pullRequest.pullRequestUrl}>
+                    </WeblinkDisplay>
 
-                        <i class="el-icon-right right-arrow"></i>
-
-                        <BranchBadge class="branch-badge"
-                            name={pullRequest.branch.base}
-                            url={this.baseBranchUrl}>
-                        </BranchBadge>
-
-                        <RepositoryBadge repository={pullRequest.repository} showPopover={false} />
-                        <RelativeTimeDisplay time={pullRequest.updatedOn} />
-                    </div>
+                    <ChangeStatsSummary class="change-summary"
+                        added={pullRequest.added}
+                        removed={pullRequest.removed}
+                        modified={pullRequest.modified}>
+                    </ChangeStatsSummary>
                 </div>
-            </div>
+
+                <div class="pull-request-info-container">
+                    <BranchBadge class="branch-badge"
+                        name={pullRequest.branch.source}
+                        url={this.sourceBranchUrl}>
+                    </BranchBadge>
+
+                    <i class="el-icon-right right-arrow"></i>
+
+                    <BranchBadge class="branch-badge"
+                        name={pullRequest.branch.base}
+                        url={this.baseBranchUrl}>
+                    </BranchBadge>
+
+                    <RepositoryBadge repository={pullRequest.repository} showPopover={false} />
+                    <RelativeTimeDisplay time={pullRequest.updatedOn} />
+                </div>
+            </NotificationCard>
         );
     }
 }
