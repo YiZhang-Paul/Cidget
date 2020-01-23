@@ -33,6 +33,10 @@
                 }
             }
 
+            .running {
+                border-right: 6px solid rgb(11, 100, 202);
+            }
+
             .canceled {
                 border-right: 6px solid rgb(92, 92, 92);
             }
