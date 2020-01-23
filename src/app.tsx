@@ -2,15 +2,20 @@ import { Component, Ref } from 'vue-property-decorator';
 import * as tsx from 'vue-tsx-support';
 import { mapGetters } from 'vuex';
 
+import ICiBuild from './core/interface/general/ci-build.interface';
 import ICommit from './core/interface/general/commit.interface';
 import IPullRequest from './core/interface/general/pull-request.interface';
 import IGithubUser from './core/interface/repository/github/github-user.interface';
-import PullRequestCard from './features/github/pull-request-card/pull-request-card';
+import BuildPipelineCard from './features/azure-devops/build-pipeline-card/build-pipeline-card';
 import CommitCard from './features/github/commit-card/commit-card';
+import PullRequestCard from './features/github/pull-request-card/pull-request-card';
 import Store from './store';
 
 @Component({
     computed: {
+        ...mapGetters(Store.azureDevopsStoreName, {
+            _ciBuilds: 'getCiBuilds'
+        }),
         ...mapGetters(Store.githubStoreName, {
             _commits: 'getCommits',
             _pullRequests: 'getPullRequests'
@@ -19,6 +24,7 @@ import Store from './store';
 })
 export default class App extends tsx.Component<any> {
     @Ref('cards') private _cards: any;
+    private _ciBuilds!: ICiBuild[];
     private _commits!: ICommit<IGithubUser>[];
     private _pullRequests!: IPullRequest<IGithubUser>[];
 
@@ -26,6 +32,8 @@ export default class App extends tsx.Component<any> {
         const { type, id } = props.item.data;
 
         switch(type) {
+            case 'ci-build':
+                return this.getCiBuildCard(id, props.close);
             case 'commit':
                 return this.getCommitCard(id, props.close);
             case 'pull-request':
@@ -35,22 +43,12 @@ export default class App extends tsx.Component<any> {
         return null;
     }
 
-    private updatePullRequestCard(id: string): boolean {
-        const cards = this._cards.$data.list.filter((_: any) => _.data.id === id);
+    private getCiBuildCard(id: string, closeHandler: any): any {
+        const build = this._ciBuilds.find(_ => _.id === id);
+        const close = <i class="fas fa-times-circle close" onClick={closeHandler}></i>
+        const ciBuildCard = <BuildPipelineCard build={build} />;
 
-        if (cards.length !== 2) {
-            return false;
-        }
-        const [current, previous] = cards;
-        // destroy out of date card
-        this._cards.destroyById(previous.id);
-        // move up to date card to start of the list and reuse previous id for animation
-        const index = this._cards.$data.list.findIndex((_: any) => _.data.id === id);
-        this._cards.$data.list.splice(index, 1);
-        this._cards.$data.list.unshift(current);
-        current.id = previous.id;
-
-        return true;
+        return build ? <div class="notification-wrapper">{close}{ciBuildCard}</div> : null;
     }
 
     private getCommitCard(id: string, closeHandler: any): any {
@@ -77,6 +75,24 @@ export default class App extends tsx.Component<any> {
         const pullRequestCard = <PullRequestCard class={identifier} pullRequest={pullRequest} />;
 
         return pullRequest ? <div class="notification-wrapper">{close}{pullRequestCard}</div> : null;
+    }
+
+    private updatePullRequestCard(id: string): boolean {
+        const cards = this._cards.$data.list.filter((_: any) => _.data.id === id);
+
+        if (cards.length !== 2) {
+            return false;
+        }
+        const [current, previous] = cards;
+        // destroy out of date card
+        this._cards.destroyById(previous.id);
+        // move up to date card to start of the list and reuse previous id for animation
+        const index = this._cards.$data.list.findIndex((_: any) => _.data.id === id);
+        this._cards.$data.list.splice(index, 1);
+        this._cards.$data.list.unshift(current);
+        current.id = previous.id;
+
+        return true;
     }
 
     public render(): any {
