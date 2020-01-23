@@ -31,7 +31,7 @@ const actions = {
 
         Vue.notify({
             group: 'notification',
-            duration: -1,
+            duration: 12000,
             data: { type: 'ci-build', id: build.id }
         });
     }

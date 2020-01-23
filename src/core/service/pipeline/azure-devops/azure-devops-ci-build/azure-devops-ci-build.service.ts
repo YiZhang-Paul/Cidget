@@ -11,7 +11,7 @@ export default class AzureDevopsCiBuildService {
         const repository = run.resources.repositories.self;
 
         return ({
-            id: payload.id,
+            id: `${run.id}-${run.name}-${run.pipeline.id}`,
             name: run.name,
             message: message.text,
             createdOn: new Date(payload.createdDate),
