@@ -1,0 +1,13 @@
+.notification-card-container {
+    width: 640px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    background-color: white;
+    cursor: default;
+
+    .service-provider-avatar, .content {
+        margin-left: 12px;
+    }
+}
