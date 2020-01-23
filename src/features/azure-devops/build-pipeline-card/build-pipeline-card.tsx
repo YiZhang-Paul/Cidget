@@ -66,7 +66,7 @@ export default class BuildPipelineCard extends tsx.Component<any> {
                 <div class="content">
                     <div class="build-pipeline-message-container">
                         <WeblinkDisplay class={`build-name ${this.status}`}
-                            text={this.build.name}
+                            text={`${this.build.name} ${this.build.message}`}
                             url={this.build.url}>
                         </WeblinkDisplay>
 
