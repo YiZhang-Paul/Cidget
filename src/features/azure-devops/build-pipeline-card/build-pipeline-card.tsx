@@ -54,6 +54,7 @@ export default class BuildPipelineCard extends tsx.Component<any> {
 
     public render(): any {
         const timeClass = `elapsed-time ${this.isSlowBuild ? 'slow-build' : 'fast-build'}`;
+        const elapsedTime = <span class={timeClass}> [{this.elapsedTime}]</span>;
 
         return (
             <div class="build-pipeline-card-container">
@@ -75,7 +76,7 @@ export default class BuildPipelineCard extends tsx.Component<any> {
                                 {this.build.pipeline.name}
                             </a>
                             <span> {this.status}</span>
-                            <span class={timeClass}> [{this.elapsedTime}]</span>
+                            { this.build.result ? elapsedTime : '' }
                         </div>
                     </div>
 
