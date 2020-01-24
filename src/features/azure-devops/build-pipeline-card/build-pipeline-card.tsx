@@ -3,7 +3,7 @@ import * as tsx from 'vue-tsx-support';
 import { shell } from 'electron';
 
 import ICiBuild from '../../../core/interface/general/ci-build.interface';
-import UserAvatar from '../../../shared/components/generic/user-avatar/user-avatar';
+import NotificationCard from '../../../shared/components/generic/notification-card/notification-card';
 import WeblinkDisplay from '../../../shared/components/generic/weblink-display/weblink-display';
 import BranchBadge from '../../../shared/components/repository/branch-badge/branch-badge';
 import RepositoryBadge from '../../../shared/components/repository/repository-badge/repository-badge';
@@ -16,7 +16,9 @@ export default class BuildPipelineCard extends tsx.Component<any> {
     @Prop() public build!: ICiBuild;
 
     private get status(): string {
-        return this.build.result || `is ${this.build.status}`;
+        const status = this.build.result || `is ${this.build.status}`;
+
+        return status.replace('inProgress', 'running');
     }
 
     private get elapsedSeconds(): number {
@@ -52,44 +54,39 @@ export default class BuildPipelineCard extends tsx.Component<any> {
 
     public render(): any {
         const timeClass = `elapsed-time ${this.isSlowBuild ? 'slow-build' : 'fast-build'}`;
+        const elapsedTime = <span class={timeClass}> [{this.elapsedTime}]</span>;
 
         return (
-            <div class="build-pipeline-card-container">
-                <UserAvatar class="service-provider-avatar"
-                    url='https://pbs.twimg.com/profile_images/1145617831905681408/XNKktHjN_400x400.png'
-                    showPopover={false}>
-                </UserAvatar>
+            <NotificationCard logoUrl={require('../../../../public/images/azure-devops-logo.png')}>
+                <div class="build-pipeline-message-container">
+                    <WeblinkDisplay class={`build-name ${this.status}`}
+                        text={this.build.name}
+                        tooltip={this.build.message}
+                        url={this.build.url}>
+                    </WeblinkDisplay>
 
-                <div class="content">
-                    <div class="build-pipeline-message-container">
-                        <WeblinkDisplay class={`build-name ${this.status}`}
-                            text={this.build.name}
-                            url={this.build.url}>
-                        </WeblinkDisplay>
-
-                        <div>
-                            <span> from </span>
-                            <a class="pipeline-name" onClick={this.toPipeline}>
-                                {this.build.pipeline.name}
-                            </a>
-                            <span> {this.status}</span>
-                            <span class={timeClass}> [{this.elapsedTime}]</span>
-                        </div>
-                    </div>
-
-                    <div class="build-pipeline-info-container">
-                        <span>Triggered by</span>
-                        {/* // TODO: include branch information */}
-                        <BranchBadge class="branch-badge"
-                            name={this.build.repository.branch}
-                            url={'https://www.google.com'}>
-                        </BranchBadge>
-                        {/* // TODO: include repository information */}
-                        <RepositoryBadge repository={this.build.repository} showPopover={false} />
-                        <RelativeTimeDisplay time={this.timestamp} />
+                    <div>
+                        <span> from </span>
+                        <a class="pipeline-name" onClick={this.toPipeline}>
+                            {this.build.pipeline.name}
+                        </a>
+                        <span> {this.status}</span>
+                        { this.build.result ? elapsedTime : '' }
                     </div>
                 </div>
-            </div>
+
+                <div class="build-pipeline-info-container">
+                    <span>Triggered by</span>
+
+                    <BranchBadge class="branch-badge"
+                        name={this.build.triggeredBy.branch.name}
+                        url={this.build.triggeredBy.branch.url}>
+                    </BranchBadge>
+
+                    <RepositoryBadge repository={this.build.triggeredBy} showPopover={false} />
+                    <RelativeTimeDisplay time={this.timestamp} />
+                </div>
+            </NotificationCard>
         );
     }
 }

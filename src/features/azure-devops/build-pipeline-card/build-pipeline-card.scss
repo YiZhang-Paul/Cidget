@@ -1,66 +1,54 @@
-.build-pipeline-card-container {
-    width: 640px;
-    height: 80px;
+.build-pipeline-message-container, .build-pipeline-info-container {
     display: flex;
+    flex-direction: row;
     align-items: center;
-    border-radius: 5px;
-    background-color: white;
-    cursor: default;
+    margin-top: 2px;
 
-    .service-provider-avatar, .content {
-        margin-left: 12px;
+    .build-name {
+        max-width: 110px;
+        margin-right: 8px;
     }
 
-    .content {
+    .pipeline-name {
+        cursor: pointer;
+        font-size: 1.03em;
+        color: rgb(16, 108, 230);
 
-        .build-pipeline-message-container, .build-pipeline-info-container {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            margin-top: 2px;
-
-            .build-name {
-                margin-right: 8px;
-            }
-
-            .pipeline-name {
-                cursor: pointer;
-                font-size: 1.03em;
-                color: rgb(16, 108, 230);
-
-                &:hover {
-                    color: rgb(151, 21, 93);
-                }
-            }
-
-            .canceled {
-                border-right: 6px solid rgb(92, 92, 92);
-            }
-
-            .succeeded {
-                border-right: 6px solid rgb(18, 194, 18);
-            }
-
-            .failed {
-                border-right: 6px solid rgb(226, 7, 7);
-            }
-
-            .branch-badge {
-                margin-top: 3px;
-            }
-
-            .elapsed-time {
-                font-weight: bold;
-                font-size: 0.825em;
-            }
-
-            .slow-build {
-                color: rgb(211, 28, 83);
-            }
-
-            .fast-build {
-                color: rgb(103, 164, 221);
-            }
+        &:hover {
+            color: rgb(151, 21, 93);
         }
+    }
+
+    .running {
+        border-right: 6px solid rgb(11, 100, 202);
+    }
+
+    .canceled {
+        border-right: 6px solid rgb(92, 92, 92);
+    }
+
+    .succeeded {
+        border-right: 6px solid rgb(18, 194, 18);
+    }
+
+    .failed {
+        border-right: 6px solid rgb(226, 7, 7);
+    }
+
+    .branch-badge {
+        margin-top: 3px;
+    }
+
+    .elapsed-time {
+        font-weight: bold;
+        font-size: 0.825em;
+    }
+
+    .slow-build {
+        color: rgb(211, 28, 83);
+    }
+
+    .fast-build {
+        color: rgb(103, 164, 221);
     }
 }

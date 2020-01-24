@@ -15,18 +15,23 @@ let buildService: AzureDevopsCiBuildService;
 const mutations = {
     addCiBuild(state: State, build: ICiBuild): void {
         state.ciBuilds.unshift(build);
+    },
+    updateCiBuild(state: State, build: ICiBuild): void {
+        state.ciBuilds = state.ciBuilds.filter(_ => _.id !== build.id);
+        state.ciBuilds.unshift(build);
     }
 };
 
 const actions = {
     async addCiBuild(context: ActionContext<State, any>, payload: any): Promise<void> {
-        const { commit } = context;
+        const { commit, getters } = context;
         const build = await buildService.toCiBuild(payload);
-        commit('addCiBuild', build);
+        const action = getters.hasCiBuild(build) ? 'updateCiBuild' : 'addCiBuild';
+        commit(action, build);
 
         Vue.notify({
             group: 'notification',
-            duration: -1,
+            duration: 12000,
             data: { type: 'ci-build', id: build.id }
         });
     }
@@ -35,6 +40,11 @@ const actions = {
 const getters = {
     getCiBuilds(state: State): ICiBuild[] {
         return state.ciBuilds;
+    },
+    hasCiBuild(state: State): Function {
+        return (build: ICiBuild): boolean => {
+            return state.ciBuilds.some(_ => _.id === build.id);
+        };
     }
 };
 

@@ -9,5 +9,13 @@ export default interface ICiBuild {
     status: string;
     result?: string;
     pipeline: { id: string; name: string; url: string };
-    repository: { type: string; name: string; branch: string };
+    triggeredBy: {
+        type: string;
+        name: string;
+        url: string;
+        branch: {
+            name: string;
+            url: string;
+        }
+    };
 }
