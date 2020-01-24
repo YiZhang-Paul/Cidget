@@ -11,7 +11,8 @@ const { url, token } = require('config').get('cicd').azureDevops;
 @injectable()
 export default class AzureDevopsWebhookProviderService implements IWebhookProvider<IAzureDevopsWebhookContext> {
     private _httpClient: IHttpClient;
-    private _endpoint = `${url}/_apis/hooks/subscriptions?api-version=5.0`;
+    private _buildEndpoint = `${url}/_apis/hooks/subscriptions?api-version=5.0`;
+    private _releaseEndpoint = this._buildEndpoint.replace(/^(https:\/\/)/, '$1vsrm.');
 
     constructor(@inject(Types.IHttpClient) httpClient: IHttpClient) {
         this._httpClient = httpClient;
@@ -29,7 +30,7 @@ export default class AzureDevopsWebhookProviderService implements IWebhookProvid
         if (!project) {
             return [];
         }
-        const { data } = await this._httpClient.get(this._endpoint, { headers: this.headers });
+        const { data } = await this._httpClient.get(this._buildEndpoint, { headers: this.headers });
 
         return (data?.value || [])
             .map(this.toWebhook.bind(this))
@@ -63,7 +64,8 @@ export default class AzureDevopsWebhookProviderService implements IWebhookProvid
             consumerInputs: { url: context.callback }
         };
 
-        const { data } = await this._httpClient.post(this._endpoint, body, { headers: this.headers });
+        const endpoint = context.isRelease ? this._releaseEndpoint : this._buildEndpoint;
+        const { data } = await this._httpClient.post(endpoint, body, { headers: this.headers });
 
         return this.toWebhook(data);
     }
