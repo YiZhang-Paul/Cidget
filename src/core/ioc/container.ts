@@ -13,6 +13,7 @@ import GithubCommitService from '../service/repository/github/github-commit/gith
 import GithubPullRequestService from '../service/repository/github/github-pull-request/github-pull-request.service';
 import AzureDevopsWebhookProviderService from '../service/webhook/azure-devops/azure-devops-webhook-provider.service';
 import AzureDevopsCiBuildService from '../service/pipeline/azure-devops/azure-devops-ci-build/azure-devops-ci-build.service';
+import AzureDevopsCdReleaseService from '../service/pipeline/azure-devops/azure-devops-cd-release/azure-devops-cd-release';
 import AzureDevopsApiProvider from '../service/pipeline/azure-devops/azure-devops-api-provider/azure-devops-api-provider.service';
 import AzureDevopsPipelineProvider from '../service/pipeline/azure-devops/azure-devops-pipeline-provider/azure-devops-pipeline-provider.service';
 
@@ -76,6 +77,11 @@ container
 container
     .bind<AzureDevopsCiBuildService>(Types.AzureDevopsCiBuildService)
     .to(AzureDevopsCiBuildService)
+    .inSingletonScope();
+
+container
+    .bind<AzureDevopsCdReleaseService>(Types.AzureDevopsCdReleaseService)
+    .to(AzureDevopsCdReleaseService)
     .inSingletonScope();
 
 container
