@@ -11,24 +11,25 @@ export default class WeblinkDisplay extends tsx.Component<any> {
     @Prop() public url!: string;
     @Prop({ default: 'top-start' }) public tooltipPosition!: string;
     @Prop({ default: false }) public isDarkMode!: boolean;
-    @Prop({ default: true }) private _showTooltip!: boolean;
-
     @Ref('container') public container!: HTMLElement;
 
     private get colorMode(): string {
         return this.isDarkMode ? 'dark' : 'light';
     }
 
+    public data(): any {
+        return ({ showTooltip: false });
+    }
+
     public mounted(): void {
-        if (!this.tooltip) {
-            this._showTooltip = this.container.offsetWidth < this.container.scrollWidth;
-        }
+        const overflow = this.container?.offsetWidth < this.container?.scrollWidth;
+        this.$data.showTooltip = this.tooltip || overflow;
     }
 
     public render(): any {
         return (
             <div class="weblink-display-container" ref="container">
-                <el-tooltip disabled={!this._showTooltip}
+                <el-tooltip disabled={!this.$data.showTooltip}
                     placement={this.tooltipPosition}
                     effect={this.colorMode}
                     content={this.tooltip || this.text}>

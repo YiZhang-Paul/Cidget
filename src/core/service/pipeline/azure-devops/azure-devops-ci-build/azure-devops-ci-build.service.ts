@@ -61,6 +61,7 @@ export default class AzureDevopsCiBuildService {
                 name: repository.fullName.split('/').slice(-1)[0],
                 url,
                 branch: {
+                    isPullRequest: refName.startsWith('refs/pull'),
                     name: branch,
                     url: `${url}/tree/${branch}`
                 }

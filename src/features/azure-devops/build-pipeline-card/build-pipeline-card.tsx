@@ -53,6 +53,7 @@ export default class BuildPipelineCard extends tsx.Component<any> {
     }
 
     public render(): any {
+        const { triggeredBy } = this.build;
         const timeClass = `elapsed-time ${this.isSlowBuild ? 'slow-build' : 'fast-build'}`;
         const elapsedTime = <span class={timeClass}> [{this.elapsedTime}]</span>;
 
@@ -79,11 +80,12 @@ export default class BuildPipelineCard extends tsx.Component<any> {
                     <span>Triggered by</span>
 
                     <BranchBadge class="branch-badge"
-                        name={this.build.triggeredBy.branch.name}
-                        url={this.build.triggeredBy.branch.url}>
+                        disabled={triggeredBy.branch.isPullRequest}
+                        name={triggeredBy.branch.isPullRequest ? 'AUTO' : triggeredBy.branch.name}
+                        url={triggeredBy.branch.url}>
                     </BranchBadge>
 
-                    <RepositoryBadge repository={this.build.triggeredBy} showPopover={false} />
+                    <RepositoryBadge repository={triggeredBy} showPopover={false} />
                     <RelativeTimeDisplay time={this.timestamp} />
                 </div>
             </NotificationCard>

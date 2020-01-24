@@ -14,6 +14,7 @@ export default interface ICiBuild {
         name: string;
         url: string;
         branch: {
+            isPullRequest: boolean;
             name: string;
             url: string;
         }
