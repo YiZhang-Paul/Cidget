@@ -19,7 +19,6 @@ export default class NotificationCard extends tsx.Component<any> {
                 </UserAvatar>
 
                 <div class="content">{this.$slots.default}</div>
-                <div class="top-guard"></div>
                 <div class="bottom-guard"></div>
             </div>
         );
