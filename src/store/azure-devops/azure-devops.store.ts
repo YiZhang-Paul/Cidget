@@ -46,6 +46,12 @@ const actions = {
         const { commit } = context;
         const release = await releaseService.toCdRelease(payload);
         commit('addCdRelease', release);
+
+        Vue.notify({
+            group: 'notification',
+            duration: -1,
+            data: { type: 'cd-release', id: release.id }
+        });
     }
 };
 
@@ -57,6 +63,9 @@ const getters = {
         return (build: ICiBuild): boolean => {
             return state.ciBuilds.some(_ => _.id === build.id);
         };
+    },
+    getCdReleases(state: State): ICdRelease[] {
+        return state.cdReleases;
     }
 };
 

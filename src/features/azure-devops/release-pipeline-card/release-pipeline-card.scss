@@ -1,0 +1,36 @@
+.release-pipeline-message-container, .release-pipeline-info-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 2px;
+
+    .release-name {
+        max-width: 110px;
+        margin-right: 8px;
+    }
+
+    .pipeline-name {
+        cursor: pointer;
+        font-size: 1.03em;
+        color: rgb(16, 108, 230);
+
+        &:hover {
+            color: rgb(151, 21, 93);
+        }
+    }
+
+    .trigger-name {
+        background-color: rgb(226, 140, 27);
+        margin-top: 3px;
+        margin-left: 5px;
+        margin-right: 3px;
+
+        .url {
+            color: rgb(255, 255, 255);
+        }
+    }
+
+    .project-name {
+        font-size: 1.03em;
+    }
+}
