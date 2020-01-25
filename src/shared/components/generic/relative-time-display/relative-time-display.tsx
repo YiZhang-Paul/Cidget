@@ -25,11 +25,23 @@ export default class RelativeTimeDisplay extends tsx.Component<any> {
         return `${total} ${unit}${total > 1 ? 's' : ''} ago`;
     }
 
+    private get absoluteTime(): string {
+        const relativeTime = this.relativeTime;
+        const localeTime = this.time.toLocaleTimeString();
+
+        if (/1 day ago|hour/.test(relativeTime)) {
+            return `${/hour/.test(relativeTime) ? 'today' : 'yesterday'} ${localeTime}`;
+        }
+        const month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dev'];
+
+        return `${month[this.time.getMonth()]} ${this.time.getDate()} ${localeTime}`;
+    }
+
     public render(): any {
         return (
             <TextSummary class="relative-time-display"
                 summary={this.relativeTime}
-                detail={this.time.toLocaleTimeString()}>
+                detail={this.absoluteTime}>
             </TextSummary>
         );
     }
