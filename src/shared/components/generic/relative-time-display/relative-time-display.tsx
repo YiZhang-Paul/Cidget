@@ -11,16 +11,17 @@ export default class RelativeTimeDisplay extends tsx.Component<any> {
 
     private get relativeTime(): string {
         const checks: [string, number][] = [
-            ['year', 60 * 60 * 24 * 365],
-            ['month', 60 * 60 * 24 * 30],
-            ['day', 60 * 60 * 24],
-            ['hour', 60 * 60],
-            ['minute', 60]
+            ['year', 60 * 60 * 24 * 365 - 1],
+            ['month', 60 * 60 * 24 * 30 - 1],
+            ['day', 60 * 60 * 24 - 1],
+            ['hour', 60 * 60 - 1],
+            ['minute', 59]
         ];
 
-        const passed = (this.$data.now.getTime() - this.time.getTime()) / 1000;
-        const [unit, threshold] = checks.find(_ => passed >= _[1]) || ['second', 1];
-        const total = Math.round(passed / threshold);
+        const [now, past] = [this.$data.now, this.time];
+        const passed = Math.round((now.getTime() - past.getTime()) / 1000);
+        const [unit, threshold] = checks.find(_ => passed > _[1]) || ['second', 0];
+        const total = Math.round(passed / (threshold + 1));
         const isSecondsAgo = this.$data.timerCounter > 11 && unit === 'second';
 
         return isSecondsAgo ? 'few seconds ago' : `${total} ${unit}${total > 1 ? 's' : ''} ago`;
