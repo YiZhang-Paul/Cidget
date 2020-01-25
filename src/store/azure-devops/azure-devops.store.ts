@@ -54,7 +54,7 @@ const actions = {
 
         Vue.notify({
             group: 'notification',
-            duration: -1,
+            duration: release.status === 'needs approval' ? -1 : 12000,
             data: { type: 'cd-release', id: release.id }
         });
     }
