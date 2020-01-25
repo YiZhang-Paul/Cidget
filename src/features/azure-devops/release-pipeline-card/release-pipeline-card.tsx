@@ -5,6 +5,7 @@ import { shell } from 'electron';
 import ICdRelease from '../../../core/interface/general/cd-release.interface';
 import NotificationCard from '../../../shared/components/generic/notification-card/notification-card';
 import WeblinkDisplay from '../../../shared/components/generic/weblink-display/weblink-display';
+import StepSummary from '../../../shared/components/generic/step-summary/step-summary';
 import RelativeTimeDisplay from '../../../shared/components/generic/relative-time-display/relative-time-display';
 
 import './release-pipeline-card.scss';
@@ -12,6 +13,29 @@ import './release-pipeline-card.scss';
 @Component
 export default class ReleasePipelineCard extends tsx.Component<any> {
     @Prop() public release!: ICdRelease;
+
+    private get stages(): { name: string; scale: number }[] {
+        const scales = new Map<string, number>([
+            ['approved', 1],
+            ['rejected', 2],
+            ['canceled', 2],
+            ['pending', 3],
+            ['needs approval', 3],
+            ['succeeded', 4],
+            ['partially succeeded', 5],
+            ['failed', 6],
+        ]);
+
+        return (this.release.stages ?? []).map(stage => {
+            const isActive = this.release.activeStage === stage.name;
+            const status = isActive ? this.release.status : stage.status;
+
+            return ({
+                name: stage.name,
+                scale: scales.get(status) ?? 0
+            });
+        });
+    }
 
     private toPipeline(): void {
         shell.openExternal(this.release.pipeline.url);
@@ -37,6 +61,8 @@ export default class ReleasePipelineCard extends tsx.Component<any> {
 
                         <span>{this.release.status}</span>
                     </div>
+
+                    <StepSummary class="stages-summary" steps={this.stages} />
                 </div>
 
                 <div class="release-pipeline-info-container">
