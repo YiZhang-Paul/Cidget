@@ -37,6 +37,29 @@ export default class RelativeTimeDisplay extends tsx.Component<any> {
         return `${month[this.time.getMonth()]} ${this.time.getDate()} ${localeTime}`;
     }
 
+    public data(): any {
+        return ({
+            timerActive: true,
+            now: new Date()
+        });
+    }
+
+    public created(): void {
+        const loop = () => {
+            if (this.$data.timerActive) {
+                setTimeout(() => {
+                    this.$data.now = new Date();
+                    loop();
+                }, 1000);
+            }
+        }
+        loop();
+    }
+
+    public beforeDestroy(): void {
+        this.$data.timerActive = false;
+    }
+
     public render(): any {
         return (
             <TextSummary class="relative-time-display"
