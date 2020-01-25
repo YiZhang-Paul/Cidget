@@ -54,7 +54,7 @@ export default class RelativeTimeDisplay extends tsx.Component<any> {
             setTimeout(() => {
                 this.$data.now = new Date();
                 loop();
-            }, ++this.$data.timerCounter <= 11 ? 1000 : 60000);
+            }, ++this.$data.timerCounter <= 60 ? 1000 : 60000);
         }
         loop();
     }
