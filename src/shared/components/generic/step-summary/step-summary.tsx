@@ -10,7 +10,7 @@ export default class StepSummary extends tsx.Component<any> {
     private get stepGrids(): any {
         return this.steps.map(_ => (
             <el-tooltip placement="top-start" effect="light" content={_.name}>
-                <div class={`grid ${this.getColor(_.scale)}`}></div>
+                <i class={`fas fa-circle grid ${this.getColor(_.scale)}`}></i>
             </el-tooltip>
         ));
     }
