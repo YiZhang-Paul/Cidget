@@ -76,7 +76,7 @@ export default class App extends tsx.Component<any> {
         return (updated || !release) ? null : (
             <div class="notification-wrapper">
                 {this.getCloseButton(closeHandler)}
-                <ReleasePipelineCard release={release} />
+                <ReleasePipelineCard class={identifier} release={release} />
             </div>
         );
     }
