@@ -12,5 +12,8 @@ module.exports = {
         '!src/main.ts',
         '!src/socket.ts',
         '!src/store/index.ts'
-    ]
+    ],
+    moduleNameMapper: {
+        'electron': '<rootDir>/src/mocks/electron.ts'
+    }
 };
