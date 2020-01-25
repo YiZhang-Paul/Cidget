@@ -32,84 +32,39 @@ export default class App extends tsx.Component<any> {
     private _commits!: ICommit<IGithubUser>[];
     private _pullRequests!: IPullRequest<IGithubUser>[];
 
-    private getCard(props: any): any {
+    private getNotificationCard(props: any): any {
         const { type, id } = props.item.data;
+        const identifier = `${type}_card_${id}`;
+        const close = <i class="fas fa-times-circle close" onClick={props.close}></i>;
 
-        switch(type) {
+        if (this.updateCard(id)) {
+            this.applyEffect(identifier);
+
+            return null;
+        }
+        const card = this.getEventCard(type, id, identifier);
+
+        return card ? <div class="notification-wrapper">{close}{card}</div> : null;
+    }
+
+    private getEventCard(type: string, id: string, className: string): any {
+        let data: any = null;
+
+        switch (type) {
             case 'ci-build':
-                return this.getCiBuildCard(id, props.close);
+                data = this._ciBuilds.find(_ => _.id === id);
+                return data ? <BuildPipelineCard class={className} build={data} /> : null;
             case 'cd-release':
-                return this.getCdReleaseCard(id, props.close);
+                data = this._cdReleases.find(_ => _.id === id);
+                return data ? <ReleasePipelineCard class={className} release={data} /> : null;
             case 'commit':
-                return this.getCommitCard(id, props.close);
+                data = this._commits.find(_ => _.id === id);
+                return data ? <CommitCard commit={data} /> : null;
             case 'pull-request':
-                return this.getPullRequestCard(id, props.close);
-            default:
-                return null;
+                data = this._pullRequests.find(_ => _.id === id);
+                return <PullRequestCard class={className} pullRequest={data} />;
         }
-    }
-
-    private getCiBuildCard(id: string, closeHandler: any): any {
-        const identifier = `ci_card_${id}`;
-        const build = this._ciBuilds.find(_ => _.id === id);
-        const updated = this.updateCard(id);
-
-        if (updated) {
-            this.applyUpdateEffect(identifier);
-        }
-        return (updated || !build) ? null : (
-            <div class="notification-wrapper">
-                {this.getCloseButton(closeHandler)}
-                <BuildPipelineCard class={identifier} build={build} />
-            </div>
-        );
-    }
-
-    private getCdReleaseCard(id: string, closeHandler: any): any {
-        const identifier = `cd_card_${id}`;
-        const release = this._cdReleases.find(_ => _.id === id);
-        const updated = this.updateCard(id);
-
-        if (updated) {
-            this.applyUpdateEffect(identifier);
-        }
-        return (updated || !release) ? null : (
-            <div class="notification-wrapper">
-                {this.getCloseButton(closeHandler)}
-                <ReleasePipelineCard class={identifier} release={release} />
-            </div>
-        );
-    }
-
-    private getCommitCard(id: string, closeHandler: any): any {
-        const commit = this._commits.find(_ => _.id === id);
-
-        return !commit ? null : (
-            <div class="notification-wrapper">
-                {this.getCloseButton(closeHandler)}
-                <CommitCard commit={commit} />
-            </div>
-        );
-    }
-
-    private getPullRequestCard(id: string, closeHandler: any): any {
-        const identifier = `pr_card_${id}`;
-        const pullRequest = this._pullRequests.find(_ => _.id === id);
-        const updated = this.updateCard(id);
-
-        if (updated) {
-            this.applyUpdateEffect(identifier);
-        }
-        return (updated || !pullRequest) ? null : (
-            <div class="notification-wrapper">
-                {this.getCloseButton(closeHandler)}
-                <PullRequestCard class={identifier} pullRequest={pullRequest} />
-            </div>
-        );
-    }
-
-    private getCloseButton(closeHandler: any): any {
-        return <i class="fas fa-times-circle close" onClick={closeHandler}></i>;
+        return null;
     }
 
     private updateCard(id: string): boolean {
@@ -130,12 +85,12 @@ export default class App extends tsx.Component<any> {
         return true;
     }
 
-    private applyUpdateEffect(id: string): void {
+    private applyEffect(id: string, effectClass = 'updated-card'): void {
         const elements = document.getElementsByClassName(id);
 
         Array.prototype.forEach.call(elements, _ => {
-            _.classList.remove('updated-card');
-            setTimeout(() => _.classList.add('updated-card'));
+            _.classList.remove(effectClass);
+            setTimeout(() => _.classList.add(effectClass));
         });
     }
 
@@ -146,7 +101,7 @@ export default class App extends tsx.Component<any> {
                 group="notification"
                 position="top left"
                 width={640}
-                scopedSlots={{ body: (_: any) => this.getCard(_) }}>
+                scopedSlots={{ body: this.getNotificationCard }}>
             </notifications>
         );
     }
