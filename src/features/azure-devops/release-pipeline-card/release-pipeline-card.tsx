@@ -28,13 +28,13 @@ export default class ReleasePipelineCard extends tsx.Component<any> {
 
                     <div>
                         <span> from </span>
-                        {/* // TODO: status wording */}
+
                         <a class="pipeline-name" onClick={this.toPipeline}>
                             {this.release.pipeline.name}
                         </a>
                         {/* // TODO: stages summary */}
                         <span> {this.release.status}</span>
-                        {/* // TODO: elapsed time */}
+                        {/* // TODO: commits */}
                     </div>
                 </div>
 

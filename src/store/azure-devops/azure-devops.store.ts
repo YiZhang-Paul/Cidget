@@ -45,6 +45,11 @@ const actions = {
     async addCdRelease(context: ActionContext<State, any>, payload: any): Promise<void> {
         const { commit } = context;
         const release = await releaseService.toCdRelease(payload);
+        const lastStage = release.stages?.slice(-1)[0];
+
+        if (release.status === 'succeeded' && lastStage?.status !== 'succeeded') {
+            return;
+        }
         commit('addCdRelease', release);
 
         Vue.notify({

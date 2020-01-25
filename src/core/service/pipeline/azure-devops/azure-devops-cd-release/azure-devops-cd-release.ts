@@ -17,11 +17,12 @@ export default class AzureDevopsCdReleaseService {
         const release = resource.release || resource.deployment.release;
         const definition = (resource.release || resource.deployment).releaseDefinition;
         const artifact = release.artifacts[0]?.definitionReference;
+        const status = (resource.environment || resource.approval || resource.release).status;
 
         return ({
             id: `${definition.id}-${release.name}`,
             name: release.name,
-            status: (resource.environment || resource.approval || resource.release).status,
+            status: status === 'pending' ? 'needs approval' : status,
             createdOn: new Date(payload.createdDate),
             url: resource.url,
             commits: resource.data?.commits?.length ?? null,
