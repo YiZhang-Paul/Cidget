@@ -26,6 +26,10 @@ const mutations = {
     },
     addCdRelease(state: State, release: ICdRelease): void {
         state.cdReleases.unshift(release);
+    },
+    updateCdRelease(state: State, release: ICdRelease): void {
+        state.cdReleases = state.cdReleases.filter(_ => _.id !== release.id);
+        state.cdReleases.unshift(release);
     }
 };
 
@@ -43,14 +47,15 @@ const actions = {
         });
     },
     async addCdRelease(context: ActionContext<State, any>, payload: any): Promise<void> {
-        const { commit } = context;
+        const { commit, getters } = context;
         const release = await releaseService.toCdRelease(payload);
+        const action = getters.hasCdRelease(release) ? 'updateCdRelease' : 'addCdRelease';
         const lastStage = release.stages?.slice(-1)[0];
 
         if (release.status === 'succeeded' && lastStage?.status !== 'succeeded') {
             return;
         }
-        commit('addCdRelease', release);
+        commit(action, release);
 
         Vue.notify({
             group: 'notification',
@@ -71,6 +76,11 @@ const getters = {
     },
     getCdReleases(state: State): ICdRelease[] {
         return state.cdReleases;
+    },
+    hasCdRelease(state: State): Function {
+        return (release: ICdRelease): boolean => {
+            return state.cdReleases.some(_ => _.id === release.id);
+        };
     }
 };
 
