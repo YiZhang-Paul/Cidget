@@ -9,7 +9,13 @@
         margin-right: 8px;
     }
 
+    .abandoned {
+        text-decoration: line-through;
+    }
+
     .pipeline-name {
+        margin-left: 5px;
+        margin-right: 5px;
         cursor: pointer;
         font-size: 1.03em;
         color: rgb(16, 108, 230);

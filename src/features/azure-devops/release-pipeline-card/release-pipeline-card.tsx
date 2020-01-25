@@ -18,23 +18,24 @@ export default class ReleasePipelineCard extends tsx.Component<any> {
     }
 
     public render(): any {
+        const className = `release-name ${this.release.status === 'abandoned' ? 'abandoned' : ''}`;
+
         return (
             <NotificationCard logoUrl={require('../../../../public/images/azure-devops-logo.png')}>
                 <div class="release-pipeline-message-container">
-                    <WeblinkDisplay class="release-name"
+                    <WeblinkDisplay class={className}
                         text={this.release.name}
                         url={this.release.url}>
                     </WeblinkDisplay>
 
                     <div>
-                        <span> from </span>
+                        <span>from</span>
 
                         <a class="pipeline-name" onClick={this.toPipeline}>
                             {this.release.pipeline.name}
                         </a>
-                        {/* // TODO: stages summary */}
-                        <span> {this.release.status}</span>
-                        {/* // TODO: commits */}
+
+                        <span>{this.release.status}</span>
                     </div>
                 </div>
 
