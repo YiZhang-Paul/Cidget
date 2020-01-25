@@ -18,7 +18,7 @@ export default class RelativeTimeDisplay extends tsx.Component<any> {
             ['minute', 60]
         ];
 
-        const passed = (Date.now() - this.time.getTime()) / 1000;
+        const passed = (this.$data.now.getTime() - this.time.getTime()) / 1000;
         const [unit, threshold] = checks.find(_ => passed >= _[1]) || ['second', 1];
         const total = Math.round(passed / threshold);
 
