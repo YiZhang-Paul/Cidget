@@ -5,7 +5,7 @@ import './step-summary.scss';
 
 @Component
 export default class StepSummary extends tsx.Component<any> {
-    @Prop() public steps!: { name: string; scale: number }[];
+    @Prop({ default: [] }) public steps!: { name: string; scale: number }[];
 
     private get stepGrids(): any {
         return this.steps.map(_ => (
@@ -16,7 +16,7 @@ export default class StepSummary extends tsx.Component<any> {
     }
 
     private getColor(scale: number): string {
-        const colors = ['white', 'grey', 'blue', 'green', 'orange', 'red'];
+        const colors = ['purple', 'teal', 'grey', 'blue', 'green', 'orange', 'red'];
 
         return colors[Math.min(colors.length - 1, Math.abs(scale))];
     }
