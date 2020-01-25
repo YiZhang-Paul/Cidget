@@ -6,6 +6,7 @@ export default interface ICdRelease {
     url: string;
     commits?: number;
     project: string;
+    activeStage: string;
     stages?: { name: string; status: string; }[];
     pipeline: { id: string; name: string; url: string };
     triggeredBy: { name: string; url: string; };
