@@ -50,9 +50,9 @@ const actions = {
         const { commit, getters } = context;
         const release = await releaseService.toCdRelease(payload);
         const action = getters.hasCdRelease(release) ? 'updateCdRelease' : 'addCdRelease';
-        const lastStage = release.stages?.slice(-1)[0];
+        const lastStageStatus = release.stages?.slice(-1)[0]?.status ?? 'succeeded';
 
-        if (release.status === 'succeeded' && lastStage?.status !== 'succeeded') {
+        if (release.status === 'succeeded' && lastStageStatus !== 'succeeded') {
             return;
         }
         commit(action, release);
