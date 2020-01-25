@@ -4,13 +4,17 @@ import { ActionContext, StoreOptions } from 'vuex';
 import Types from '../../core/ioc/types';
 import Container from '../../core/ioc/container';
 import ICiBuild from '../../core/interface/general/ci-build.interface';
+import ICdRelease from '../../core/interface/general/cd-release.interface';
 import AzureDevopsCiBuildService from '../../core/service/pipeline/azure-devops/azure-devops-ci-build/azure-devops-ci-build.service';
+import AzureDevopsCdReleaseService from '../../core/service/pipeline/azure-devops/azure-devops-cd-release/azure-devops-cd-release';
 
 type State = {
-    ciBuilds: ICiBuild[]
+    ciBuilds: ICiBuild[],
+    cdReleases: ICdRelease[]
 };
 
 let buildService: AzureDevopsCiBuildService;
+let releaseService: AzureDevopsCdReleaseService;
 
 const mutations = {
     addCiBuild(state: State, build: ICiBuild): void {
@@ -19,6 +23,9 @@ const mutations = {
     updateCiBuild(state: State, build: ICiBuild): void {
         state.ciBuilds = state.ciBuilds.filter(_ => _.id !== build.id);
         state.ciBuilds.unshift(build);
+    },
+    addCdRelease(state: State, release: ICdRelease): void {
+        state.cdReleases.unshift(release);
     }
 };
 
@@ -34,6 +41,22 @@ const actions = {
             duration: 12000,
             data: { type: 'ci-build', id: build.id }
         });
+    },
+    async addCdRelease(context: ActionContext<State, any>, payload: any): Promise<void> {
+        const { commit } = context;
+        const release = await releaseService.toCdRelease(payload);
+        const lastStage = release.stages?.slice(-1)[0];
+
+        if (release.status === 'succeeded' && lastStage?.status !== 'succeeded') {
+            return;
+        }
+        commit('addCdRelease', release);
+
+        Vue.notify({
+            group: 'notification',
+            duration: release.status === 'needs approval' ? -1 : 12000,
+            data: { type: 'cd-release', id: release.id }
+        });
     }
 };
 
@@ -45,12 +68,16 @@ const getters = {
         return (build: ICiBuild): boolean => {
             return state.ciBuilds.some(_ => _.id === build.id);
         };
+    },
+    getCdReleases(state: State): ICdRelease[] {
+        return state.cdReleases;
     }
 };
 
 export const createStore = () => {
     buildService = Container.get<AzureDevopsCiBuildService>(Types.AzureDevopsCiBuildService);
-    const state: State = { ciBuilds: [] };
+    releaseService = Container.get<AzureDevopsCdReleaseService>(Types.AzureDevopsCdReleaseService);
+    const state: State = { ciBuilds: [], cdReleases: [] };
 
     return ({
         namespaced: true,

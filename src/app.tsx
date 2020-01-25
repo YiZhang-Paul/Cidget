@@ -2,19 +2,22 @@ import { Component, Ref } from 'vue-property-decorator';
 import * as tsx from 'vue-tsx-support';
 import { mapGetters } from 'vuex';
 
+import Store from './store';
 import ICiBuild from './core/interface/general/ci-build.interface';
+import ICdRelease from './core/interface/general/cd-release.interface';
 import ICommit from './core/interface/general/commit.interface';
 import IPullRequest from './core/interface/general/pull-request.interface';
 import IGithubUser from './core/interface/repository/github/github-user.interface';
 import BuildPipelineCard from './features/azure-devops/build-pipeline-card/build-pipeline-card';
+import ReleasePipelineCard from './features/azure-devops/release-pipeline-card/release-pipeline-card';
 import CommitCard from './features/github/commit-card/commit-card';
 import PullRequestCard from './features/github/pull-request-card/pull-request-card';
-import Store from './store';
 
 @Component({
     computed: {
         ...mapGetters(Store.azureDevopsStoreName, {
-            _ciBuilds: 'getCiBuilds'
+            _ciBuilds: 'getCiBuilds',
+            _cdReleases: 'getCdReleases'
         }),
         ...mapGetters(Store.githubStoreName, {
             _commits: 'getCommits',
@@ -25,6 +28,7 @@ import Store from './store';
 export default class App extends tsx.Component<any> {
     @Ref('cards') private _cards: any;
     private _ciBuilds!: ICiBuild[];
+    private _cdReleases!: ICdRelease[];
     private _commits!: ICommit<IGithubUser>[];
     private _pullRequests!: IPullRequest<IGithubUser>[];
 
@@ -34,6 +38,8 @@ export default class App extends tsx.Component<any> {
         switch(type) {
             case 'ci-build':
                 return this.getCiBuildCard(id, props.close);
+            case 'cd-release':
+                return this.getCdReleaseCard(id, props.close);
             case 'commit':
                 return this.getCommitCard(id, props.close);
             case 'pull-request':
@@ -55,6 +61,22 @@ export default class App extends tsx.Component<any> {
             <div class="notification-wrapper">
                 {this.getCloseButton(closeHandler)}
                 <BuildPipelineCard class={identifier} build={build} />
+            </div>
+        );
+    }
+
+    private getCdReleaseCard(id: string, closeHandler: any): any {
+        const identifier = `cd_card_${id}`;
+        const release = this._cdReleases.find(_ => _.id === id);
+        const updated = this.updateCard(id);
+
+        if (updated) {
+            this.applyUpdateEffect(identifier);
+        }
+        return (updated || !release) ? null : (
+            <div class="notification-wrapper">
+                {this.getCloseButton(closeHandler)}
+                <ReleasePipelineCard release={release} />
             </div>
         );
     }

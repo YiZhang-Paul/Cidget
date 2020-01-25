@@ -26,6 +26,12 @@ export default class WeblinkDisplay extends tsx.Component<any> {
         this.$data.showTooltip = this.tooltip || overflow;
     }
 
+    private toUrl(): void {
+        if (this.url) {
+            shell.openExternal(this.url);
+        }
+    }
+
     public render(): any {
         return (
             <div class="weblink-display-container" ref="container">
@@ -34,7 +40,7 @@ export default class WeblinkDisplay extends tsx.Component<any> {
                     effect={this.colorMode}
                     content={this.tooltip || this.text}>
 
-                    <a class="url" onClick={() => shell.openExternal(this.url)}>
+                    <a class="url" onClick={this.toUrl}>
                         {this.text}
                     </a>
                 </el-tooltip>

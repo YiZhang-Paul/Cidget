@@ -10,17 +10,23 @@ express.use(bodyParser.json());
 server.listen(port, () => console.log(`listening on port ${port}.`));
 socket.on('connection', () => console.log('socket connected.'));
 
+express.post('/azure-devops/build', (req, res) => {
+    emit('azure-devops-build', req, res);
+});
+
+express.post('/azure-devops/release', (req, res) => {
+    emit('azure-devops-release', req, res);
+});
+
 express.post('/github/push', (req, res) => {
-    socket.emit('github-push', req.body);
-    res.sendStatus(200);
+    emit('github-push', req, res);
 });
 
 express.post('/github/pull_request', (req, res) => {
-    socket.emit('github-pull-request', req.body);
-    res.sendStatus(200);
+    emit('github-pull-request', req, res);
 });
 
-express.post('/azure-devops/pipeline', (req, res) => {
-    socket.emit('azure-devops-pipeline', req.body);
+function emit(event, req, res) {
+    socket.emit(event, req.body);
     res.sendStatus(200);
-});
+}

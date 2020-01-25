@@ -7,8 +7,13 @@ const socket = socketClient('http://localhost:8888');
 socket.on('connect', () => logger.log('socket connected.'));
 socket.on('disconnect', () => logger.log('socket disconnected.'));
 
-socket.on('azure-devops-pipeline', (payload: any) => {
+socket.on('azure-devops-build', (payload: any) => {
     const action = `${Store.azureDevopsStoreName}/addCiBuild`;
+    Store.store.dispatch(action, payload);
+});
+
+socket.on('azure-devops-release', (payload: any) => {
+    const action = `${Store.azureDevopsStoreName}/addCdRelease`;
     Store.store.dispatch(action, payload);
 });
 
