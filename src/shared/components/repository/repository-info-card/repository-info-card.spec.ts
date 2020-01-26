@@ -49,4 +49,16 @@ describe('repository info card component unit test', () => {
 
         expect(wrapper.find('.language').element.style.color).toBe('grey');
     });
+
+    test('should display license information when possible', () => {
+        repository.license = { abbr: 'MIT' };
+        wrapper.setProps({ repository: Object.assign({}, repository) });
+
+        expect(wrapper.contains('.license-info')).toBeTruthy();
+
+        repository.license = null;
+        wrapper.setProps({ repository: Object.assign({}, repository) });
+
+        expect(wrapper.contains('.license-info')).toBeFalsy();
+    });
 });

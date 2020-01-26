@@ -8,7 +8,7 @@ import Container from '../../core/ioc/container';
 import ICiBuild from '../../core/interface/general/ci-build.interface';
 import ICdRelease from '../../core/interface/general/cd-release.interface';
 import AzureDevopsCiBuildService from '../../core/service/pipeline/azure-devops/azure-devops-ci-build/azure-devops-ci-build.service';
-import AzureDevopsCdReleaseService from '../../core/service/pipeline/azure-devops/azure-devops-cd-release/azure-devops-cd-release';
+import AzureDevopsCdReleaseService from '../../core/service/pipeline/azure-devops/azure-devops-cd-release/azure-devops-cd-release.service';
 
 import { createStore } from './azure-devops.store';
 
