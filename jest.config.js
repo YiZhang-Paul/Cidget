@@ -14,6 +14,7 @@ module.exports = {
         '!src/store/index.ts'
     ],
     moduleNameMapper: {
+        'axios': '<rootDir>/src/mocks/axios.ts',
         'electron': '<rootDir>/src/mocks/electron.ts'
     }
 };
