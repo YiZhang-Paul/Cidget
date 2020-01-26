@@ -6,6 +6,7 @@ module.exports = {
     collectCoverageFrom: [
         'src/**/*.{js,ts,jsx,tsx,vue}',
         '!**/node_modules/**',
+        '!**/mocks/**',
         '!src/**/*.spec.{js,ts}',
         '!src/background.ts',
         '!src/element-ui.js',
@@ -14,6 +15,7 @@ module.exports = {
         '!src/store/index.ts'
     ],
     moduleNameMapper: {
+        'azure-devops-node-api': '<rootDir>/src/mocks/azure-devops-node-api.ts',
         'axios': '<rootDir>/src/mocks/axios.ts',
         'electron': '<rootDir>/src/mocks/electron.ts'
     }
