@@ -2,7 +2,7 @@ import { assert as sinonExpect, spy } from 'sinon';
 
 import Types from '../../../../ioc/types';
 import Container from '../../../../ioc/container';
-import { webApiStubInstance } from '../../../../../mocks/azure-devops-node-api';
+import { webApiStubInstance } from '../../../../../mocks/third-party/azure-devops-node-api';
 
 import AzureDevopsApiProvider from './azure-devops-api-provider.service';
 
