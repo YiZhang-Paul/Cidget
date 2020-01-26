@@ -22,7 +22,7 @@ export default class WeblinkDisplay extends tsx.Component<any> {
     }
 
     public mounted(): void {
-        const overflow = this.container?.offsetWidth < this.container?.scrollWidth;
+        const overflow = this.container.offsetWidth < this.container.scrollWidth;
         this.$data.showTooltip = this.tooltip || overflow;
     }
 

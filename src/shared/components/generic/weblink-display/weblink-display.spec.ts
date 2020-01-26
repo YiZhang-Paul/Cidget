@@ -1,18 +1,27 @@
+import Vue from 'vue';
+import ElementUI from 'element-ui';
 import { shallowMount, Wrapper } from '@vue/test-utils';
+import { assert as sinonExpect, spy } from 'sinon';
+
+import { shell } from '../../../../mocks/electron';
 
 import WeblinkDisplay from './weblink-display';
 
+Vue.use(ElementUI);
+
 describe('weblink display component unit test', () => {
     let wrapper: Wrapper<WeblinkDisplay>;
+    let shellSpy: any;
 
     beforeEach(() => {
         const propsData = { text: 'link_text', url: 'link_url' };
-        const stubs = { ElTooltip: '<div></div>' };
-        wrapper = shallowMount(WeblinkDisplay, { propsData, stubs });
+        wrapper = shallowMount(WeblinkDisplay, { propsData });
+        shellSpy = spy(shell, 'openExternal');
     });
 
     afterEach(() => {
         wrapper.destroy();
+        shellSpy.restore();
     });
 
     test('should create component instance', () => {
@@ -30,5 +39,22 @@ describe('weblink display component unit test', () => {
         wrapper.setProps({ isDarkMode: false });
 
         expect(wrapper.vm['colorMode']).toBe('light');
+    });
+
+    test('should open external link when url is specified', () => {
+        wrapper.find('.url').element.click();
+
+        expect(wrapper.vm.$props.url).toBeTruthy();
+        sinonExpect.calledOnce(shellSpy);
+        sinonExpect.calledWith(shellSpy, 'link_url');
+    });
+
+    test('should not open external link when url is not specified', () => {
+        wrapper.setProps({ url: '' });
+
+        wrapper.find('.url').element.click();
+
+        expect(wrapper.vm.$props.url).toBeFalsy();
+        sinonExpect.notCalled(shellSpy);
     });
 });
