@@ -59,12 +59,11 @@ export default class App extends tsx.Component<any> {
                 return data ? <ReleasePipelineCard class={className} release={data} /> : null;
             case 'commit':
                 data = this._commits.find(_ => _.id === id);
-                return data ? <CommitCard commit={data} /> : null;
+                return data ? <CommitCard class={className} commit={data} /> : null;
             case 'pull-request':
                 data = this._pullRequests.find(_ => _.id === id);
-                return <PullRequestCard class={className} pullRequest={data} />;
+                return data ? <PullRequestCard class={className} pullRequest={data} /> : null;
         }
-        return null;
     }
 
     private updateCard(id: string): boolean {

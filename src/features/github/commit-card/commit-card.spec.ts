@@ -1,7 +1,7 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
 import { assert as sinonExpect, spy } from 'sinon';
 
-import { shell } from '../../../mocks/electron';
+import { shell } from '../../../mocks/third-party/electron';
 
 import CommitCard from './commit-card';
 

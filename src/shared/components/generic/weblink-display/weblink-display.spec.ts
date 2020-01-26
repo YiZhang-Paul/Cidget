@@ -3,7 +3,7 @@ import ElementUI from 'element-ui';
 import { shallowMount, Wrapper } from '@vue/test-utils';
 import { assert as sinonExpect, spy } from 'sinon';
 
-import { shell } from '../../../../mocks/electron';
+import { shell } from '../../../../mocks/third-party/electron';
 
 import WeblinkDisplay from './weblink-display';
 
