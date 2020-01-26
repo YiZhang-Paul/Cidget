@@ -48,6 +48,12 @@ export default class BuildPipelineCard extends tsx.Component<any> {
         return this.build.finishedOn || this.build.startedOn;
     }
 
+    private get branchName(): string {
+        const branch = this.build.triggeredBy.branch;
+
+        return branch.isPullRequest ? 'AUTO' : branch.name;
+    }
+
     private toPipeline(): void {
         shell.openExternal(this.build.pipeline.url);
     }
@@ -81,7 +87,7 @@ export default class BuildPipelineCard extends tsx.Component<any> {
 
                     <BranchBadge class="branch-badge"
                         disabled={triggeredBy.branch.isPullRequest}
-                        name={triggeredBy.branch.isPullRequest ? 'AUTO' : triggeredBy.branch.name}
+                        name={this.branchName}
                         url={triggeredBy.branch.url}>
                     </BranchBadge>
 
