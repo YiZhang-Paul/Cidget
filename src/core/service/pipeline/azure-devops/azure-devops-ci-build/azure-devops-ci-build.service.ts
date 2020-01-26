@@ -57,7 +57,7 @@ export default class AzureDevopsCiBuildService {
             const branch = refName.split('/').slice(-1)[0];
 
             return ({
-                type: repository.type,
+                type: repository.type.toLowerCase(),
                 name: repository.fullName.split('/').slice(-1)[0],
                 url,
                 branch: {
