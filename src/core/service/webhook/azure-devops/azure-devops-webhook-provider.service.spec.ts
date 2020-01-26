@@ -1,0 +1,130 @@
+import { assert as sinonExpect, stub } from 'sinon';
+
+import Types from '../../../ioc/types';
+import Container from '../../../ioc/container';
+import IHttpClient from '../../../interface/general/http-client.interface';
+
+import AzureDevopsWebhookProviderService from './azure-devops-webhook-provider.service';
+
+describe('azure devops webhook provider service unit test', () => {
+    const api = 'https://dev.azure.com/yizhang9206/_apis/';
+    let service: AzureDevopsWebhookProviderService;
+    let httpStub: any;
+    let data: any;
+
+    beforeEach(() => {
+        Container.snapshot();
+
+        httpStub = stub({
+            async get(): Promise<any> { return null; },
+            async post(): Promise<any> { return null; }
+        } as IHttpClient);
+
+        Container
+            .rebind<IHttpClient>(Types.IHttpClient)
+            .toConstantValue(httpStub);
+
+        service = Container.get<AzureDevopsWebhookProviderService>(Types.AzureDevopsWebhookProviderService);
+    });
+
+    beforeEach(() => {
+        data = {
+            value: [
+                {
+                    id: 'id_1',
+                    actionDescription: 'action_description_1',
+                    url: 'url_1',
+                    createdBy: { displayName: 'display_name_1' },
+                    publisherInputs: { projectId: 'project_id_1' },
+                    consumerInputs: { url: 'callback_url' },
+                    createdDate: '2020-01-03T06:45:41.370Z',
+                    eventDescription: 'all',
+                    status: 'enabled'
+                },
+                {
+                    id: 'id_2',
+                    actionDescription: 'action_description_2',
+                    url: 'url_2',
+                    createdBy: { displayName: 'display_name_2' },
+                    publisherInputs: { projectId: 'project_id_2' },
+                    consumerInputs: { url: 'callback_url' },
+                    createdDate: '2020-01-04T06:45:41.370Z',
+                    eventDescription: 'all',
+                    status: 'enabled'
+                }
+            ]
+        };
+
+        httpStub.get.onCall(0).resolves({ data: { id: 'project_id_2', name: 'project_name' } });
+        httpStub.get.onCall(1).resolves({ data });
+        httpStub.post.resolves({ data: data[1] });
+    });
+
+    afterEach(() => {
+        Container.restore();
+    });
+
+    describe('listWebhooks', () => {
+        test('should call correct api endpoint with authorization token', async () => {
+            await service.listWebhooks('project_name');
+
+            sinonExpect.calledTwice(httpStub.get);
+            expect(httpStub.get.args[0][0]).toBe(`${api}projects/project_name`);
+            expect(httpStub.get.args[1][0]).toBe(`${api}hooks/subscriptions?api-version=5.0`);
+            expect(httpStub.get.args[1][1].headers.Authorization).toBe(`basic ${btoa(':test_azure_token')}`);
+        });
+
+        test('should return hooks found', async () => {
+            const result = await service.listWebhooks('project_name');
+
+            expect(result.length).toBe(1);
+            expect(result[0].id).toBe('id_2');
+            expect(result[0].name).toBe('action_description_2 by display_name_2');
+            expect(result[0].url).toBe('url_2');
+            expect(result[0].project).toBe('project_id_2');
+            expect(result[0].callback).toBe('callback_url');
+            expect(result[0].contentType).toBe('json');
+            expect(result[0].events).toStrictEqual(['all']);
+            expect(result[0].createdOn.getTime()).toBe(new Date('2020-01-04T06:45:41.370Z').getTime());
+            expect(result[0].isActive).toBeTruthy();
+        });
+
+        test('should return empty collection when no project found', async () => {
+            httpStub.get.onCall(0).resolves({ data: null });
+
+            const result = await service.listWebhooks('project_name');
+
+            sinonExpect.calledOnce(httpStub.get);
+            expect(result.length).toBe(0);
+        });
+
+        test('should return empty collection when no hooks found', async () => {
+            httpStub.get.onCall(1).resolves({ data: null });
+
+            const result = await service.listWebhooks('project_name');
+
+            sinonExpect.calledTwice(httpStub.get);
+            expect(result.length).toBe(0);
+        });
+    });
+
+    describe('getWebhook', () => {
+        test('should return hook found', async () => {
+            const result = await service.getWebhook('project_name', 'callback_url');
+
+            expect(result?.id).toBe('id_2');
+            expect(result?.name).toBe('action_description_2 by display_name_2');
+            expect(result?.url).toBe('url_2');
+            expect(result?.project).toBe('project_id_2');
+            expect(result?.callback).toBe('callback_url');
+            expect(result?.contentType).toBe('json');
+            expect(result?.events).toStrictEqual(['all']);
+            expect(result?.createdOn.getTime()).toBe(new Date('2020-01-04T06:45:41.370Z').getTime());
+            expect(result?.isActive).toBeTruthy();
+        });
+
+        test('should return null when no hook found', async () => {
+            expect(await service.getWebhook('project_name', 'invalid_url')).toBeNull();
+        });
+    });
+});
