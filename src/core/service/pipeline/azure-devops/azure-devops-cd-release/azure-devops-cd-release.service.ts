@@ -35,8 +35,8 @@ export default class AzureDevopsCdReleaseService {
             activeStage: resource.stageName ?? '',
             stages: await this.getStages(release.url),
             triggeredBy: {
-                name: artifact.definition.name ?? '',
-                url: artifact.artifactSourceVersionUrl?.id ?? ''
+                name: artifact?.definition.name ?? '',
+                url: artifact?.artifactSourceVersionUrl?.id ?? ''
             }
         }) as ICdRelease;
     }
