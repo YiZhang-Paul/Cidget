@@ -8,9 +8,10 @@ import CommitCard from './commit-card';
 describe('commit card card component unit test', () => {
     let wrapper: Wrapper<CommitCard>;
     let shellSpy: any;
+    let commit: any;
 
     beforeEach(() => {
-        const commit = {
+        commit = {
             repository: {},
             initiator: {
                 name: 'yizhang',
@@ -46,5 +47,25 @@ describe('commit card card component unit test', () => {
 
         sinonExpect.calledOnce(shellSpy);
         sinonExpect.calledWith(shellSpy, 'profile_url');
+    });
+
+    test('should show correct file changes', () => {
+        commit.added = null;
+        commit.removed = null;
+        commit.modified = null;
+        wrapper.setProps({ commit: Object.assign({}, commit) });
+
+        expect(wrapper.vm['added']).toBe(0);
+        expect(wrapper.vm['removed']).toBe(0);
+        expect(wrapper.vm['modified']).toBe(0);
+
+        commit.added = [{}];
+        commit.removed = [{}, {}, {}];
+        commit.modified = [{}, {}];
+        wrapper.setProps({ commit: Object.assign({}, commit) });
+
+        expect(wrapper.vm['added']).toBe(1);
+        expect(wrapper.vm['removed']).toBe(3);
+        expect(wrapper.vm['modified']).toBe(2);
     });
 });
