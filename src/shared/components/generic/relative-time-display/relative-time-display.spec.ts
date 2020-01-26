@@ -12,10 +12,27 @@ describe('relative time display component unit test', () => {
 
     afterEach(() => {
         wrapper.destroy();
+        jest.useRealTimers();
     });
 
     test('should create component instance', () => {
         expect(wrapper.vm.$props.time.toISOString()).toBe('2020-01-03T06:45:41.370Z');
+    });
+
+    test('should run timer every second for the first minute', () => {
+        jest.useFakeTimers();
+        wrapper = shallowMount(RelativeTimeDisplay, { propsData: { time: new Date() } });
+        jest.advanceTimersByTime(60000);
+
+        expect(wrapper.vm.$data.timerCounter).toBe(61);
+    });
+
+    test('should run timer every minute after the first minute', () => {
+        jest.useFakeTimers();
+        wrapper = shallowMount(RelativeTimeDisplay, { propsData: { time: new Date() } });
+        jest.advanceTimersByTime(120000);
+
+        expect(wrapper.vm.$data.timerCounter).toBe(62);
     });
 
     describe('relativeTime', () => {
@@ -77,6 +94,29 @@ describe('relative time display component unit test', () => {
             wrapper.setProps({ time: new Date(new Date().getTime() - 2.5 * 365 * 24 * 60 * 60 * 1000) });
 
             expect(wrapper.vm['relativeTime']).toBe('3 years ago');
+        });
+    });
+
+    describe('absoluteTime', () => {
+        test('should return proper absolute time for today', () => {
+            const time = new Date(new Date().getTime() - 12 * 60 * 60 * 1000);
+            wrapper.setProps({ time });
+
+            expect(wrapper.vm['absoluteTime']).toBe(`today ${time.toLocaleTimeString()}`);
+        });
+
+        test('should return proper absolute time for yesterday', () => {
+            const time = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
+            wrapper.setProps({ time });
+
+            expect(wrapper.vm['absoluteTime']).toBe(`yesterday ${time.toLocaleTimeString()}`);
+        });
+
+        test('should return proper absolute time for specific date', () => {
+            const time = new Date(2020, 1, 5);
+            wrapper.setProps({ time });
+
+            expect(wrapper.vm['absoluteTime']).toBe(`Feb 5 ${time.toLocaleTimeString()}`);
         });
     });
 });
