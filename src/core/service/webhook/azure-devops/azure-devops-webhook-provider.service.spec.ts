@@ -3,6 +3,7 @@ import { assert as sinonExpect, stub } from 'sinon';
 import Types from '../../../ioc/types';
 import Container from '../../../ioc/container';
 import IHttpClient from '../../../interface/general/http-client.interface';
+import IAzureDevopsWebhookContext from '../../../interface/webhook/azure-devops/azure-devops-webhook-context.interface';
 
 import AzureDevopsWebhookProviderService from './azure-devops-webhook-provider.service';
 
@@ -55,9 +56,21 @@ describe('azure devops webhook provider service unit test', () => {
             ]
         };
 
+        const response = {
+            id: 'id_3',
+            actionDescription: 'action_description_3',
+            url: 'url_3',
+            createdBy: { displayName: 'display_name_3' },
+            publisherInputs: { projectId: 'project_id_2' },
+            consumerInputs: { url: 'new_callback_url' },
+            createdDate: '2020-01-04T06:45:41.370Z',
+            eventDescription: 'all',
+            status: 'enabled'
+        };
+
         httpStub.get.onCall(0).resolves({ data: { id: 'project_id_2', name: 'project_name' } });
         httpStub.get.onCall(1).resolves({ data });
-        httpStub.post.resolves({ data: data[1] });
+        httpStub.post.resolves({ data: response });
     });
 
     afterEach(() => {
@@ -125,6 +138,103 @@ describe('azure devops webhook provider service unit test', () => {
 
         test('should return null when no hook found', async () => {
             expect(await service.getWebhook('project_name', 'invalid_url')).toBeNull();
+        });
+    });
+
+    describe('addWebhook', () => {
+        let context: IAzureDevopsWebhookContext;
+
+        beforeEach(() => {
+            context = {
+                publisherId: 'tfs',
+                eventType: 'event_name',
+                callback: 'new_callback_url',
+                isRelease: false
+            };
+
+            httpStub.get.onCall(2).resolves({ data: { id: 'project_id_2', name: 'project_name' } });
+        });
+
+        test('should return existing hook instead of adding new hook when possible', async () => {
+            context.callback = 'callback_url';
+
+            const result = await service.addWebhook('project_name', context);
+
+            sinonExpect.calledTwice(httpStub.get);
+            sinonExpect.notCalled(httpStub.post);
+            expect(result?.id).toBe('id_2');
+            expect(result?.name).toBe('action_description_2 by display_name_2');
+            expect(result?.url).toBe('url_2');
+            expect(result?.project).toBe('project_id_2');
+            expect(result?.callback).toBe('callback_url');
+            expect(result?.contentType).toBe('json');
+            expect(result?.events).toStrictEqual(['all']);
+            expect(result?.createdOn.getTime()).toBe(new Date('2020-01-04T06:45:41.370Z').getTime());
+            expect(result?.isActive).toBeTruthy();
+        });
+
+        test('should throw error when no matching project found', async () => {
+            httpStub.get.onCall(2).resolves({ data: null });
+
+            try {
+                await service.addWebhook('project_name', context);
+            }
+            catch {
+                return;
+            }
+            throw new Error('should not reach this line.');
+        });
+
+        test('should call correct api endpoint with authentication token for non-release hooks', async () => {
+            await service.addWebhook('project_name', context);
+
+            sinonExpect.calledOnce(httpStub.post);
+            expect(httpStub.post.args[0][0]).toBe(`${api}hooks/subscriptions?api-version=5.0`);
+            expect(httpStub.post.args[0][1].publisherId).toBe('tfs');
+            expect(httpStub.post.args[0][1].eventType).toBe('event_name');
+            expect(httpStub.post.args[0][1].consumerId).toBe('webHooks');
+            expect(httpStub.post.args[0][1].consumerActionId).toBe('httpRequest');
+            expect(httpStub.post.args[0][1].publisherInputs.projectId).toBe('project_id_2');
+            expect(httpStub.post.args[0][1].consumerInputs.url).toBe('new_callback_url');
+            expect(httpStub.post.args[0][2].headers.Authorization).toBe(`basic ${btoa(':test_azure_token')}`);
+        });
+
+        test('should call correct api endpoint with authentication token for non-release hooks', async () => {
+            const releaseApi = 'https://vsrm.dev.azure.com/yizhang9206/_apis/';
+
+            context = {
+                publisherId: 'rm',
+                eventType: 'event_name',
+                callback: 'new_callback_url',
+                isRelease: true
+            };
+
+            await service.addWebhook('project_name', context);
+
+            sinonExpect.calledOnce(httpStub.post);
+            expect(httpStub.post.args[0][0]).toBe(`${releaseApi}hooks/subscriptions?api-version=5.0`);
+            expect(httpStub.post.args[0][1].publisherId).toBe('rm');
+            expect(httpStub.post.args[0][1].eventType).toBe('event_name');
+            expect(httpStub.post.args[0][1].consumerId).toBe('webHooks');
+            expect(httpStub.post.args[0][1].consumerActionId).toBe('httpRequest');
+            expect(httpStub.post.args[0][1].publisherInputs.projectId).toBe('project_id_2');
+            expect(httpStub.post.args[0][1].consumerInputs.url).toBe('new_callback_url');
+            expect(httpStub.post.args[0][2].headers.Authorization).toBe(`basic ${btoa(':test_azure_token')}`);
+        });
+
+        test('should return hook added', async () => {
+            const result = await service.addWebhook('project_name', context);
+
+            sinonExpect.calledOnce(httpStub.post);
+            expect(result?.id).toBe('id_3');
+            expect(result?.name).toBe('action_description_3 by display_name_3');
+            expect(result?.url).toBe('url_3');
+            expect(result?.project).toBe('project_id_2');
+            expect(result?.callback).toBe('new_callback_url');
+            expect(result?.contentType).toBe('json');
+            expect(result?.events).toStrictEqual(['all']);
+            expect(result?.createdOn.getTime()).toBe(new Date('2020-01-04T06:45:41.370Z').getTime());
+            expect(result?.isActive).toBeTruthy();
         });
     });
 });
