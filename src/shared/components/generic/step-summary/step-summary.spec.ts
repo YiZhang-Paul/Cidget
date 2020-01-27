@@ -1,10 +1,8 @@
-import Vue from 'vue';
-import ElementUI from 'element-ui';
 import { shallowMount, Wrapper } from '@vue/test-utils';
 
-import StepSummary from './step-summary';
+import '../../../../element-ui-test.js';
 
-Vue.use(ElementUI);
+import StepSummary from './step-summary';
 
 describe('step summary component unit test', () => {
     let wrapper: Wrapper<StepSummary>;
