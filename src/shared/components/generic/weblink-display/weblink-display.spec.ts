@@ -1,13 +1,10 @@
-import Vue from 'vue';
-import ElementUI from 'element-ui';
 import { shallowMount, Wrapper } from '@vue/test-utils';
 import { assert as sinonExpect, spy } from 'sinon';
 
+import '../../../../element-ui-test.js';
 import { shell } from '../../../../mocks/third-party/electron';
 
 import WeblinkDisplay from './weblink-display';
-
-Vue.use(ElementUI);
 
 describe('weblink display component unit test', () => {
     let wrapper: Wrapper<WeblinkDisplay>;

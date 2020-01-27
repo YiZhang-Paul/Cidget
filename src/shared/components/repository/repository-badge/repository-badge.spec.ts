@@ -1,13 +1,10 @@
-import Vue from 'vue';
-import ElementUI from 'element-ui';
 import { shallowMount, Wrapper } from '@vue/test-utils';
 import { assert as sinonExpect, spy } from 'sinon';
 
+import '../../../../element-ui-test.js';
 import { shell } from '../../../../mocks/third-party/electron';
 
 import RepositoryBadge from './repository-badge';
-
-Vue.use(ElementUI);
 
 describe('repository badge component unit test', () => {
     let wrapper: Wrapper<RepositoryBadge>;

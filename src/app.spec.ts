@@ -147,4 +147,4 @@ describe('app component unit test', () => {
 
 function getList(wrapper: Wrapper<App>): any[] {
     return wrapper.vm['_cards'].$data.list;
-};
+}
