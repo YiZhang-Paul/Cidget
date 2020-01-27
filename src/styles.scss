@@ -1,0 +1,68 @@
+html, body {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#app {
+    width: 100vw;
+    height: 100vh;
+}
+
+.notification {
+    margin-top: 45px;
+    z-index: 0;
+}
+
+.vue-notification-wrapper {
+    margin-left: 3px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    -webkit-box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.35);
+    -moz-box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.35);
+    box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.35);
+}
+
+.notification-wrapper {
+    position: relative;
+
+    .close {
+        top: 7px;
+        right: 6px;
+        position: absolute;
+        color: lightgrey;
+        -webkit-transition: color 0.4s;
+        transition: color 0.4s;
+        cursor: pointer;
+
+        &:hover {
+            color: rgb(235, 86, 86);
+        }
+    }
+}
+
+.updated-card {
+    -webkit-animation-name: updated-notify;
+    -webkit-animation-duration: 2s;
+    animation-name: updated-notify;
+    animation-duration: 2s;
+}
+
+@-webkit-keyframes updated-notify {
+    from {
+        background-color: rgb(82, 113, 143);
+    }
+    to {
+        background-color: rgb(255, 255, 255);
+    }
+}
+
+@keyframes updated-notify {
+    from {
+        background-color: rgb(82, 113, 143);
+    }
+    to {
+        background-color: rgb(255, 255, 255);
+    }
+}

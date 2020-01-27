@@ -1,0 +1,31 @@
+.repository-info-card-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+    & > div:not(:last-child) {
+        margin-right: 18px;
+    }
+
+    i {
+        font-weight: bold;
+    }
+
+    .private, .public, .license {
+        font-size: 1.15em;
+        color: rgb(76, 88, 107);
+    }
+
+    .private {
+        color: rgb(255, 22, 22);
+    }
+
+    .license {
+        font-size: 1.05em;
+        margin-right: 1.5px;
+    }
+
+    .language {
+        margin-right: 3px;
+    }
+}

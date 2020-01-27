@@ -1,0 +1,31 @@
+{
+    "abbreviations": {
+        "language": {
+            "TS": ["typescript", "tscript", "tsx"],
+            "JS": ["javascript", "jscript", "jsx"],
+            "C#": ["csharp", "c sharp"]
+        },
+        "license": {
+            "MIT": ["the mit license", "mit license"]
+        }
+    },
+    "cidget": {
+        "server": {
+            "port": 9999
+        }
+    },
+    "cicd": {
+        "azureDevops": {
+            "url": "https://dev.azure.com/yizhang9206",
+            "token": "test_azure_token",
+            "project": "Cidget"
+        }
+    },
+    "repository": {
+        "github": {
+            "url": "https://api.github.com",
+            "token": "test_github_token",
+            "user": "yizhang-paul"
+        }
+    }
+}

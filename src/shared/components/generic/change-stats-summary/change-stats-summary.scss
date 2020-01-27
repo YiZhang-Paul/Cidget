@@ -1,0 +1,22 @@
+.change-stats-summary-container {
+    font-size: 0.9em;
+    padding-top: 2.5px;
+
+    i {
+        font-size: 0.85em;
+        font-weight: bold;
+        margin-right: 1px;
+    }
+
+    .add {
+        color: rgb(21, 177, 21);
+    }
+
+    .remove {
+        color: rgb(226, 7, 7);
+    }
+
+    .modify {
+        color: rgb(11, 100, 202);
+    }
+}

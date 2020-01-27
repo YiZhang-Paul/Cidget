@@ -1,0 +1,50 @@
+.notification-card-container {
+    $container-width: 640px;
+    $container-height: 80px;
+    $guard-inset: -99px;
+
+    width: $container-width;
+    height: $container-height;
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    background-color: white;
+    cursor: default;
+
+    .service-provider-avatar, .content {
+        margin-left: 12px;
+    }
+
+    .top-guard, .bottom-guard {
+        width: 66%;
+        height: 100px;
+        position: absolute;
+        left: calc(#{$container-width} / 5.88);
+        border: 2px solid rgb(150, 150, 150);
+        -webkit-box-shadow: inset 0px 3px 25px 3px rgb(155, 155, 155);
+        -moz-box-shadow: inset 0px 3px 25px 3px rgb(155, 155, 155);
+        box-shadow: inset 0px 3px 25px 3px rgb(155, 155, 155);
+        -webkit-transition: all 0.5s ease;
+        opacity: 0;
+        transition: all 0.5s ease;
+        transition-property: border, box-shadow, opacity;
+    }
+
+    .top-guard {
+        top: $guard-inset;
+        border-radius: 0 0 40px 40px;
+    }
+
+    .bottom-guard {
+        bottom: $guard-inset;
+        border-radius: 40px 40px 0 0;
+    }
+
+    &:hover .top-guard, &:hover .bottom-guard {
+        border: 2px solid rgb(31, 122, 207);
+        -webkit-box-shadow: inset 0px 3px 25px 3px rgb(0, 132, 255);
+        -moz-box-shadow: inset 0px 3px 25px 3px rgb(0, 132, 255);
+        box-shadow: inset 0px 3px 25px 3px rgb(0, 132, 255);
+        opacity: 1;
+    }
+}
