@@ -18,9 +18,8 @@ socket.on('azure-devops-release', (payload: any) => {
     Store.store.dispatch(action, payload);
 });
 
-socket.on('github-push', (data: any) => {
+socket.on('github-push', (payload: any) => {
     const action = `${Store.githubStoreName}/addCommit`;
-    const payload = JSON.parse(data.payload);
     Store.store.dispatch(action, payload);
 });
 
