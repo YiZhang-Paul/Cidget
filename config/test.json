@@ -11,6 +11,7 @@
     },
     "cidget": {
         "server": {
+            "host": "test_host",
             "port": 9999
         }
     },
