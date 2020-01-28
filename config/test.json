@@ -18,8 +18,7 @@
     "cicd": {
         "azureDevops": {
             "url": "https://dev.azure.com/yizhang9206",
-            "token": "test_azure_token",
-            "project": "Cidget"
+            "token": "test_azure_token"
         }
     },
     "repository": {
