@@ -4,12 +4,15 @@
     align-items: center;
     margin-top: 2px;
 
-    .name {
-        cursor: pointer;
+    .committer-name {
+        max-width: 75px;
         font-size: 1.03em;
-        color: rgb(16, 108, 230);
 
-        &:hover {
+        .url {
+            color: rgb(16, 108, 230);
+        }
+
+        &:hover .url {
             color: rgb(151, 21, 93);
         }
     }
@@ -23,6 +26,12 @@
     }
 
     .branch-badge {
+        margin-left: 4px;
+        margin-right: 3px;
         margin-top: 3px;
+    }
+
+    .repository-name {
+        max-width: 155px;
     }
 }

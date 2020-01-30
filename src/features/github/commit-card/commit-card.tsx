@@ -1,6 +1,5 @@
 import { Component, Prop } from 'vue-property-decorator';
 import * as tsx from 'vue-tsx-support';
-import { shell } from 'electron';
 
 import ICommit from '../../../core/interface/general/commit.interface';
 import IGithubUser from '../../../core/interface/repository/github/github-user.interface';
@@ -33,10 +32,6 @@ export default class CommitCard extends tsx.Component<any> {
         return `${this.commit.repository.url}/tree/${this.commit.branch}`;
     }
 
-    private toProfile(): void {
-        shell.openExternal(this.commit.initiator.profileUrl);
-    }
-
     public render(): any {
         const [commit, initiator] = [this.commit, this.commit.initiator];
 
@@ -56,17 +51,21 @@ export default class CommitCard extends tsx.Component<any> {
                 </div>
 
                 <div class="commit-info-container">
-                    <div>
-                        <a class="name" onClick={this.toProfile}>{initiator.name}</a>
-                        <span> pushed to </span>
-                    </div>
-
+                    <WeblinkDisplay class="committer-name"
+                        text={initiator.name}
+                        url={this.commit.initiator.profileUrl}>
+                    </WeblinkDisplay>
+                    pushed
                     <BranchBadge class="branch-badge"
                         name={commit.branch}
                         url={this.branchUrl}>
                     </BranchBadge>
+                    @
+                    <RepositoryBadge class="repository-name"
+                        repository={commit.repository}
+                        showPopover={false}>
+                    </RepositoryBadge>
 
-                    <RepositoryBadge repository={commit.repository} showPopover={false} />
                     <RelativeTimeDisplay time={commit.time} />
                 </div>
             </NotificationCard>
