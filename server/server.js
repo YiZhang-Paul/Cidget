@@ -5,8 +5,8 @@ const socket = require('socket.io')(server);
 const bodyParser = require('body-parser');
 const { port } = config.get('cidget').server;
 
-express.use(bodyParser.urlencoded({ extended: false }));
-express.use(bodyParser.json());
+express.use(bodyParser.json({ limit: '50mb' }));
+express.use(bodyParser.urlencoded({ limit: '50mb', extended: false }));
 server.listen(port, () => console.log(`listening on port ${port}.`));
 socket.on('connection', () => console.log('socket connected.'));
 
