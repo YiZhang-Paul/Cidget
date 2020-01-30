@@ -1,11 +1,18 @@
 .weblink-display-container {
     font-size: 0.85em;
-    margin-bottom: 2px;
-    padding: 2.5px 6px;
+    padding: 3px 6px 4.5px 6px;
     border-radius: 4px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+
+    .url {
+        cursor: pointer;
+        color: rgb(68, 68, 68);
+    }
+}
+
+.border-mode {
     -webkit-box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2);
     -moz-box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2);
     box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2);
@@ -15,10 +22,5 @@
         -webkit-box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.6);
         -moz-box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.6);
         box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.6);
-    }
-
-    .url {
-        cursor: pointer;
-        color: rgb(68, 68, 68);
     }
 }
