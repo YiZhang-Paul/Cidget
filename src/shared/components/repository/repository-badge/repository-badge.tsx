@@ -26,6 +26,7 @@ export default class RepositoryBadge extends tsx.Component<any> {
                 <WeblinkDisplay class="repository-name"
                     text={this.repository.name}
                     url={this.repository.url}
+                    borderless={true}
                     slot="reference">
                 </WeblinkDisplay>
 

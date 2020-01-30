@@ -53,14 +53,15 @@ export default class CommitCard extends tsx.Component<any> {
                 <div class="commit-info-container">
                     <WeblinkDisplay class="committer-name"
                         text={initiator.name}
-                        url={this.commit.initiator.profileUrl}>
+                        url={this.commit.initiator.profileUrl}
+                        borderless={true}>
                     </WeblinkDisplay>
-                    pushed
+                    <div>pushed</div>
                     <BranchBadge class="branch-badge"
                         name={commit.branch}
                         url={this.branchUrl}>
                     </BranchBadge>
-                    @
+                    <div>@</div>
                     <RepositoryBadge class="repository-name"
                         repository={commit.repository}
                         showPopover={false}>
