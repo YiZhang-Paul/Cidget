@@ -1,39 +1,17 @@
 import { Component, Ref } from 'vue-property-decorator';
 import * as tsx from 'vue-tsx-support';
-import { mapGetters } from 'vuex';
 
-import Store from './store';
-import ICiBuild from './core/interface/general/ci-build.interface';
-import ICdRelease from './core/interface/general/cd-release.interface';
-import ICommit from './core/interface/general/commit.interface';
-import IPullRequest from './core/interface/general/pull-request.interface';
-import IGithubUser from './core/interface/repository/github/github-user.interface';
 import BuildPipelineCard from './features/azure-devops/build-pipeline-card/build-pipeline-card';
 import ReleasePipelineCard from './features/azure-devops/release-pipeline-card/release-pipeline-card';
 import CommitCard from './features/github/commit-card/commit-card';
 import PullRequestCard from './features/github/pull-request-card/pull-request-card';
 
-@Component({
-    computed: {
-        ...mapGetters(Store.azureDevopsStoreName, {
-            _ciBuilds: 'getCiBuilds',
-            _cdReleases: 'getCdReleases'
-        }),
-        ...mapGetters(Store.githubStoreName, {
-            _commits: 'getCommits',
-            _pullRequests: 'getPullRequests'
-        })
-    }
-})
+@Component
 export default class App extends tsx.Component<any> {
     @Ref('cards') private _cards: any;
-    private _ciBuilds!: ICiBuild[];
-    private _cdReleases!: ICdRelease[];
-    private _commits!: ICommit<IGithubUser>[];
-    private _pullRequests!: IPullRequest<IGithubUser>[];
 
     private getNotificationCard(props: any): any {
-        const { type, id } = props.item.data;
+        const { type, id, model } = props.item.data;
         const identifier = `${type}_card_${id}`;
         const close = <i class="fas fa-times-circle close" onClick={props.close}></i>;
 
@@ -42,27 +20,25 @@ export default class App extends tsx.Component<any> {
 
             return null;
         }
-        const card = this.getEventCard(type, id, identifier);
 
-        return card ? <div class="notification-wrapper">{close}{card}</div> : null;
+        return (
+            <div class="notification-wrapper">
+                {close}
+                {this.getEventCard(type, identifier, model)}
+            </div>
+        );
     }
 
-    private getEventCard(type: string, id: string, className: string): any {
-        let data: any = null;
-
+    private getEventCard(type: string, className: string, model: any): any {
         switch (type) {
             case 'ci-build':
-                data = this._ciBuilds.find(_ => _.id === id);
-                return data ? <BuildPipelineCard class={className} build={data} /> : null;
+                return <BuildPipelineCard class={className} build={model} />;
             case 'cd-release':
-                data = this._cdReleases.find(_ => _.id === id);
-                return data ? <ReleasePipelineCard class={className} release={data} /> : null;
+                return <ReleasePipelineCard class={className} release={model} />;
             case 'commit':
-                data = this._commits.find(_ => _.id === id);
-                return data ? <CommitCard class={className} commit={data} /> : null;
+                return <CommitCard class={className} commit={model} />;
             case 'pull-request':
-                data = this._pullRequests.find(_ => _.id === id);
-                return data ? <PullRequestCard class={className} pullRequest={data} /> : null;
+                return <PullRequestCard class={className} pullRequest={model} />;
         }
     }
 

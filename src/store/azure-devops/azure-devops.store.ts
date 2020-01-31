@@ -43,7 +43,7 @@ const actions = {
         Vue.notify({
             group: 'notification',
             duration: 12000,
-            data: { type: 'ci-build', id: build.id }
+            data: { type: 'ci-build', id: build.id, model: build }
         });
     },
     async addCdRelease(context: ActionContext<State, any>, payload: any): Promise<void> {
@@ -60,7 +60,7 @@ const actions = {
         Vue.notify({
             group: 'notification',
             duration: release.status === 'needs approval' ? -1 : 12000,
-            data: { type: 'cd-release', id: release.id }
+            data: { type: 'cd-release', id: release.id, model: release }
         });
     }
 };

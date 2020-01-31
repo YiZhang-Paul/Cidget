@@ -43,7 +43,7 @@ const actions = {
         Vue.notify({
             group: 'notification',
             duration: 12000,
-            data: { type: 'commit', id: push.id }
+            data: { type: 'commit', id: push.id, model: push }
         });
     },
     async addPullRequest(context: ActionContext<State, any>, payload: any): Promise<void> {
@@ -60,7 +60,7 @@ const actions = {
         Vue.notify({
             group: 'notification',
             duration: shouldPersist ? -1 : 12000,
-            data: { type: 'pull-request', id: pullRequest.id }
+            data: { type: 'pull-request', id: pullRequest.id, model: pullRequest }
         });
     }
 };
