@@ -16,8 +16,8 @@ html, body {
 }
 
 .vue-notification-wrapper {
-    margin-left: 3px;
-    margin-bottom: 5px;
+    margin-left: 3px !important;
+    margin-bottom: 5px !important;
     border-radius: 5px;
     -webkit-box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.35);
     -moz-box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.35);
