@@ -14,7 +14,7 @@ import './release-pipeline-card.scss';
 export default class ReleasePipelineCard extends tsx.Component<any> {
     @Prop() public release!: ICdRelease;
 
-    private get stages(): { name: string; scale: number }[] {
+    private get stages(): { name: string; status: string; scale: number; isActive: boolean }[] {
         const scales = new Map<string, number>([
             ['approved', 1],
             ['rejected', 2],
@@ -32,7 +32,9 @@ export default class ReleasePipelineCard extends tsx.Component<any> {
 
             return ({
                 name: stage.name,
-                scale: scales.get(status) ?? 0
+                status,
+                scale: scales.get(status) ?? 0,
+                isActive
             });
         });
     }
@@ -43,6 +45,7 @@ export default class ReleasePipelineCard extends tsx.Component<any> {
 
     public render(): any {
         const className = `release-name ${this.release.status === 'abandoned' ? 'abandoned' : ''}`;
+        const blinkModeOn = this.stages.slice(-1)[0]?.status !== 'succeeded';
 
         return (
             <NotificationCard logoUrl={require('../../../../public/images/azure-devops-logo.png')}>
@@ -62,7 +65,7 @@ export default class ReleasePipelineCard extends tsx.Component<any> {
                         <span>{this.release.status}</span>
                     </div>
 
-                    <StepSummary class="stages-summary" steps={this.stages} />
+                    <StepSummary class="stages-summary" steps={this.stages} blinkMode={blinkModeOn} />
                 </div>
 
                 <div class="release-pipeline-info-container">
