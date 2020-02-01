@@ -13,6 +13,7 @@ type State = {
     cdReleases: ICdRelease[]
 };
 
+let autoNotifyRelease: boolean;
 let buildService: AzureDevopsCiBuildService;
 let releaseService: AzureDevopsCdReleaseService;
 
@@ -47,7 +48,7 @@ const actions = {
         });
     },
     async addCdRelease(context: ActionContext<State, any>, payload: any): Promise<void> {
-        const { commit, getters } = context;
+        const { commit, getters, dispatch } = context;
         const release = await releaseService.toCdRelease(payload);
         const action = getters.hasCdRelease(release) ? 'updateCdRelease' : 'addCdRelease';
         const lastStageStatus = release.stages?.slice(-1)[0]?.status ?? 'succeeded';
@@ -56,12 +57,31 @@ const actions = {
             return;
         }
         commit(action, release);
+        autoNotifyRelease = false;
+
+        if (release.status === 'approved') {
+            await dispatch('sendAutoReleaseNotification', payload);
+        }
 
         Vue.notify({
             group: 'notification',
             duration: release.status === 'needs approval' ? -1 : 12000,
             data: { type: 'cd-release', id: release.id, model: release }
         });
+    },
+    async sendAutoReleaseNotification(context: ActionContext<State, any>, payload: any): Promise<void> {
+        const { dispatch } = context;
+        autoNotifyRelease = true;
+
+        setTimeout(async () => {
+            if (!autoNotifyRelease) {
+                return;
+            }
+            const clone = JSON.parse(JSON.stringify(payload));
+            clone.resource.approval.status = 'queued';
+            await dispatch('addCdRelease', clone);
+            autoNotifyRelease = false;
+        }, 3000);
     }
 };
 
@@ -85,6 +105,7 @@ const getters = {
 };
 
 export const createStore = () => {
+    autoNotifyRelease = false;
     buildService = Container.get<AzureDevopsCiBuildService>(Types.AzureDevopsCiBuildService);
     releaseService = Container.get<AzureDevopsCdReleaseService>(Types.AzureDevopsCdReleaseService);
     const state: State = { ciBuilds: [], cdReleases: [] };
