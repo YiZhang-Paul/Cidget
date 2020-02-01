@@ -24,7 +24,7 @@ export default class StepSummary extends tsx.Component<any> {
     private getColor(scale: number): string {
         const colors = ['purple', 'teal', 'grey', 'blue', 'green', 'orange', 'red'];
 
-        return colors[Math.min(colors.length - 1, Math.abs(scale))];
+        return colors[Math.min(colors.length - 1, Math.max(0, scale))];
     }
 
     public data(): any {
