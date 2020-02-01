@@ -47,6 +47,7 @@ describe('azure devops store unit test', () => {
     afterEach(() => {
         Container.restore();
         notifySpy.restore();
+        jest.useRealTimers();
     });
 
     describe('addCiBuild', () => {
@@ -219,6 +220,59 @@ describe('azure devops store unit test', () => {
 
             sinonExpect.calledOnce(notifySpy);
             expect(notifySpy.args[0][0].duration).toBe(-1);
+        });
+
+        test('should add auto notification when release is approved', async () => {
+            jest.useFakeTimers();
+            releaseServiceStub.toCdRelease.onCall(0).resolves(release);
+            releaseServiceStub.toCdRelease.onCall(1).resolves({ id: '147', status: 'in progress' });
+            store.state.cdReleases = [];
+
+            await store.dispatch('addCdRelease', { resource: { approval: {} } });
+
+            sinonExpect.calledOnce(notifySpy);
+            expect(store.state.cdReleases.length).toBe(1);
+            expect(store.state.cdReleases[0].status).toBe('approved');
+
+            jest.advanceTimersByTime(4000);
+
+            sinonExpect.calledTwice(notifySpy);
+            expect(store.state.cdReleases.length).toBe(1);
+            expect(store.state.cdReleases[0].status).toBe('in progress');
+        });
+    });
+
+    describe('notifyApproval', () => {
+        let release: any;
+
+        beforeEach(() => {
+            jest.useFakeTimers();
+            release = { id: '147', status: 'approved' };
+        });
+
+        test('should not add auto notification when another event happens during delay', async () => {
+            releaseServiceStub.toCdRelease.resolves(Object.assign({ id: '147', status: 'rejected' }));
+            store.state.cdReleases = [];
+
+            store.dispatch('notifyApproval', release);
+            await store.dispatch('addCdRelease', {});
+            jest.advanceTimersByTime(4000);
+
+            sinonExpect.calledTwice(notifySpy);
+            expect(store.state.cdReleases.length).toBe(1);
+            expect(store.state.cdReleases[0].status).toBe('rejected');
+        });
+
+        test('should throw error when status is invalid', () => {
+            release.status = 'rejected';
+
+            try {
+                store.dispatch('notifyApproval', release);
+            }
+            catch {
+                return;
+            }
+            throw new Error('should not reach this line.');
         });
     });
 });
