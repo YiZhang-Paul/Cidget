@@ -9,7 +9,7 @@ module.exports = {
         '!**/mocks/**',
         '!src/**/*.spec.{js,ts}',
         '!src/background.ts',
-        '!src/element-ui.js',
+        '!src/element-ui-non-test.js',
         '!src/main.ts',
         '!src/socket.ts',
         '!src/store/index.ts'
