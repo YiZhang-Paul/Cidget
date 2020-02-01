@@ -1,6 +1,7 @@
-import { shallowMount, Wrapper } from '@vue/test-utils';
+import { mount, Wrapper } from '@vue/test-utils';
 import { assert as sinonExpect, spy } from 'sinon';
 
+import '../../../element-ui-test.js';
 import { shell } from '../../../mocks/third-party/electron';
 
 import CommitCard from './commit-card';
@@ -29,7 +30,7 @@ describe('commit card card component unit test', () => {
             RelativeTimeDisplay: '<div></div>'
         };
 
-        wrapper = shallowMount(CommitCard, { propsData: { commit }, stubs });
+        wrapper = mount(CommitCard, { propsData: { commit }, stubs });
         shellSpy = spy(shell, 'openExternal');
     });
 
@@ -43,7 +44,7 @@ describe('commit card card component unit test', () => {
     });
 
     test('should open external link', () => {
-        wrapper.find('.name').element.click();
+        wrapper.find('.committer-name').find('.url').element.click();
 
         sinonExpect.calledOnce(shellSpy);
         sinonExpect.calledWith(shellSpy, 'profile_url');

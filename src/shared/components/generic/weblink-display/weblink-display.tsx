@@ -10,6 +10,7 @@ export default class WeblinkDisplay extends tsx.Component<any> {
     @Prop() public tooltip!: string;
     @Prop() public url!: string;
     @Prop({ default: 'top-start' }) public tooltipPosition!: string;
+    @Prop({ default: false }) public borderless!: boolean;
     @Prop({ default: false }) public isDarkMode!: boolean;
     @Ref('container') public container!: HTMLElement;
 
@@ -33,8 +34,10 @@ export default class WeblinkDisplay extends tsx.Component<any> {
     }
 
     public render(): any {
+        const className = `weblink-display-container ${this.borderless ? '' : 'border-mode'}`;
+
         return (
-            <div class="weblink-display-container" ref="container">
+            <div class={className} ref="container">
                 <el-tooltip disabled={!this.$data.showTooltip}
                     placement={this.tooltipPosition}
                     effect={this.colorMode}

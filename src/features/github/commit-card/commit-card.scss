@@ -1,15 +1,21 @@
 .commit-message-container, .commit-info-container {
+    border: 1px solid transparent;
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin-top: 2px;
 
-    .name {
-        cursor: pointer;
+    .committer-name {
+        padding-left: 0;
+        padding-right: 0px;
+        margin-right: 5px;
+        max-width: 85px;
         font-size: 1.03em;
-        color: rgb(16, 108, 230);
 
-        &:hover {
+        .url {
+            color: rgb(16, 108, 230);
+        }
+
+        &:hover .url {
             color: rgb(151, 21, 93);
         }
     }
@@ -23,6 +29,13 @@
     }
 
     .branch-badge {
+        margin-left: 5px;
+        margin-right: 4px;
         margin-top: 3px;
+    }
+
+    .repository-name {
+        padding-left: 0;
+        max-width: 155px;
     }
 }

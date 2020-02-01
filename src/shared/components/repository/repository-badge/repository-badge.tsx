@@ -1,9 +1,9 @@
 import { Component, Prop } from 'vue-property-decorator';
 import * as tsx from 'vue-tsx-support';
-import { shell } from 'electron';
 
 import IRepository from '../../../../core/interface/repository/repository.interface';
 import RepositoryInfoCard from '../repository-info-card/repository-info-card';
+import WeblinkDisplay from '../../generic/weblink-display/weblink-display';
 
 import './repository-badge.scss';
 
@@ -14,10 +14,6 @@ export default class RepositoryBadge extends tsx.Component<any> {
     @Prop({ default: 100 }) public popoverWidth!: number;
     @Prop({ default: 'bottom' }) public popoverPosition!: string;
 
-    private toRepository(): void {
-        shell.openExternal(this.repository.url);
-    }
-
     public render(): any {
         return (
             <el-popover class="repository-badge-container"
@@ -27,9 +23,12 @@ export default class RepositoryBadge extends tsx.Component<any> {
                 trigger="hover">
 
                 <RepositoryInfoCard repository={this.repository} />
-                <a class="repository-name" onClick={this.toRepository} slot="reference">
-                    {` @${this.repository.name}`}
-                </a>
+                <WeblinkDisplay class="repository-name"
+                    text={this.repository.name}
+                    url={this.repository.url}
+                    borderless={true}
+                    slot="reference">
+                </WeblinkDisplay>
 
             </el-popover>
         );

@@ -35,19 +35,24 @@ const actions = {
         const { commit, getters } = context;
         const push = await commitService.toCommit(payload);
 
-        if (!getters.hasCommit(push) && push.initiator.name !== 'web-flow') {
-            commit('addCommit', push);
-
-            Vue.notify({
-                group: 'notification',
-                duration: 12000,
-                data: { type: 'commit', id: push.id }
-            });
+        if (getters.hasCommit(push) || push.initiator.name === 'web-flow') {
+            return;
         }
+        commit('addCommit', push);
+
+        Vue.notify({
+            group: 'notification',
+            duration: 12000,
+            data: { type: 'commit', id: push.id, model: push }
+        });
     },
     async addPullRequest(context: ActionContext<State, any>, payload: any): Promise<void> {
         const { commit, getters } = context;
         const pullRequest = await pullRequestService.toPullRequest(payload);
+
+        if (pullRequest.action === 'review_request_removed') {
+            return;
+        }
         const shouldPersist = pullRequest.action !== 'closed' && pullRequest.action !== 'merged';
         const action = getters.hasPullRequest(pullRequest) ? 'updatePullRequest' : 'addPullRequest';
         commit(action, pullRequest);
@@ -55,7 +60,7 @@ const actions = {
         Vue.notify({
             group: 'notification',
             duration: shouldPersist ? -1 : 12000,
-            data: { type: 'pull-request', id: pullRequest.id }
+            data: { type: 'pull-request', id: pullRequest.id, model: pullRequest }
         });
     }
 };

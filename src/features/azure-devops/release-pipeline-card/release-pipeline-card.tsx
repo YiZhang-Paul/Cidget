@@ -14,7 +14,7 @@ import './release-pipeline-card.scss';
 export default class ReleasePipelineCard extends tsx.Component<any> {
     @Prop() public release!: ICdRelease;
 
-    private get stages(): { name: string; scale: number }[] {
+    private get stages(): { name: string; status: string; scale: number; isActive: boolean }[] {
         const scales = new Map<string, number>([
             ['approved', 1],
             ['rejected', 2],
@@ -32,9 +32,18 @@ export default class ReleasePipelineCard extends tsx.Component<any> {
 
             return ({
                 name: stage.name,
-                scale: scales.get(status) ?? 0
+                status,
+                scale: scales.get(status) ?? 0,
+                isActive
             });
         });
+    }
+
+    private get blinkModeOn(): boolean {
+        if (['abandoned', 'rejected', 'canceled'].includes(this.release.status)) {
+            return false;
+        }
+        return this.stages.slice(-1)[0]?.status !== 'succeeded';
     }
 
     private toPipeline(): void {
@@ -62,7 +71,10 @@ export default class ReleasePipelineCard extends tsx.Component<any> {
                         <span>{this.release.status}</span>
                     </div>
 
-                    <StepSummary class="stages-summary" steps={this.stages} />
+                    <StepSummary class="stages-summary"
+                        steps={this.stages}
+                        blinkMode={this.blinkModeOn}>
+                    </StepSummary>
                 </div>
 
                 <div class="release-pipeline-info-container">

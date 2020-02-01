@@ -13,6 +13,7 @@ type State = {
     cdReleases: ICdRelease[]
 };
 
+let autoNotifyAfterApproval: boolean;
 let buildService: AzureDevopsCiBuildService;
 let releaseService: AzureDevopsCdReleaseService;
 
@@ -43,25 +44,48 @@ const actions = {
         Vue.notify({
             group: 'notification',
             duration: 12000,
-            data: { type: 'ci-build', id: build.id }
+            data: { type: 'ci-build', id: build.id, model: build }
         });
     },
-    async addCdRelease(context: ActionContext<State, any>, payload: any): Promise<void> {
-        const { commit, getters } = context;
+    async addCdRelease(context: ActionContext<State, any>, payload: any): Promise<any> {
+        const { commit, getters, dispatch } = context;
         const release = await releaseService.toCdRelease(payload);
-        const action = getters.hasCdRelease(release) ? 'updateCdRelease' : 'addCdRelease';
         const lastStageStatus = release.stages?.slice(-1)[0]?.status ?? 'succeeded';
+        const isApproval = release.status === 'approved';
+        const shouldSkipSuccess = release.status === 'succeeded' && lastStageStatus !== 'succeeded';
 
-        if (release.status === 'succeeded' && lastStageStatus !== 'succeeded') {
-            return;
+        if (isApproval || shouldSkipSuccess) {
+            return isApproval ? dispatch('notifyApproval', release) : null;
         }
+        const action = getters.hasCdRelease(release) ? 'updateCdRelease' : 'addCdRelease';
         commit(action, release);
+        autoNotifyAfterApproval = false;
 
         Vue.notify({
             group: 'notification',
             duration: release.status === 'needs approval' ? -1 : 12000,
-            data: { type: 'cd-release', id: release.id }
+            data: { type: 'cd-release', id: release.id, model: release }
         });
+    },
+    notifyApproval(context: ActionContext<State, any>, release: ICdRelease): void {
+        if (release.status !== 'approved') {
+            throw new Error('Invalid status for approval notification');
+        }
+        const { commit } = context;
+        const [group, duration, type, id] = ['notification', 12000, 'cd-release', release.id];
+        commit('addCdRelease', release);
+        Vue.notify({ group, duration, data: { type, id, model: release } });
+        autoNotifyAfterApproval = true;
+
+        setTimeout(() => {
+            if (!autoNotifyAfterApproval) {
+                return;
+            }
+            const clone = Object.assign({}, release, { status: 'in progress' });
+            commit('updateCdRelease', clone);
+            Vue.notify({ group, duration, data: { type, id, model: clone } });
+            autoNotifyAfterApproval = false;
+        }, 3000);
     }
 };
 
@@ -85,6 +109,7 @@ const getters = {
 };
 
 export const createStore = () => {
+    autoNotifyAfterApproval = false;
     buildService = Container.get<AzureDevopsCiBuildService>(Types.AzureDevopsCiBuildService);
     releaseService = Container.get<AzureDevopsCdReleaseService>(Types.AzureDevopsCdReleaseService);
     const state: State = { ciBuilds: [], cdReleases: [] };

@@ -1,5 +1,6 @@
 import VueNotification from 'vue-notification';
 import { createLocalVue, mount, Wrapper } from '@vue/test-utils';
+import { assert as sinonExpect, stub } from 'sinon';
 
 import Store from './store';
 import App from './app';
@@ -110,6 +111,10 @@ describe('app component unit test', () => {
 
     test('should update existing notification for same event', () => {
         jest.useFakeTimers();
+        const classListStub = stub({ add() {}, remove() {} });
+        const elements = [{ classList: classListStub }, { classList: classListStub }];
+        const getElementsStub = stub((global as any).document, 'getElementsByClassName');
+        getElementsStub.returns(elements);
         Store.store.state[Store.githubStoreName].pullRequests = [{ id: 'pull_request_id', status: 'status_1' }];
 
         vue.notify({
@@ -137,7 +142,10 @@ describe('app component unit test', () => {
 
         jest.advanceTimersByTime(5000);
         jest.useRealTimers();
+        getElementsStub.restore();
 
+        sinonExpect.callCount(classListStub.remove, 2 * elements.length);
+        sinonExpect.callCount(classListStub.add, 2 * elements.length);
         expect(getList(wrapper).length).toBe(1);
         expect(getList(wrapper)[0].id).toBe(notificationId);
         expect(getList(wrapper)[0].data.type).toBe('pull-request');

@@ -1,11 +1,14 @@
 .repository-badge-container {
 
     .repository-name {
-        cursor: pointer;
+        max-width: inherit;
         font-size: 1.03em;
-        color: rgb(16, 108, 230);
 
-        &:hover {
+        .url {
+            color: rgb(16, 108, 230);
+        }
+
+        &:hover .url {
             color: rgb(151, 21, 93);
         }
     }
