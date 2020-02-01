@@ -89,7 +89,7 @@ describe('azure devops cd release service unit test', () => {
             sinonExpect.calledOnce(httpStub.get);
             expect(result.id).toBe('2-Release-4');
             expect(result.name).toBe('Release-4');
-            expect(result.status).toBe('queued');
+            expect(result.status).toBe('in progress');
             expect(result.createdOn.getTime()).toBe(new Date('2020-01-04T06:43:15.370Z').getTime());
             expect(result.url).toBe('release_resource_url');
             expect(result.commits).toBe(3);
