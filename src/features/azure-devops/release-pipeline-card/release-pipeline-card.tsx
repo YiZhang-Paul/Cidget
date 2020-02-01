@@ -39,13 +39,19 @@ export default class ReleasePipelineCard extends tsx.Component<any> {
         });
     }
 
+    private get blinkModeOn(): boolean {
+        if (['abandoned', 'rejected', 'canceled'].includes(this.release.status)) {
+            return false;
+        }
+        return this.stages.slice(-1)[0]?.status !== 'succeeded';
+    }
+
     private toPipeline(): void {
         shell.openExternal(this.release.pipeline.url);
     }
 
     public render(): any {
         const className = `release-name ${this.release.status === 'abandoned' ? 'abandoned' : ''}`;
-        const blinkModeOn = this.stages.slice(-1)[0]?.status !== 'succeeded';
 
         return (
             <NotificationCard logoUrl={require('../../../../public/images/azure-devops-logo.png')}>
@@ -65,7 +71,10 @@ export default class ReleasePipelineCard extends tsx.Component<any> {
                         <span>{this.release.status}</span>
                     </div>
 
-                    <StepSummary class="stages-summary" steps={this.stages} blinkMode={blinkModeOn} />
+                    <StepSummary class="stages-summary"
+                        steps={this.stages}
+                        blinkMode={this.blinkModeOn}>
+                    </StepSummary>
                 </div>
 
                 <div class="release-pipeline-info-container">
