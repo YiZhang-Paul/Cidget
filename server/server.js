@@ -30,6 +30,10 @@ express.post('/github/pull_request', (req, res) => {
     emit('github-pull-request', req, res);
 });
 
+express.post('/github/pull_request/check', (req, res) => {
+    emit('github-pull-request-check', req, res);
+});
+
 function emit(event, req, res) {
     socket.emit(event, req.body);
     res.sendStatus(200);

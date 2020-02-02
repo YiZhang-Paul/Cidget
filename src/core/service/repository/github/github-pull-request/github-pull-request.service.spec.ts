@@ -136,6 +136,14 @@ describe('github pull request service unit test', () => {
             expect(result.merged).toBeTruthy();
         });
 
+        test('should convert payload into updated pull request', async () => {
+            payload.action = 'synchronize';
+
+            const result = await service.toPullRequest(payload);
+
+            expect(result.action).toBe('updated');
+        });
+
         test('should properly set default values for missing fields', async () => {
             httpStub.get.onCall(0).resolves({ data: null });
             httpStub.get.onCall(1).resolves({ data: null });

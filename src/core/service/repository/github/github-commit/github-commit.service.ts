@@ -2,9 +2,12 @@ import { injectable, inject, named } from 'inversify';
 
 import Types from '../../../../ioc/types';
 import ICommit from '../../../../interface/general/commit.interface';
+import ICommitStatus from '../../../../interface/general/commit-status.interface';
 import IGithubUser from '../../../../interface/repository/github/github-user.interface';
 import IHttpClient from '../../../../interface/general/http-client.interface';
 import IRepositoryProvider from '../../../../interface/repository/repository-provider.interface';
+
+const { url, user } = require('config').get('repository').github;
 
 @injectable()
 export default class GithubCommitService {
@@ -17,6 +20,14 @@ export default class GithubCommitService {
     ) {
         this._httpClient = httpClient;
         this._repositoryProvider = repositoryProvider;
+    }
+
+    public async getStatus(name: string, ref: string): Promise<ICommitStatus> {
+        const endpoint = `${url}/repos/${user}/${name}/commits/${ref}/status`;
+        const { data } = await this._httpClient.get(endpoint);
+        const { sha, state } = data;
+
+        return ({ ref: sha, status: state }) as ICommitStatus;
     }
 
     public async toCommit(payload: any): Promise<ICommit<IGithubUser>> {
