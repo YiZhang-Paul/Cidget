@@ -66,12 +66,13 @@ const actions = {
         const { commit, state } = context;
         const { repository, sha } = payload;
         const { ref, status } = await commitService.getStatus(repository.name, sha);
+        const isMergeable = status === 'pending' ? null : status === 'success';
         const pullRequest = state.pullRequests.find(_ => _.headCommitSha === ref);
 
-        if (!pullRequest?.isActive) {
+        if (!pullRequest || !pullRequest.isActive || pullRequest.mergeable === isMergeable) {
             return;
         }
-        pullRequest.mergeable = status === 'pending' ? null : status === 'success';
+        pullRequest.mergeable = isMergeable;
         commit('updatePullRequest', pullRequest);
 
         Vue.notify({
