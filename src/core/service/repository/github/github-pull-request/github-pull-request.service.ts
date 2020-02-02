@@ -54,6 +54,7 @@ export default class GithubPullRequestService {
             status: pull_request.state,
             diffUrl: pull_request.diff_url,
             pullRequestUrl: pull_request.html_url,
+            headCommitSha: pull_request.head.sha,
             reviewers: [],
             createdOn: new Date(pull_request.created_at),
             updatedOn: new Date(pull_request.updated_at),
