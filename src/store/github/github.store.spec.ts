@@ -107,7 +107,7 @@ describe('github store unit test', () => {
         let pullRequest: any;
 
         beforeEach(() => {
-            pullRequest = { id: '147', action: 'opened' };
+            pullRequest = { id: '147', action: 'opened', isActive: true };
             pullRequestServiceStub.toPullRequest.resolves(pullRequest);
         });
 
@@ -122,7 +122,7 @@ describe('github store unit test', () => {
         });
 
         test('should update pull request when it is already included', async () => {
-            const updated = { id: '147', action: 'merged' };
+            const updated = { id: '147', action: 'merged', isActive: false };
             store.state.pullRequests = [pullRequest];
             pullRequestServiceStub.toPullRequest.resolves(updated);
 
@@ -145,7 +145,7 @@ describe('github store unit test', () => {
         });
 
         test('should trigger notification when pull request is updated', async () => {
-            const updated = { id: '147', action: 'reopened' };
+            const updated = { id: '147', action: 'reopened', isActive: true };
             store.state.pullRequests = [pullRequest];
             pullRequestServiceStub.toPullRequest.resolves(updated);
 
@@ -157,20 +157,10 @@ describe('github store unit test', () => {
             expect(notifySpy.args[0][0].data.type).toBe('pull-request');
         });
 
-        test('should trigger temporary notification when pull request action is closed', async () => {
+        test('should trigger temporary notification when pull request is inactive', async () => {
             pullRequest.action = 'closed';
+            pullRequest.isActive = false;
             store.state.pullRequests = [];
-
-            await store.dispatch('addPullRequest', {});
-
-            sinonExpect.calledOnce(notifySpy);
-            expect(notifySpy.args[0][0].duration).toBe(12000);
-        });
-
-        test('should trigger temporary notification when pull request action is merged', async () => {
-            const updated = { id: '147', action: 'merged' };
-            store.state.pullRequests = [pullRequest];
-            pullRequestServiceStub.toPullRequest.resolves(updated);
 
             await store.dispatch('addPullRequest', {});
 
