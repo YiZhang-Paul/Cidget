@@ -52,6 +52,7 @@ export default class GithubPullRequestService {
             number: pull_request.number,
             message: pull_request.title,
             status: pull_request.state,
+            isActive: !pull_request.merged && action !== 'closed',
             diffUrl: pull_request.diff_url,
             pullRequestUrl: pull_request.html_url,
             headCommitSha: pull_request.head.sha,

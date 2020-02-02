@@ -53,13 +53,30 @@ const actions = {
         if (pullRequest.action === 'review_request_removed') {
             return;
         }
-        const shouldPersist = pullRequest.action !== 'closed' && pullRequest.action !== 'merged';
         const action = getters.hasPullRequest(pullRequest) ? 'updatePullRequest' : 'addPullRequest';
         commit(action, pullRequest);
 
         Vue.notify({
             group: 'notification',
-            duration: shouldPersist ? -1 : 12000,
+            duration: pullRequest.isActive ? -1 : 12000,
+            data: { type: 'pull-request', id: pullRequest.id, model: pullRequest }
+        });
+    },
+    async addPullRequestCheck(context: ActionContext<State, any>, payload: any): Promise<void> {
+        const { commit, state } = context;
+        const { repository, sha } = payload;
+        const { ref, status } = await commitService.getStatus(repository.name, sha);
+        const pullRequest = state.pullRequests.find(_ => _.headCommitSha === ref);
+
+        if (!pullRequest?.isActive) {
+            return;
+        }
+        pullRequest.mergeable = status === 'pending' ? null : status === 'success';
+        commit('updatePullRequest', pullRequest);
+
+        Vue.notify({
+            group: 'notification',
+            duration: -1,
             data: { type: 'pull-request', id: pullRequest.id, model: pullRequest }
         });
     }

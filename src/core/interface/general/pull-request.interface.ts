@@ -11,6 +11,7 @@ export default interface IPullRequest<TUser = IUser, TRepository = IRepository> 
     number: number;
     message: string;
     status: string;
+    isActive: boolean;
     diffUrl: string;
     pullRequestUrl: string;
     headCommitSha: string;
