@@ -47,13 +47,15 @@ const actions = {
         });
     },
     async addPullRequest(context: ActionContext<State, any>, payload: any): Promise<void> {
-        const { commit, getters } = context;
+        const { commit, state } = context;
         const pullRequest = await pullRequestService.toPullRequest(payload);
 
         if (pullRequest.action === 'review_request_removed') {
             return;
         }
-        const action = getters.hasPullRequest(pullRequest) ? 'updatePullRequest' : 'addPullRequest';
+        const existing = state.pullRequests.find(_ => _.id === pullRequest.id);
+        const action = existing ? 'updatePullRequest' : 'addPullRequest';
+        pullRequest.mergeable = existing ? existing.mergeable : pullRequest.mergeable;
         commit(action, pullRequest);
 
         Vue.notify({
