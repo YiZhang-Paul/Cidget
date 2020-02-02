@@ -19,10 +19,6 @@ export default class GithubPullRequestService {
         this._repositoryProvider = repositoryProvider;
     }
 
-    private isMergeable(state: string): boolean | null {
-        return state === 'unknown' ? null : state === 'clean';
-    }
-
     public async toPullRequest(payload: any): Promise<IPullRequest<IGithubUser>> {
         const { action, repository, pull_request } = payload;
         const user = pull_request.merged ? pull_request.merged_by : pull_request.user;
@@ -42,7 +38,7 @@ export default class GithubPullRequestService {
 
         return ({
             id: String(pull_request.id),
-            action: pull_request.merged ? 'merged' : action,
+            action: this.getAction(payload),
             initiator,
             repository: this._repositoryProvider.toRepository(repository),
             branch: {
@@ -66,5 +62,18 @@ export default class GithubPullRequestService {
             removed: pull_request.deletions,
             modified: pull_request.changed_files
         }) as IPullRequest<IGithubUser>;
+    }
+
+    private getAction(payload: any): string {
+        const { action, pull_request } = payload;
+
+        if (pull_request.merged) {
+            return 'merged';
+        }
+        return action === 'synchronize' ? 'updated' : action;
+    }
+
+    private isMergeable(state: string): boolean | null {
+        return state === 'unknown' ? null : state === 'clean';
     }
 }
