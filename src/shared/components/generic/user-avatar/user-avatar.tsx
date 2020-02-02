@@ -6,17 +6,16 @@ import './user-avatar.scss';
 @Component
 export default class UserAvatar extends tsx.Component<any> {
     @Prop() public url!: string;
-    @Prop({ default: 50 }) public size!: number;
+    @Prop({ default: 65 }) public size!: number;
     @Prop({ default: false }) public isCircle!: boolean;
     @Prop({ default: 'bottom-start' }) public popoverPosition!: number;
     @Prop({ default: 150 }) public popoverWidth!: number;
     @Prop({ default: true }) public showPopover!: boolean;
 
-    private get shape(): string {
-        return this.isCircle ? 'circle' : 'square';
-    }
-
     public render(): any {
+        const wrapperStyle = { width: `${this.size}px`, height: `${this.size}px` };
+        const avatarStyle = { 'background-image': `url('${this.url}')` };
+
         return (
             <el-popover class="user-avatar-container"
                 disabled={!this.showPopover}
@@ -25,12 +24,10 @@ export default class UserAvatar extends tsx.Component<any> {
                 trigger="hover">
 
                 {this.$slots.default}
-                <el-avatar class="avatar"
-                    src={this.url}
-                    size={this.size}
-                    shape={this.shape}
-                    slot="reference">
-                </el-avatar>
+                <div class="avatar-wrapper" style={wrapperStyle} slot="reference">
+                    <div class="avatar-overlay"></div>
+                    <div class="avatar" style={avatarStyle}></div>
+                </div>
 
             </el-popover>
         );

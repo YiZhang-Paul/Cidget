@@ -1,6 +1,36 @@
 .user-avatar-container {
 
-    .avatar {
-        border-radius: 6px;
+    .avatar-wrapper {
+        $avatar-width: 82%;
+        $avatar-border-radius: 8px;
+
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--border-color);
+        border-radius: 14px;
+        box-shadow: 5px 5px 15px var(--light-shadow-color), -5px -5px 15px var(--dark-shadow-color);
+
+        .avatar-overlay {
+            position: absolute;
+            z-index: 1;
+            width: $avatar-width;
+            height: $avatar-width;
+            border: 1px solid var(--border-color);
+            border-radius: $avatar-border-radius;
+            box-shadow: inset 5px 5px 20px rgba(60, 60, 60, 0.5), inset -5px -5px 20px rgba(185, 185, 185, 0.75);
+        }
+
+        .avatar {
+            position: absolute;
+            z-index: 0;
+            width: $avatar-width;
+            height: $avatar-width;
+            border-radius: $avatar-border-radius;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+        }
     }
 }
