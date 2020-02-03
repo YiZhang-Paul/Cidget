@@ -11,9 +11,8 @@ export default class App extends tsx.Component<any> {
     @Ref('cards') private _cards: any;
 
     private getNotificationCard(props: any): any {
-        const { type, id, model } = props.item.data;
+        const { type, id } = props.item.data;
         const identifier = `${type}_card_${id}`;
-        const close = <i class="fas fa-times-circle close" onClick={props.close}></i>;
 
         if (this.updateCard(id)) {
             this.applyEffect(identifier);
@@ -21,22 +20,19 @@ export default class App extends tsx.Component<any> {
             return null;
         }
 
-        return (
-            <div class="notification-wrapper">
-                {close}
-                {this.getEventCard(type, identifier, model)}
-            </div>
-        );
+        return <div class="notification-wrapper">{this.getEventCard(props, identifier)}</div>;
     }
 
-    private getEventCard(type: string, className: string, model: any): any {
+    private getEventCard(props: any, className: string): any {
+        const { type, model } = props.item.data;
+
         switch (type) {
             case 'ci-build':
                 return <BuildPipelineCard class={className} build={model} />;
             case 'cd-release':
                 return <ReleasePipelineCard class={className} release={model} />;
             case 'commit':
-                return <CommitCard class={className} commit={model} />;
+                return <CommitCard class={className} commit={model} removeCallback={props.close} />;
             case 'pull-request':
                 return <PullRequestCard class={className} pullRequest={model} />;
         }
