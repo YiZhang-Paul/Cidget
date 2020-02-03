@@ -1,5 +1,5 @@
 .notification-card-container {
-    $container-width: 630px;
+    $container-width: 640px;
     $container-height: 88px;
     $guard-inset: -99px;
 
@@ -7,6 +7,7 @@
     height: $container-height;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     border-radius: 5px;
     background-color: var(--main-background-color);
     cursor: default;
@@ -18,6 +19,26 @@
     .content {
         height: 70px;
         margin-left: 12px;
+    }
+
+    .actions {
+        $actions-width: 30px;
+
+        display: flex;
+        flex-direction: column;
+        margin-right: 4px;
+        width: $actions-width;
+        height: 100%;
+
+        .remove, .special, .options {
+            width: $actions-width;
+            height: 30%;
+        }
+
+        .remove {
+            height: 20%;
+            margin-bottom: calc(#{$container-height} / 100 * 20);
+        }
     }
 
     .top-guard, .bottom-guard {

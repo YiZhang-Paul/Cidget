@@ -1,5 +1,6 @@
 import { Component, Prop } from 'vue-property-decorator';
 import * as tsx from 'vue-tsx-support';
+import { shell } from 'electron';
 
 import ICommit from '../../../core/interface/general/commit.interface';
 import IGithubUser from '../../../core/interface/repository/github/github-user.interface';
@@ -32,16 +33,18 @@ export default class CommitCard extends tsx.Component<any> {
         return `${this.commit.repository.url}/tree/${this.commit.branch}`;
     }
 
-    public render(): any {
-        const [commit, initiator] = [this.commit, this.commit.initiator];
+    private toPullRequestCreation(): void {
+        shell.openExternal(`${this.commit.repository.url}/compare/${this.commit.branch}`);
+    }
 
+    public render(): any {
         return (
             <NotificationCard logoUrl={require('../../../../public/images/github-logo.png')}>
                 <div class="commit-content-container">
                     <div class="commit-message-container">
                         <WeblinkDisplay class="commit-message"
-                            text={commit.message}
-                            url={commit.commitUrl}>
+                            text={this.commit.message}
+                            url={this.commit.commitUrl}>
                         </WeblinkDisplay>
 
                         <ChangeStatsSummary class="change-summary"
@@ -53,20 +56,24 @@ export default class CommitCard extends tsx.Component<any> {
 
                     <div class="commit-info-container">
                         <BranchBadge class="branch-badge"
-                            name={commit.branch}
+                            name={this.commit.branch}
                             url={this.branchUrl}>
                         </BranchBadge>
 
                         <i class="fas fa-arrow-alt-circle-right right-arrow"></i>
 
                         <RepositoryBadge class="repository-name"
-                            repository={commit.repository}
+                            repository={this.commit.repository}
                             showPopover={false}
                             noTooltip={true}>
                         </RepositoryBadge>
 
-                        <RelativeTimeDisplay class="time" time={commit.time} />
+                        <RelativeTimeDisplay class="time" time={this.commit.time} />
                     </div>
+                </div>
+
+                <div class="create-pull-request" slot="special">
+                    <div class="icon" onClick={this.toPullRequestCreation}></div>
                 </div>
             </NotificationCard>
         );
