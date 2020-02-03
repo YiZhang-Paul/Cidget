@@ -37,37 +37,36 @@ export default class CommitCard extends tsx.Component<any> {
 
         return (
             <NotificationCard logoUrl={require('../../../../public/images/github-logo.png')}>
-                <div class="commit-message-container">
-                    <WeblinkDisplay class="commit-message"
-                        text={commit.message}
-                        url={commit.commitUrl}>
-                    </WeblinkDisplay>
+                <div class="commit-content-container">
+                    <div class="commit-message-container">
+                        <WeblinkDisplay class="commit-message"
+                            text={commit.message}
+                            url={commit.commitUrl}>
+                        </WeblinkDisplay>
 
-                    <ChangeStatsSummary class="change-summary"
-                        added={this.added}
-                        removed={this.removed}
-                        modified={this.modified}>
-                    </ChangeStatsSummary>
-                </div>
+                        <ChangeStatsSummary class="change-summary"
+                            added={this.added}
+                            removed={this.removed}
+                            modified={this.modified}>
+                        </ChangeStatsSummary>
+                    </div>
 
-                <div class="commit-info-container">
-                    <WeblinkDisplay class="committer-name"
-                        text={initiator.name}
-                        url={this.commit.initiator.profileUrl}
-                        borderless={true}>
-                    </WeblinkDisplay>
-                    <div>pushed</div>
-                    <BranchBadge class="branch-badge"
-                        name={commit.branch}
-                        url={this.branchUrl}>
-                    </BranchBadge>
-                    <div>@</div>
-                    <RepositoryBadge class="repository-name"
-                        repository={commit.repository}
-                        showPopover={false}>
-                    </RepositoryBadge>
+                    <div class="commit-info-container">
+                        <BranchBadge class="branch-badge"
+                            name={commit.branch}
+                            url={this.branchUrl}>
+                        </BranchBadge>
 
-                    <RelativeTimeDisplay time={commit.time} />
+                        <i class="fas fa-arrow-alt-circle-right right-arrow"></i>
+
+                        <RepositoryBadge class="repository-name"
+                            repository={commit.repository}
+                            showPopover={false}
+                            noTooltip={true}>
+                        </RepositoryBadge>
+
+                        <RelativeTimeDisplay class="time" time={commit.time} />
+                    </div>
                 </div>
             </NotificationCard>
         );

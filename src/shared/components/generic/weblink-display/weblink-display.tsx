@@ -10,6 +10,7 @@ export default class WeblinkDisplay extends tsx.Component<any> {
     @Prop() public tooltip!: string;
     @Prop() public url!: string;
     @Prop({ default: 'top-start' }) public tooltipPosition!: string;
+    @Prop({ default: false }) public noTooltip!: boolean;
     @Prop({ default: false }) public borderless!: boolean;
     @Prop({ default: false }) public isDarkMode!: boolean;
     @Ref('container') public container!: HTMLElement;
@@ -23,8 +24,10 @@ export default class WeblinkDisplay extends tsx.Component<any> {
     }
 
     public mounted(): void {
-        const overflow = this.container.offsetWidth < this.container.scrollWidth;
-        this.$data.showTooltip = this.tooltip || overflow;
+        if (!this.noTooltip) {
+            const overflow = this.container.offsetWidth < this.container.scrollWidth;
+            this.$data.showTooltip = this.tooltip || overflow;
+        }
     }
 
     private toUrl(): void {
@@ -44,6 +47,7 @@ export default class WeblinkDisplay extends tsx.Component<any> {
                     content={this.tooltip || this.text}>
 
                     <a class="url" onClick={this.toUrl}>
+                        {this.$slots.default}
                         {this.text}
                     </a>
                 </el-tooltip>

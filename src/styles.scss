@@ -1,9 +1,11 @@
 :root {
-    --main-background-color: rgb(225, 225, 225);
+    --main-background-color: rgb(220, 220, 220);
     --secondary-background-color: rgb(232, 232, 232);
-    --border-color: rgba(255, 255, 255, 0.2);
-    --light-shadow-color: rgba(165, 165, 165, 0.9);
-    --dark-shadow-color: rgba(230, 230, 230, 0.5);
+    --border-color: rgba(240, 240, 240, 0.4);
+    --light-shadow-color: rgba(255, 255, 255, 0.8);
+    --dark-shadow-color: rgba(94, 104, 121, 0.55);
+    --main-font-color: rgb(80, 98, 126);
+    --secondary-font-color: rgb(114, 123, 138);
 }
 
 html, body {
@@ -11,6 +13,7 @@ html, body {
     margin: 0;
     padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    user-select: none;
 }
 
 #app {
@@ -39,7 +42,7 @@ html, body {
         top: 7px;
         right: 6px;
         position: absolute;
-        color: lightgrey;
+        color: rgb(153, 153, 153);
         -webkit-transition: color 0.4s;
         transition: color 0.4s;
         cursor: pointer;

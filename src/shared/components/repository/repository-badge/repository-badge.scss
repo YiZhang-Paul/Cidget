@@ -2,14 +2,19 @@
 
     .repository-name {
         max-width: inherit;
-        font-size: 1.03em;
+
+        .repository-icon {
+            color: rgb(16, 108, 230);
+            margin-right: 1.5px;
+        }
 
         .url {
-            color: rgb(16, 108, 230);
+            color: var(--main-font-color);
+            transition: color 0.3s ease;
         }
 
         &:hover .url {
-            color: rgb(151, 21, 93);
+            color: rgb(16, 108, 230);
         }
     }
 }

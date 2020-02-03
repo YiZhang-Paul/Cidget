@@ -10,6 +10,7 @@ import './repository-badge.scss';
 @Component
 export default class RepositoryBadge extends tsx.Component<any> {
     @Prop() public repository!: IRepository;
+    @Prop({ default: true }) public noTooltip!: boolean;
     @Prop({ default: true }) public showPopover!: boolean;
     @Prop({ default: 100 }) public popoverWidth!: number;
     @Prop({ default: 'bottom' }) public popoverPosition!: string;
@@ -27,6 +28,7 @@ export default class RepositoryBadge extends tsx.Component<any> {
                     text={this.repository.name}
                     url={this.repository.url}
                     borderless={true}
+                    noTooltip={this.noTooltip}
                     slot="reference">
                 </WeblinkDisplay>
 

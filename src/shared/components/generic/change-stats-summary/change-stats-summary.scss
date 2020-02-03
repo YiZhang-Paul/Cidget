@@ -5,7 +5,11 @@
     i {
         font-size: 0.85em;
         font-weight: bold;
-        margin-right: 1px;
+        margin-right: 4px;
+        padding: 2px;
+        border: 2.5px solid var(--border-color);
+        border-radius: 50%;
+        box-shadow: inset -3px -3px 7px var(--light-shadow-color), inset 3px 3px 5px var(--dark-shadow-color);
     }
 
     .add {

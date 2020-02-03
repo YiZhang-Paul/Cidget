@@ -14,14 +14,14 @@
 
 .border-mode {
     border: 1px solid var(--border-color);
-    box-shadow: 5px 5px 15px var(--light-shadow-color), -5px -5px 15px var(--dark-shadow-color);
+    box-shadow: -3px -3px 7px var(--light-shadow-color), 3px 3px 5px var(--dark-shadow-color);
 
     &:hover {
         background-color: var(--secondary-background-color);
-        box-shadow: inset 5px 5px 15px var(--light-shadow-color), inset -5px -5px 15px var(--dark-shadow-color);
+        box-shadow: inset -3px -3px 7px var(--light-shadow-color), inset 3px 3px 5px var(--dark-shadow-color);
     }
 
     &:active {
-        box-shadow: inset 5px 5px 35px var(--light-shadow-color), inset -5px -5px 35px var(--dark-shadow-color);
+        box-shadow: inset -5px -5px 35px var(--light-shadow-color), inset 5px 5px 35px var(--dark-shadow-color);
     }
 }
