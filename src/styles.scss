@@ -38,17 +38,28 @@ html, body {
 .notification-wrapper {
     position: relative;
 
-    .close {
-        top: 7px;
-        right: 6px;
+    .close-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         position: absolute;
-        color: rgb(153, 153, 153);
-        -webkit-transition: color 0.4s;
-        transition: color 0.4s;
+        top: 4px;
+        right: 5px;
+        width: 20px;
+        height: 20px;
+        padding: 1px;
+        font-size: 0.85em;
+        background-color: rgba(228, 70, 97, 0.9);
+        border: 1px solid var(--border-color);
+        border-radius: 50%;
+        box-shadow: -3px -3px 7px var(--light-shadow-color), 3px 3px 5px var(--dark-shadow-color);
+        color: rgb(245, 245, 245);
+        transition: color 0.4s ease;
         cursor: pointer;
 
         &:hover {
-            color: rgb(235, 86, 86);
+            color: rgb(215, 215, 215);
+            box-shadow: inset -3px -3px 7px rgba(206, 35, 63, 0.9), inset 3px 3px 5px rgba(172, 28, 52, 0.9);
         }
     }
 }
