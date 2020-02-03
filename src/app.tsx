@@ -13,6 +13,7 @@ export default class App extends tsx.Component<any> {
     private getNotificationCard(props: any): any {
         const { type, id } = props.item.data;
         const identifier = `${type}_card_${id}`;
+        const close = <div onClick={props.close}><i class="fas fa-times close-icon"></i></div>;
 
         if (this.updateCard(id)) {
             this.applyEffect(identifier);
@@ -20,7 +21,12 @@ export default class App extends tsx.Component<any> {
             return null;
         }
 
-        return <div class="notification-wrapper">{this.getEventCard(props, identifier)}</div>;
+        return (
+            <div class="notification-wrapper">
+                {close}
+                {this.getEventCard(props, identifier)}
+            </div>
+        );
     }
 
     private getEventCard(props: any, className: string): any {
@@ -32,7 +38,7 @@ export default class App extends tsx.Component<any> {
             case 'cd-release':
                 return <ReleasePipelineCard class={className} release={model} />;
             case 'commit':
-                return <CommitCard class={className} commit={model} removeCallback={props.close} />;
+                return <CommitCard class={className} commit={model} />;
             case 'pull-request':
                 return <PullRequestCard class={className} pullRequest={model} />;
         }
@@ -71,7 +77,7 @@ export default class App extends tsx.Component<any> {
                 ref="cards"
                 group="notification"
                 position="top left"
-                width={640}
+                width={670}
                 scopedSlots={{ body: this.getNotificationCard }}>
             </notifications>
         );

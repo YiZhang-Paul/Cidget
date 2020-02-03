@@ -1,5 +1,5 @@
 .notification-card-container {
-    $container-width: 640px;
+    $container-width: 670px;
     $container-height: 88px;
     $guard-inset: -99px;
 
@@ -22,22 +22,22 @@
     }
 
     .actions {
-        $actions-width: 30px;
+        $actions-width: 60px;
 
         display: flex;
         flex-direction: column;
-        margin-right: 2px;
+        padding-top: 4px;
+        padding-bottom: 1px;
         width: $actions-width;
-        height: 100%;
+        height: calc(100% - 5px);
 
         .remove, .special, .options {
             width: $actions-width;
-            height: 30%;
+            height: $actions-width;
         }
 
         .remove {
-            height: 20%;
-            margin-bottom: calc(#{$container-height} / 100 * 20);
+            height: $actions-width;
         }
     }
 

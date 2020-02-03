@@ -16,7 +16,6 @@ import './commit-card.scss';
 @Component
 export default class CommitCard extends tsx.Component<any> {
     @Prop() public commit!: ICommit<IGithubUser>;
-    @Prop() public removeCallback!: () => void;
 
     private get added(): number {
         return (this.commit.added ?? []).length;
@@ -73,16 +72,14 @@ export default class CommitCard extends tsx.Component<any> {
                     </div>
                 </div>
 
-                <div class="close-commit-card" onClick={this.removeCallback} slot="remove">
-                    <i class="fas fa-times"></i>
-                </div>
+                <div class="commit-card-actions" slot="actions">
+                    <div class="open-pull-request">
+                        <div class="open-pull-request-icon" onClick={this.toPullRequestCreation}></div>
+                    </div>
 
-                <div class="create-pull-request" slot="special">
-                    <div class="icon" onClick={this.toPullRequestCreation}></div>
-                </div>
-
-                <div class="open-options" slot="options">
-                    <i class="fas fa-ellipsis-h"></i>
+                    <div class="open-options">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </div>
                 </div>
             </NotificationCard>
         );
