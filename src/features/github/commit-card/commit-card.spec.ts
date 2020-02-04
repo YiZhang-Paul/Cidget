@@ -1,5 +1,5 @@
 import { mount, Wrapper } from '@vue/test-utils';
-import { assert as sinonExpect, spy } from 'sinon';
+import { spy } from 'sinon';
 
 import '../../../element-ui-test.js';
 import { shell } from '../../../mocks/third-party/electron';
@@ -41,13 +41,6 @@ describe('commit card card component unit test', () => {
 
     test('should create component instance', () => {
         expect(wrapper.vm.$props.commit.initiator.name).toBe('yizhang');
-    });
-
-    test('should open external link', () => {
-        wrapper.find('.committer-name').find('.url').element.click();
-
-        sinonExpect.calledOnce(shellSpy);
-        sinonExpect.calledWith(shellSpy, 'profile_url');
     });
 
     test('should show correct file changes', () => {

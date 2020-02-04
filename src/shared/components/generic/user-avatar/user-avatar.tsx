@@ -7,7 +7,6 @@ import './user-avatar.scss';
 export default class UserAvatar extends tsx.Component<any> {
     @Prop() public url!: string;
     @Prop({ default: 70 }) public size!: number;
-    @Prop({ default: false }) public isCircle!: boolean;
     @Prop({ default: 'bottom-start' }) public popoverPosition!: number;
     @Prop({ default: 150 }) public popoverWidth!: number;
     @Prop({ default: true }) public showPopover!: boolean;
