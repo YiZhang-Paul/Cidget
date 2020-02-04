@@ -11,9 +11,9 @@ export default class App extends tsx.Component<any> {
     @Ref('cards') private _cards: any;
 
     private getNotificationCard(props: any): any {
-        const { type, id, model } = props.item.data;
+        const { type, id } = props.item.data;
         const identifier = `${type}_card_${id}`;
-        const close = <i class="fas fa-times-circle close" onClick={props.close}></i>;
+        const close = <div onClick={props.close}><i class="fas fa-times close-icon"></i></div>;
 
         if (this.updateCard(id)) {
             this.applyEffect(identifier);
@@ -24,12 +24,14 @@ export default class App extends tsx.Component<any> {
         return (
             <div class="notification-wrapper">
                 {close}
-                {this.getEventCard(type, identifier, model)}
+                {this.getEventCard(props, identifier)}
             </div>
         );
     }
 
-    private getEventCard(type: string, className: string, model: any): any {
+    private getEventCard(props: any, className: string): any {
+        const { type, model } = props.item.data;
+
         switch (type) {
             case 'ci-build':
                 return <BuildPipelineCard class={className} build={model} />;
@@ -75,7 +77,7 @@ export default class App extends tsx.Component<any> {
                 ref="cards"
                 group="notification"
                 position="top left"
-                width={700}
+                width={670}
                 scopedSlots={{ body: this.getNotificationCard }}>
             </notifications>
         );

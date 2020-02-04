@@ -1,6 +1,7 @@
-import { shallowMount, Wrapper } from '@vue/test-utils';
+import { mount, Wrapper } from '@vue/test-utils';
 import { assert as sinonExpect, spy } from 'sinon';
 
+import '../../../../element-ui-test.js'
 import { shell } from '../../../../mocks/third-party/electron';
 
 import BranchBadge from './branch-badge';
@@ -11,7 +12,7 @@ describe('branch badge component unit test', () => {
 
     beforeEach(() => {
         const propsData = { name: 'development', url: 'branch_url' };
-        wrapper = shallowMount(BranchBadge, { propsData });
+        wrapper = mount(BranchBadge, { propsData });
         shellSpy = spy(shell, 'openExternal');
     });
 

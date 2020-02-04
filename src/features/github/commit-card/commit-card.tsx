@@ -1,5 +1,6 @@
 import { Component, Prop } from 'vue-property-decorator';
 import * as tsx from 'vue-tsx-support';
+import { shell } from 'electron';
 
 import ICommit from '../../../core/interface/general/commit.interface';
 import IGithubUser from '../../../core/interface/repository/github/github-user.interface';
@@ -32,42 +33,53 @@ export default class CommitCard extends tsx.Component<any> {
         return `${this.commit.repository.url}/tree/${this.commit.branch}`;
     }
 
-    public render(): any {
-        const [commit, initiator] = [this.commit, this.commit.initiator];
+    private toPullRequestCreation(): void {
+        shell.openExternal(`${this.commit.repository.url}/compare/${this.commit.branch}`);
+    }
 
+    public render(): any {
         return (
             <NotificationCard logoUrl={require('../../../../public/images/github-logo.png')}>
-                <div class="commit-message-container">
-                    <WeblinkDisplay class="commit-message"
-                        text={commit.message}
-                        url={commit.commitUrl}>
-                    </WeblinkDisplay>
+                <div class="commit-content-container">
+                    <div class="commit-message-container">
+                        <WeblinkDisplay class="commit-message"
+                            text={this.commit.message}
+                            url={this.commit.commitUrl}>
+                        </WeblinkDisplay>
 
-                    <ChangeStatsSummary class="change-summary"
-                        added={this.added}
-                        removed={this.removed}
-                        modified={this.modified}>
-                    </ChangeStatsSummary>
+                        <ChangeStatsSummary class="change-summary"
+                            added={this.added}
+                            removed={this.removed}
+                            modified={this.modified}>
+                        </ChangeStatsSummary>
+                    </div>
+
+                    <div class="commit-info-container">
+                        <BranchBadge class="branch-badge"
+                            name={this.commit.branch}
+                            url={this.branchUrl}>
+                        </BranchBadge>
+
+                        <i class="fas fa-arrow-alt-circle-right right-arrow"></i>
+
+                        <RepositoryBadge class="repository-name"
+                            repository={this.commit.repository}
+                            showPopover={false}
+                            noTooltip={true}>
+                        </RepositoryBadge>
+
+                        <RelativeTimeDisplay class="time" time={this.commit.time} />
+                    </div>
                 </div>
 
-                <div class="commit-info-container">
-                    <WeblinkDisplay class="committer-name"
-                        text={initiator.name}
-                        url={this.commit.initiator.profileUrl}
-                        borderless={true}>
-                    </WeblinkDisplay>
-                    <div>pushed</div>
-                    <BranchBadge class="branch-badge"
-                        name={commit.branch}
-                        url={this.branchUrl}>
-                    </BranchBadge>
-                    <div>@</div>
-                    <RepositoryBadge class="repository-name"
-                        repository={commit.repository}
-                        showPopover={false}>
-                    </RepositoryBadge>
+                <div class="commit-card-actions" slot="actions">
+                    <div class="open-pull-request">
+                        <div class="open-pull-request-icon" onClick={this.toPullRequestCreation}></div>
+                    </div>
 
-                    <RelativeTimeDisplay time={commit.time} />
+                    <div class="open-options">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </div>
                 </div>
             </NotificationCard>
         );

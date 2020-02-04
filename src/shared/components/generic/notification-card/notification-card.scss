@@ -1,18 +1,44 @@
 .notification-card-container {
-    $container-width: 700px;
-    $container-height: 80px;
+    $container-width: 670px;
+    $container-height: 88px;
     $guard-inset: -99px;
 
     width: $container-width;
     height: $container-height;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     border-radius: 5px;
-    background-color: white;
+    background-color: var(--main-background-color);
     cursor: default;
 
-    .service-provider-avatar, .content {
+    .service-provider-avatar {
+        margin-left: 15px;
+    }
+
+    .content {
+        height: 70px;
         margin-left: 12px;
+    }
+
+    .actions {
+        $actions-width: 60px;
+
+        display: flex;
+        flex-direction: column;
+        padding-top: 4px;
+        padding-bottom: 1px;
+        width: $actions-width;
+        height: calc(100% - 5px);
+
+        .remove, .special, .options {
+            width: $actions-width;
+            height: $actions-width;
+        }
+
+        .remove {
+            height: $actions-width;
+        }
     }
 
     .top-guard, .bottom-guard {

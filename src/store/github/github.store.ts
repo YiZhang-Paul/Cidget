@@ -96,11 +96,6 @@ const getters = {
     },
     getPullRequests(state: State): IPullRequest<IGithubUser>[] {
         return state.pullRequests;
-    },
-    hasPullRequest(state: State): Function {
-        return (pullRequest: IPullRequest<IGithubUser>): boolean => {
-            return state.pullRequests.some(_ => _.id === pullRequest.id);
-        };
     }
 };
 
