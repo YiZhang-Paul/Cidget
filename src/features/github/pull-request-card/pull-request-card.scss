@@ -2,26 +2,22 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin-top: 2px;
 
-    .name {
-        cursor: pointer;
-        font-size: 1.03em;
-        color: rgb(16, 108, 230);
+    .pull-request-message {
+        margin-right: 6px;
+        max-width: 185px;
+        font-weight: 500;
 
-        &:hover {
-            color: rgb(151, 21, 93);
+        .url {
+            color: var(--secondary-font-color);
         }
     }
 
-    .right-arrow {
-        font-size: 0.85em;
-        font-weight: bold;
-    }
-
-    .pull-request-message {
-        max-width: 199px;
-        margin-left: 6px;
+    .pull-request-action {
+        margin-top: 1px;
+        font-size: 0.88em;
+        font-weight: 500;
+        color: var(--main-font-color);
     }
 
     .pending {
@@ -37,10 +33,57 @@
     }
 
     .change-summary {
-        margin-left: 8px;
+        margin-left: 6px;
     }
 
-    .branch-badge, .right-arrow {
+    .from-branch-badge, .to-branch-badge {
         margin-top: 3px;
+        max-width: 130px;
+    }
+
+    .to-branch-badge {
+        margin-left: 6px;
+    }
+
+    .right-arrow {
+        margin-top: 4px;
+        margin-left: 6px;
+        color: rgba(209, 21, 52, 0.9);
+    }
+
+    .repository-name {
+        margin-top: 2px;
+        font-weight: bold;
+        max-width: 140px;
+    }
+
+    .time {
+        margin-top: 6px;
+    }
+}
+
+.pull-request-card-actions {
+    position: absolute;
+    bottom: 8px;
+    right: 9px;
+    display: flex;
+
+    .open-options {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1px;
+        width: 20px;
+        height: 20px;
+        font-size: 0.85em;
+        color: var(--main-font-color);
+        border: 1px solid var(--border-color);
+        border-radius: 50%;
+        box-shadow: -3px -3px 7px var(--light-shadow-color), 3px 3px 5px var(--dark-shadow-color);
+        cursor: pointer;
+
+        &:hover {
+            box-shadow: inset -3px -3px 7px var(--light-shadow-color), inset 3px 3px 5px var(--dark-shadow-color);
+        }
     }
 }
