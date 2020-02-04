@@ -1,57 +1,40 @@
-.commit-content-container {
-    width: 505px;
-    height: 100%;
-    border: 1px solid transparent;
-    position: relative;
+.commit-message-container, .commit-info-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 
-    .commit-message-container, .commit-info-container {
-        position: absolute;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        margin-left: 4px;
+    .commit-message {
+        max-width: 350px;
+        font-weight: 500;
 
-        .commit-message {
-            max-width: 350px;
-            font-weight: 500;
-
-            .url {
-                color: var(--secondary-font-color);
-            }
-        }
-
-        .change-summary {
-            margin-left: 6px;
-        }
-
-        .branch-badge {
-            margin-top: 3px;
-            max-width: 130px;
-        }
-
-        .right-arrow {
-            margin-top: 4px;
-            margin-left: 6px;
-            color: rgba(209, 21, 52, 0.9);
-        }
-
-        .repository-name {
-            margin-top: 2px;
-            font-weight: bold;
-            max-width: 200px;
-        }
-
-        .time {
-            margin-top: 6px;
+        .url {
+            color: var(--secondary-font-color);
         }
     }
 
-    .commit-message-container {
-        top: 3px;
+    .change-summary {
+        margin-left: 6px;
     }
 
-    .commit-info-container {
-        bottom: 3px;
+    .branch-badge {
+        margin-top: 3px;
+        max-width: 130px;
+    }
+
+    .right-arrow {
+        margin-top: 4px;
+        margin-left: 6px;
+        color: rgba(209, 21, 52, 0.9);
+    }
+
+    .repository-name {
+        margin-top: 2px;
+        font-weight: bold;
+        max-width: 200px;
+    }
+
+    .time {
+        margin-top: 6px;
     }
 }
 

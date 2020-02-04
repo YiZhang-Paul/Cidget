@@ -17,8 +17,27 @@
     }
 
     .content {
+        position: relative;
+        width: 75.5%;
         height: 70px;
-        margin-left: 12px;
+        margin-left: 5px;
+        border: 1px solid transparent;
+
+        & > div {
+            $margin: 4px;
+
+            position: absolute;
+            width: calc(100% - 2 * #{$margin});
+            left: $margin;
+        }
+
+        & > div:first-child {
+            top: 3px;
+        }
+
+        & > div:last-child {
+            bottom: 3px;
+        }
     }
 
     .actions {
