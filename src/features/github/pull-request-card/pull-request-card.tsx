@@ -31,51 +31,53 @@ export default class PullRequestCard extends tsx.Component<any> {
     }
 
     public render(): any {
-        const [pullRequest, initiator] = [this.pullRequest, this.pullRequest.initiator];
-        let messageClass = 'pending';
+        let statusClass = 'pending';
 
-        if (pullRequest.mergeable !== null) {
-            messageClass = pullRequest.mergeable ? 'mergeable' : 'not-mergeable';
+        if (this.pullRequest.mergeable !== null) {
+            statusClass = this.pullRequest.mergeable ? 'mergeable' : 'not-mergeable';
         }
 
         return (
             <NotificationCard logoUrl={require('../../../../public/images/github-logo.png')}>
                 <div class="pull-request-message-container">
-                    <WeblinkDisplay class={`pull-request-message ${messageClass}`}
-                        text={`PR#${pullRequest.number} ${pullRequest.message}`}
-                        url={pullRequest.pullRequestUrl}>
-                    </WeblinkDisplay>
+                    <div class="pull-request-message-wrapper">
+                        <WeblinkDisplay class="pull-request-message"
+                            text={`PR#${this.pullRequest.number} ${this.pullRequest.message}`}
+                            url={this.pullRequest.pullRequestUrl}>
+                        </WeblinkDisplay>
+                        <div class={`check-status ${statusClass}`}></div>
+                    </div>
 
                     <div class="pull-request-action">{this.action}</div>
 
                     <ChangeStatsSummary class="change-summary"
-                        added={pullRequest.added}
-                        removed={pullRequest.removed}
-                        modified={pullRequest.modified}>
+                        added={this.pullRequest.added}
+                        removed={this.pullRequest.removed}
+                        modified={this.pullRequest.modified}>
                     </ChangeStatsSummary>
                 </div>
 
                 <div class="pull-request-info-container">
                     <BranchBadge class="from-branch-badge"
-                        name={pullRequest.branch.source}
+                        name={this.pullRequest.branch.source}
                         url={this.sourceBranchUrl}>
                     </BranchBadge>
 
                     <i class="fas fa-arrow-alt-circle-right right-arrow"></i>
 
                     <BranchBadge class="to-branch-badge"
-                        name={pullRequest.branch.base}
+                        name={this.pullRequest.branch.base}
                         url={this.baseBranchUrl}>
                     </BranchBadge>
 
                     <i class="fas fa-arrow-alt-circle-right right-arrow"></i>
 
                     <RepositoryBadge class="repository-name"
-                        repository={pullRequest.repository}
+                        repository={this.pullRequest.repository}
                         showPopover={false}>
                     </RepositoryBadge>
 
-                    <RelativeTimeDisplay class="time" time={pullRequest.updatedOn} />
+                    <RelativeTimeDisplay class="time" time={this.pullRequest.updatedOn} />
                 </div>
 
                 <div class="pull-request-card-actions" slot="actions">
