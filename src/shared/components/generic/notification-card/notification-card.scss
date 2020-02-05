@@ -48,7 +48,9 @@
         padding-top: 4px;
         padding-bottom: 1px;
         width: $actions-width;
-        height: calc(100% - 5px);
+        height: 10%;
+        opacity: 0;
+        transition: opacity 0.5s ease;
 
         .remove, .special, .options {
             width: $actions-width;
@@ -58,6 +60,10 @@
         .remove {
             height: $actions-width;
         }
+    }
+
+    &:hover .actions {
+        opacity: 1;
     }
 
     .top-guard, .bottom-guard {
