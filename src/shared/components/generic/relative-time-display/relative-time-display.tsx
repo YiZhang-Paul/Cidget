@@ -11,10 +11,10 @@ export default class RelativeTimeDisplay extends tsx.Component<any> {
 
     private get relativeTime(): string {
         const checks: [string, number][] = [
-            ['year', 60 * 60 * 24 * 365 - 1],
-            ['month', 60 * 60 * 24 * 30 - 1],
-            ['day', 60 * 60 * 24 - 1],
-            ['hour', 60 * 60 - 1],
+            ['year', 60 * 60 * 24 * 364.5 - 1],
+            ['month', 60 * 60 * 24 * 29.5 - 1],
+            ['day', 60 * 60 * 23.5 - 1],
+            ['hour', 60 * 59.5 - 1],
             ['minute', 59]
         ];
 

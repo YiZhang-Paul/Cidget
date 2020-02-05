@@ -67,6 +67,10 @@ describe('relative time display component unit test', () => {
         });
 
         test('should return proper relative time in days', () => {
+            wrapper.setProps({ time: new Date(new Date().getTime() - 23.5 * 60 * 60 * 1000) });
+
+            expect(wrapper.vm['relativeTime']).toBe('1 day ago');
+
             wrapper.setProps({ time: new Date(new Date().getTime() - 24 * 60 * 60 * 1000) });
 
             expect(wrapper.vm['relativeTime']).toBe('1 day ago');
