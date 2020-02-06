@@ -117,10 +117,10 @@ describe('relative time display component unit test', () => {
         });
 
         test('should return proper absolute time for specific date', () => {
-            const time = new Date(2020, 1, 5);
+            const time = new Date(2020, 1, 2);
             wrapper.setProps({ time });
 
-            expect(wrapper.vm['absoluteTime']).toBe(`Feb 5 ${time.toLocaleTimeString()}`);
+            expect(wrapper.vm['absoluteTime']).toBe(`Feb 2 ${time.toLocaleTimeString()}`);
         });
     });
 });
