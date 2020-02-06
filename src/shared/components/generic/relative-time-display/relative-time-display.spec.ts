@@ -67,6 +67,10 @@ describe('relative time display component unit test', () => {
         });
 
         test('should return proper relative time in days', () => {
+            wrapper.setProps({ time: new Date(new Date().getTime() - 23.5 * 60 * 60 * 1000) });
+
+            expect(wrapper.vm['relativeTime']).toBe('1 day ago');
+
             wrapper.setProps({ time: new Date(new Date().getTime() - 24 * 60 * 60 * 1000) });
 
             expect(wrapper.vm['relativeTime']).toBe('1 day ago');
@@ -113,10 +117,10 @@ describe('relative time display component unit test', () => {
         });
 
         test('should return proper absolute time for specific date', () => {
-            const time = new Date(2020, 1, 5);
+            const time = new Date(2020, 1, 2);
             wrapper.setProps({ time });
 
-            expect(wrapper.vm['absoluteTime']).toBe(`Feb 5 ${time.toLocaleTimeString()}`);
+            expect(wrapper.vm['absoluteTime']).toBe(`Feb 2 ${time.toLocaleTimeString()}`);
         });
     });
 });
