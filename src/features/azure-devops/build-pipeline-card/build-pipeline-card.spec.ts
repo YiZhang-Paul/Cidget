@@ -1,13 +1,9 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
-import { assert as sinonExpect, spy } from 'sinon';
-
-import { shell } from '../../../mocks/third-party/electron';
 
 import BuildPipelineCard from './build-pipeline-card';
 
 describe('build pipeline card component unit test', () => {
     let wrapper: Wrapper<BuildPipelineCard>;
-    let shellSpy: any;
     let build: any;
 
     beforeEach(() => {
@@ -32,23 +28,14 @@ describe('build pipeline card component unit test', () => {
         };
 
         wrapper = shallowMount(BuildPipelineCard, { propsData: { build } });
-        shellSpy = spy(shell, 'openExternal');
     });
 
     afterEach(() => {
         wrapper.destroy();
-        shellSpy.restore();
     });
 
     test('should create component instance', () => {
         expect(wrapper.vm.$props.build.name).toBe('20200103.4');
-    });
-
-    test('should open external link', () => {
-        wrapper.find('.pipeline-name').element.click();
-
-        sinonExpect.calledOnce(shellSpy);
-        sinonExpect.calledWith(shellSpy, 'pipeline_url');
     });
 
     test('should use proper timestamp', () => {
