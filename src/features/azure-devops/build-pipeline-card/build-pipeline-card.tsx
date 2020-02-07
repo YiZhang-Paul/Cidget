@@ -1,6 +1,5 @@
 import { Component, Prop } from 'vue-property-decorator';
 import * as tsx from 'vue-tsx-support';
-import { shell } from 'electron';
 
 import ICiBuild from '../../../core/interface/general/ci-build.interface';
 import NotificationCard from '../../../shared/components/generic/notification-card/notification-card';
@@ -19,6 +18,13 @@ export default class BuildPipelineCard extends tsx.Component<any> {
         const status = this.build.result || `is ${this.build.status}`;
 
         return status.replace('inProgress', 'running');
+    }
+
+    private get statusText(): string {
+        const words = this.status.split(' ');
+        const capitalized = words.map(_ => `${_[0].toUpperCase()}${_.slice(1)}`);
+
+        return capitalized.join(' ').replace(/^Is\s/, 'is ');
     }
 
     private get elapsedSeconds(): number {
@@ -54,45 +60,47 @@ export default class BuildPipelineCard extends tsx.Component<any> {
         return branch.isPullRequest ? 'AUTO' : branch.name;
     }
 
-    private toPipeline(): void {
-        shell.openExternal(this.build.pipeline.url);
-    }
-
     public render(): any {
         const { triggeredBy } = this.build;
         const timeClass = `elapsed-time ${this.isSlowBuild ? 'slow-build' : 'fast-build'}`;
-        const elapsedTime = <span class={timeClass}> [{this.elapsedTime}]</span>;
+        const elapsedTime = <div class={timeClass}> [{this.elapsedTime}]</div>;
 
         return (
             <NotificationCard logoUrl={require('../../../../public/images/azure-devops-logo.png')}>
                 <div class="build-pipeline-message-container">
-                    <WeblinkDisplay class={`build-name ${this.status}`}
-                        text={this.build.name}
-                        tooltip={this.build.message}
-                        url={this.build.url}>
-                    </WeblinkDisplay>
-
-                    <div>
-                        <span> from </span>
-                        <a class="pipeline-name" onClick={this.toPipeline}>
-                            {this.build.pipeline.name}
-                        </a>
-                        <span> {this.status}</span>
-                        { this.build.result ? elapsedTime : '' }
+                    <div class="build-pipeline-message-wrapper">
+                        <WeblinkDisplay class="build-name"
+                            text={`${this.build.name} ${this.build.pipeline.name}`}
+                            url={this.build.url}>
+                        </WeblinkDisplay>
+                        <div class={`check-status ${this.status}`}></div>
                     </div>
+
+                    <div class="status-text">{this.statusText}</div>
+                    { this.build.result ? elapsedTime : '' }
                 </div>
 
                 <div class="build-pipeline-info-container">
-                    <span>Triggered by</span>
-
                     <BranchBadge class="branch-badge"
                         disabled={triggeredBy.branch.isPullRequest}
                         name={this.branchName}
                         url={triggeredBy.branch.url}>
                     </BranchBadge>
 
-                    <RepositoryBadge repository={triggeredBy} showPopover={false} />
-                    <RelativeTimeDisplay time={this.timestamp} />
+                    <i class="fas fa-arrow-alt-circle-right right-arrow"></i>
+
+                    <RepositoryBadge class="repository-name"
+                        repository={triggeredBy}
+                        showPopover={false}>
+                    </RepositoryBadge>
+
+                    <RelativeTimeDisplay class="time" time={this.timestamp} />
+                </div>
+
+                <div class="build-pipeline-card-actions" slot="actions">
+                    <div class="open-options">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </div>
                 </div>
             </NotificationCard>
         );
