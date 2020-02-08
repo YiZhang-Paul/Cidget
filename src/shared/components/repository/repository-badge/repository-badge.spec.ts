@@ -1,4 +1,4 @@
-import { shallowMount, Wrapper } from '@vue/test-utils';
+import { mount, Wrapper } from '@vue/test-utils';
 import { assert as sinonExpect, spy } from 'sinon';
 
 import '../../../../element-ui-test.js';
@@ -13,7 +13,7 @@ describe('repository badge component unit test', () => {
     beforeEach(() => {
         const propsData = { repository: { id: 'repository_id', url: 'repository_url' } };
         const stubs = { RepositoryInfoCard: '<div></div>' };
-        wrapper = shallowMount(RepositoryBadge, { propsData, stubs });
+        wrapper = mount(RepositoryBadge, { propsData, stubs });
         shellSpy = spy(shell, 'openExternal');
     });
 
@@ -30,7 +30,7 @@ describe('repository badge component unit test', () => {
     });
 
     test('should open external links', () => {
-        wrapper.find('.repository-name').element.click();
+        wrapper.find('.url').element.click();
 
         sinonExpect.calledOnce(shellSpy);
         sinonExpect.calledWith(shellSpy, 'repository_url');

@@ -22,7 +22,7 @@ export default class AzureDevopsCdReleaseService {
         return ({
             id: `${definition.id}-${release.name}`,
             name: release.name,
-            status: status === 'pending' ? 'needs approval' : status,
+            status: this.getStatus(status),
             createdOn: new Date(payload.createdDate),
             url: resource.url,
             commits: resource.data?.commits?.length ?? null,
@@ -46,5 +46,12 @@ export default class AzureDevopsCdReleaseService {
         const stages = data?.environments ?? [];
 
         return stages.map((_: any) => ({ name: _.name, status: _.status }));
+    }
+
+    private getStatus(status: string): string {
+        if (status !== 'pending' && status !== 'queued') {
+            return status;
+        }
+        return status === 'pending' ? 'needs approval' : 'in progress';
     }
 }

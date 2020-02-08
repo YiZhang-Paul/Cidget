@@ -1,6 +1,7 @@
-import { shallowMount, Wrapper } from '@vue/test-utils';
+import { mount, Wrapper } from '@vue/test-utils';
 import { assert as sinonExpect, spy } from 'sinon';
 
+import '../../../element-ui-test.js';
 import { shell } from '../../../mocks/third-party/electron';
 
 import CommitCard from './commit-card';
@@ -12,7 +13,10 @@ describe('commit card card component unit test', () => {
 
     beforeEach(() => {
         commit = {
-            repository: {},
+            branch: 'development',
+            repository: {
+                url: 'repository_url'
+            },
             initiator: {
                 name: 'yizhang',
                 profileUrl: 'profile_url'
@@ -29,7 +33,7 @@ describe('commit card card component unit test', () => {
             RelativeTimeDisplay: '<div></div>'
         };
 
-        wrapper = shallowMount(CommitCard, { propsData: { commit }, stubs });
+        wrapper = mount(CommitCard, { propsData: { commit }, stubs });
         shellSpy = spy(shell, 'openExternal');
     });
 
@@ -40,13 +44,6 @@ describe('commit card card component unit test', () => {
 
     test('should create component instance', () => {
         expect(wrapper.vm.$props.commit.initiator.name).toBe('yizhang');
-    });
-
-    test('should open external link', () => {
-        wrapper.find('.name').element.click();
-
-        sinonExpect.calledOnce(shellSpy);
-        sinonExpect.calledWith(shellSpy, 'profile_url');
     });
 
     test('should show correct file changes', () => {
@@ -67,5 +64,12 @@ describe('commit card card component unit test', () => {
         expect(wrapper.vm['added']).toBe(1);
         expect(wrapper.vm['removed']).toBe(3);
         expect(wrapper.vm['modified']).toBe(2);
+    });
+
+    test('should open pull request creation page', () => {
+        wrapper.find('.open-pull-request-icon').element.click();
+
+        sinonExpect.calledOnce(shellSpy);
+        expect(shellSpy.args[0][0]).toBe('repository_url/compare/development');
     });
 });

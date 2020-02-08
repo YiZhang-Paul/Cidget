@@ -2,20 +2,14 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin-top: 2px;
-
-    .name {
-        cursor: pointer;
-        font-size: 1.03em;
-        color: rgb(16, 108, 230);
-
-        &:hover {
-            color: rgb(151, 21, 93);
-        }
-    }
 
     .commit-message {
-        max-width: 425px;
+        max-width: 325px;
+        font-weight: 500;
+
+        .url {
+            color: var(--secondary-font-color);
+        }
     }
 
     .change-summary {
@@ -24,5 +18,62 @@
 
     .branch-badge {
         margin-top: 3px;
+        max-width: 130px;
+    }
+
+    .right-arrow {
+        margin-top: 4px;
+        margin-left: 6px;
+        color: rgba(72, 158, 207, 0.9);
+    }
+
+    .repository-name {
+        margin-top: 2px;
+        font-weight: bold;
+        max-width: 200px;
+    }
+
+    .time {
+        margin-top: 6px;
+    }
+}
+
+.commit-card-actions {
+    position: absolute;
+    bottom: 8px;
+    right: 4.5px;
+    display: flex;
+
+    .open-pull-request, .open-options {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 5px;
+        padding: 1px;
+        width: 20px;
+        height: 20px;
+        border: 1px solid var(--border-color);
+        border-radius: 50%;
+        box-shadow: -3px -3px 7px var(--light-shadow-color), 3px 3px 5px var(--dark-shadow-color);
+        cursor: pointer;
+
+        &:hover {
+            box-shadow: inset -3px -3px 7px var(--light-shadow-color), inset 3px 3px 5px var(--dark-shadow-color);
+        }
+    }
+
+    .open-pull-request .open-pull-request-icon {
+        width: 100%;
+        height: 100%;
+        background-image: url('../../../../public/icons/git-merge.svg');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 17px 17px;
+        filter: invert(39%) sepia(9%) saturate(1519%) hue-rotate(178deg) brightness(90%) contrast(86%);
+    }
+
+    .open-options {
+        font-size: 0.85em;
+        color: var(--main-font-color);
     }
 }

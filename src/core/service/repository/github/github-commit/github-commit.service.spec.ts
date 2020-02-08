@@ -43,6 +43,28 @@ describe('github commit service unit test', () => {
         Container.restore();
     });
 
+    describe('getStatus', () => {
+        beforeEach(() => {
+            httpStub.get.resolves({ data: { sha: 'sha_sequence', state: 'pending' } });
+        });
+
+        test('should call correct endpoint', async () => {
+            const api = 'https://api.github.com/repos/yizhang-paul/project_name/commits/ref_name/status';
+
+            await service.getStatus('project_name', 'ref_name');
+
+            sinonExpect.calledOnce(httpStub.get);
+            expect(httpStub.get.args[0][0]).toBe(api);
+        });
+
+        test('should return commit status', async () => {
+            const result = await service.getStatus('project_name', 'ref_name');
+
+            expect(result.ref).toBe('sha_sequence');
+            expect(result.status).toBe('pending');
+        });
+    });
+
     describe('toCommit', () => {
         let payload: any;
 

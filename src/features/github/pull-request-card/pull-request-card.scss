@@ -2,45 +2,112 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin-top: 2px;
 
-    .name {
-        cursor: pointer;
-        font-size: 1.03em;
-        color: rgb(16, 108, 230);
+    .pull-request-message {
+        max-width: 180px;
+        font-weight: 500;
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
 
-        &:hover {
-            color: rgb(151, 21, 93);
+        .url {
+            color: var(--secondary-font-color);
         }
     }
 
-    .right-arrow {
-        font-size: 0.85em;
-        font-weight: bold;
+    .pull-request-message-wrapper {
+        position: relative;
+        margin-right: 12px;
+
+        .check-status {
+            position: absolute;
+            right: -7px;
+            top: 0;
+            width: 9px;
+            height: 27px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .pending {
+            background-color: rgb(248, 198, 35);
+            box-shadow: 0 0 6px 0 rgba(252, 191, 23, 0.65);
+            border-top: 1px solid rgb(253, 210, 70);
+            border-bottom: 1px solid rgb(221, 185, 67);
+        }
+
+        .mergeable {
+            background-color: rgb(19, 207, 19);
+            box-shadow: 0 0 4px 0 rgba(19, 207, 19, 0.7);
+            border-top: 1px solid rgb(147, 253, 147);
+            border-bottom: 1px solid rgb(89, 173, 89);
+        }
+
+        .not-mergeable {
+            background-color: rgb(219, 102, 102);
+            box-shadow: 0 0 6px 0 rgba(253, 107, 107, 0.7);
+            border-top: 1px solid rgb(248, 164, 164);
+            border-bottom: 1px solid rgb(207, 70, 70);
+        }
     }
 
-    .pull-request-message {
-        max-width: 199px;
-        margin-left: 6px;
-    }
-
-    .pending {
-        border-right: 6px solid rgb(11, 100, 202);
-    }
-
-    .mergeable {
-        border-right: 6px solid rgb(18, 194, 18);
-    }
-
-    .not-mergeable {
-        border-right: 6px solid rgb(226, 7, 7);
+    .pull-request-action {
+        margin-top: 1px;
+        font-size: 0.88em;
+        font-weight: 500;
+        color: var(--main-font-color);
     }
 
     .change-summary {
-        margin-left: 8px;
+        margin-left: 7px;
     }
 
-    .branch-badge, .right-arrow {
+    .from-branch-badge, .to-branch-badge {
         margin-top: 3px;
+        max-width: 130px;
+    }
+
+    .to-branch-badge {
+        margin-left: 6px;
+    }
+
+    .right-arrow {
+        margin-top: 4px;
+        margin-left: 6px;
+        color: rgba(72, 158, 207, 0.9);
+    }
+
+    .repository-name {
+        margin-top: 2px;
+        font-weight: bold;
+        max-width: 140px;
+    }
+
+    .time {
+        margin-top: 6px;
+    }
+}
+
+.pull-request-card-actions {
+    position: absolute;
+    bottom: 8px;
+    right: 9px;
+    display: flex;
+
+    .open-options {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1px;
+        width: 20px;
+        height: 20px;
+        font-size: 0.85em;
+        color: var(--main-font-color);
+        border: 1px solid var(--border-color);
+        border-radius: 50%;
+        box-shadow: -3px -3px 7px var(--light-shadow-color), 3px 3px 5px var(--dark-shadow-color);
+        cursor: pointer;
+
+        &:hover {
+            box-shadow: inset -3px -3px 7px var(--light-shadow-color), inset 3px 3px 5px var(--dark-shadow-color);
+        }
     }
 }

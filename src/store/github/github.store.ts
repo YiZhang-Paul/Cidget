@@ -35,27 +35,52 @@ const actions = {
         const { commit, getters } = context;
         const push = await commitService.toCommit(payload);
 
-        if (!getters.hasCommit(push) && push.initiator.name !== 'web-flow') {
-            commit('addCommit', push);
-
-            Vue.notify({
-                group: 'notification',
-                duration: 12000,
-                data: { type: 'commit', id: push.id }
-            });
+        if (getters.hasCommit(push) || push.initiator.name === 'web-flow') {
+            return;
         }
+        commit('addCommit', push);
+
+        Vue.notify({
+            group: 'notification',
+            duration: 12000,
+            data: { type: 'commit', id: push.id, model: push }
+        });
     },
     async addPullRequest(context: ActionContext<State, any>, payload: any): Promise<void> {
-        const { commit, getters } = context;
+        const { commit, state } = context;
         const pullRequest = await pullRequestService.toPullRequest(payload);
-        const shouldPersist = pullRequest.action !== 'closed' && pullRequest.action !== 'merged';
-        const action = getters.hasPullRequest(pullRequest) ? 'updatePullRequest' : 'addPullRequest';
+
+        if (pullRequest.action === 'review_request_removed') {
+            return;
+        }
+        const existing = state.pullRequests.find(_ => _.id === pullRequest.id);
+        const action = existing ? 'updatePullRequest' : 'addPullRequest';
+        pullRequest.mergeable = existing ? existing.mergeable : pullRequest.mergeable;
         commit(action, pullRequest);
 
         Vue.notify({
             group: 'notification',
-            duration: shouldPersist ? -1 : 12000,
-            data: { type: 'pull-request', id: pullRequest.id }
+            duration: pullRequest.isActive ? -1 : 12000,
+            data: { type: 'pull-request', id: pullRequest.id, model: pullRequest }
+        });
+    },
+    async addPullRequestCheck(context: ActionContext<State, any>, payload: any): Promise<void> {
+        const { commit, state } = context;
+        const { repository, sha } = payload;
+        const { ref, status } = await commitService.getStatus(repository.name, sha);
+        const isMergeable = status === 'pending' ? null : status === 'success';
+        const pullRequest = state.pullRequests.find(_ => _.headCommitSha === ref);
+
+        if (!pullRequest || !pullRequest.isActive || pullRequest.mergeable === isMergeable) {
+            return;
+        }
+        pullRequest.mergeable = isMergeable;
+        commit('updatePullRequest', pullRequest);
+
+        Vue.notify({
+            group: 'notification',
+            duration: -1,
+            data: { type: 'pull-request', id: pullRequest.id, model: pullRequest }
         });
     }
 };
@@ -71,11 +96,6 @@ const getters = {
     },
     getPullRequests(state: State): IPullRequest<IGithubUser>[] {
         return state.pullRequests;
-    },
-    hasPullRequest(state: State): Function {
-        return (pullRequest: IPullRequest<IGithubUser>): boolean => {
-            return state.pullRequests.some(_ => _.id === pullRequest.id);
-        };
     }
 };
 

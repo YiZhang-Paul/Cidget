@@ -1,6 +1,5 @@
 import { Component, Prop } from 'vue-property-decorator';
 import * as tsx from 'vue-tsx-support';
-import { shell } from 'electron';
 
 import IGithubUser from '../../../core/interface/repository/github/github-user.interface';
 import IPullRequest from '../../../core/interface/general/pull-request.interface';
@@ -17,6 +16,12 @@ import './pull-request-card.scss';
 export default class PullRequestCard extends tsx.Component<any> {
     @Prop() public pullRequest!: IPullRequest<IGithubUser>;
 
+    private get action(): string {
+        const words = this.pullRequest.action.split(' ');
+
+        return words.map(_ => `${_[0].toUpperCase()}${_.slice(1)}`).join(' ');
+    }
+
     private get sourceBranchUrl(): string {
         return `${this.pullRequest.repository.url}/tree/${this.pullRequest.branch.source}`;
     }
@@ -25,53 +30,60 @@ export default class PullRequestCard extends tsx.Component<any> {
         return `${this.pullRequest.repository.url}/tree/${this.pullRequest.branch.base}`;
     }
 
-    private toProfile(): void {
-        shell.openExternal(this.pullRequest.initiator.profileUrl);
-    }
-
     public render(): any {
-        const [pullRequest, initiator] = [this.pullRequest, this.pullRequest.initiator];
-        let messageClass = 'pending';
+        let statusClass = 'pending';
 
-        if (pullRequest.mergeable !== null) {
-            messageClass = pullRequest.mergeable ? 'mergeable' : 'not-mergeable';
+        if (this.pullRequest.mergeable !== null) {
+            statusClass = this.pullRequest.mergeable ? 'mergeable' : 'not-mergeable';
         }
 
         return (
             <NotificationCard logoUrl={require('../../../../public/images/github-logo.png')}>
                 <div class="pull-request-message-container">
-                    <div>
-                        <a class="name" onClick={this.toProfile}>{initiator.name}</a>
-                        <span> {pullRequest.action} </span>
+                    <div class="pull-request-message-wrapper">
+                        <WeblinkDisplay class="pull-request-message"
+                            text={`PR#${this.pullRequest.number} ${this.pullRequest.message}`}
+                            url={this.pullRequest.pullRequestUrl}>
+                        </WeblinkDisplay>
+                        <div class={`check-status ${statusClass}`}></div>
                     </div>
 
-                    <WeblinkDisplay class={`pull-request-message ${messageClass}`}
-                        text={`PR#${pullRequest.number} ${pullRequest.message}`}
-                        url={pullRequest.pullRequestUrl}>
-                    </WeblinkDisplay>
+                    <div class="pull-request-action">{this.action}</div>
 
                     <ChangeStatsSummary class="change-summary"
-                        added={pullRequest.added}
-                        removed={pullRequest.removed}
-                        modified={pullRequest.modified}>
+                        added={this.pullRequest.added}
+                        removed={this.pullRequest.removed}
+                        modified={this.pullRequest.modified}>
                     </ChangeStatsSummary>
                 </div>
 
                 <div class="pull-request-info-container">
-                    <BranchBadge class="branch-badge"
-                        name={pullRequest.branch.source}
+                    <BranchBadge class="from-branch-badge"
+                        name={this.pullRequest.branch.source}
                         url={this.sourceBranchUrl}>
                     </BranchBadge>
 
-                    <i class="el-icon-right right-arrow"></i>
+                    <i class="fas fa-arrow-alt-circle-right right-arrow"></i>
 
-                    <BranchBadge class="branch-badge"
-                        name={pullRequest.branch.base}
+                    <BranchBadge class="to-branch-badge"
+                        name={this.pullRequest.branch.base}
                         url={this.baseBranchUrl}>
                     </BranchBadge>
 
-                    <RepositoryBadge repository={pullRequest.repository} showPopover={false} />
-                    <RelativeTimeDisplay time={pullRequest.updatedOn} />
+                    <i class="fas fa-arrow-alt-circle-right right-arrow"></i>
+
+                    <RepositoryBadge class="repository-name"
+                        repository={this.pullRequest.repository}
+                        showPopover={false}>
+                    </RepositoryBadge>
+
+                    <RelativeTimeDisplay class="time" time={this.pullRequest.updatedOn} />
+                </div>
+
+                <div class="pull-request-card-actions" slot="actions">
+                    <div class="open-options">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </div>
                 </div>
             </NotificationCard>
         );

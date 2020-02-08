@@ -17,20 +17,9 @@ describe('user avatar component unit test', () => {
 
     test('should create component instance', () => {
         expect(wrapper.vm.$props.url).toBe('avatar_url');
-        expect(wrapper.vm.$props.size).toBe(50);
-        expect(wrapper.vm.$props.isCircle).toBeFalsy();
+        expect(wrapper.vm.$props.size).toBe(70);
         expect(wrapper.vm.$props.popoverPosition).toBe('bottom-start');
         expect(wrapper.vm.$props.popoverWidth).toBe(150);
         expect(wrapper.vm.$props.showPopover).toBeTruthy();
-    });
-
-    test('should change avatar shape', () => {
-        wrapper.setProps({ isCircle: true });
-
-        expect(wrapper.vm['shape']).toBe('circle');
-
-        wrapper.setProps({ isCircle: false });
-
-        expect(wrapper.vm['shape']).toBe('square');
     });
 });
