@@ -2,27 +2,27 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin-top: 2px;
 
     .release-name {
-        max-width: 110px;
+        max-width: 260px;
         margin-right: 8px;
+        font-weight: 500;
+
+        .url {
+            color: var(--secondary-font-color);
+        }
     }
 
     .abandoned {
         text-decoration: line-through;
     }
 
-    .pipeline-name {
-        margin-left: 5px;
-        margin-right: 5px;
-        cursor: pointer;
-        font-size: 1.03em;
-        color: rgb(16, 108, 230);
-
-        &:hover {
-            color: rgb(151, 21, 93);
-        }
+    .status-text, .trigger-text {
+        margin-top: 1px;
+        margin-right: 4px;
+        font-size: 0.88em;
+        font-weight: 500;
+        color: var(--main-font-color);
     }
 
     .stages-summary {
@@ -33,16 +33,47 @@
 
     .trigger-name {
         background-color: rgb(65, 91, 124);
+        max-width: 260px;
         margin-top: 3px;
-        margin-left: 5px;
+        margin-left: 2px;
         margin-right: 3px;
+
+        &:hover {
+            box-shadow: inset -3px -3px 7px rgb(109, 136, 170), inset 3px 3px 5px rgb(49, 70, 97);
+        }
 
         .url {
             color: rgb(255, 255, 255);
         }
     }
 
-    .project-name {
-        font-size: 1.03em;
+    .time {
+        margin-top: 6px;
+    }
+}
+
+.release-pipeline-card-actions {
+    position: absolute;
+    bottom: 8px;
+    right: 9px;
+    display: flex;
+
+    .open-options {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1px;
+        width: 20px;
+        height: 20px;
+        font-size: 0.85em;
+        color: var(--main-font-color);
+        border: 1px solid var(--border-color);
+        border-radius: 50%;
+        box-shadow: -3px -3px 7px var(--light-shadow-color), 3px 3px 5px var(--dark-shadow-color);
+        cursor: pointer;
+
+        &:hover {
+            box-shadow: inset -3px -3px 7px var(--light-shadow-color), inset 3px 3px 5px var(--dark-shadow-color);
+        }
     }
 }
