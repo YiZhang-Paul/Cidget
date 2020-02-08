@@ -1,6 +1,5 @@
 import { Component, Prop } from 'vue-property-decorator';
 import * as tsx from 'vue-tsx-support';
-import { shell } from 'electron';
 
 import ICdRelease from '../../../core/interface/general/cd-release.interface';
 import NotificationCard from '../../../shared/components/generic/notification-card/notification-card';
@@ -39,15 +38,18 @@ export default class ReleasePipelineCard extends tsx.Component<any> {
         });
     }
 
+    private get statusText(): string {
+        const words = this.release.status.split(' ');
+        const capitalized = words.map(_ => `${_[0].toUpperCase()}${_.slice(1)}`);
+
+        return capitalized.join(' ').replace(/^Is\s/, 'is ');
+    }
+
     private get blinkModeOn(): boolean {
         if (['abandoned', 'rejected', 'canceled'].includes(this.release.status)) {
             return false;
         }
         return this.stages.slice(-1)[0]?.status !== 'succeeded';
-    }
-
-    private toPipeline(): void {
-        shell.openExternal(this.release.pipeline.url);
     }
 
     public render(): any {
@@ -57,19 +59,11 @@ export default class ReleasePipelineCard extends tsx.Component<any> {
             <NotificationCard logoUrl={require('../../../../public/images/azure-devops-logo.png')}>
                 <div class="release-pipeline-message-container">
                     <WeblinkDisplay class={className}
-                        text={this.release.name}
+                        text={`${this.release.name} ${this.release.pipeline.name}`}
                         url={this.release.url}>
                     </WeblinkDisplay>
 
-                    <div>
-                        <span>from</span>
-
-                        <a class="pipeline-name" onClick={this.toPipeline}>
-                            {this.release.pipeline.name}
-                        </a>
-
-                        <span>{this.release.status}</span>
-                    </div>
+                    <div class="status-text">{this.statusText}</div>
 
                     <StepSummary class="stages-summary"
                         steps={this.stages}
@@ -78,15 +72,20 @@ export default class ReleasePipelineCard extends tsx.Component<any> {
                 </div>
 
                 <div class="release-pipeline-info-container">
-                    <span>Triggered by </span>
+                    <div class="trigger-text">Triggered By</div>
 
                     <WeblinkDisplay class="trigger-name"
                         text={this.release.triggeredBy.name}
                         url={this.release.triggeredBy.url}>
                     </WeblinkDisplay>
 
-                    <span class="project-name">@{this.release.project}</span>
-                    <RelativeTimeDisplay time={this.release.createdOn} />
+                    <RelativeTimeDisplay class="time" time={this.release.createdOn} />
+                </div>
+
+                <div class="release-pipeline-card-actions" slot="actions">
+                    <div class="open-options">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </div>
                 </div>
             </NotificationCard>
         );

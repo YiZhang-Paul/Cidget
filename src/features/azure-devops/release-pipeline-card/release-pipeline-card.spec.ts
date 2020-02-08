@@ -1,13 +1,9 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
-import { assert as sinonExpect, spy } from 'sinon';
-
-import { shell } from '../../../mocks/third-party/electron';
 
 import ReleasePipelineCard from './release-pipeline-card';
 
 describe('release pipeline card component unit test', () => {
     let wrapper: Wrapper<ReleasePipelineCard>;
-    let shellSpy: any;
     let release: any;
 
     beforeEach(() => {
@@ -33,23 +29,14 @@ describe('release pipeline card component unit test', () => {
         };
 
         wrapper = shallowMount(ReleasePipelineCard, { propsData: { release } });
-        shellSpy = spy(shell, 'openExternal');
     });
 
     afterEach(() => {
         wrapper.destroy();
-        shellSpy.restore();
     });
 
     test('should create component instance', () => {
         expect(wrapper.vm.$props.release.name).toBe('Release-4');
-    });
-
-    test('should open external link', () => {
-        wrapper.find('.pipeline-name').element.click();
-
-        sinonExpect.calledOnce(shellSpy);
-        sinonExpect.calledWith(shellSpy, 'pipeline_url');
     });
 
     test('should properly show stage status', () => {
