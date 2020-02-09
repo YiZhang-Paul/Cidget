@@ -1,7 +1,7 @@
 import { Component, Prop } from 'vue-property-decorator';
 import * as tsx from 'vue-tsx-support';
 
-import ICdRelease from '../../../core/interface/general/cd-release.interface';
+import ICdRelease from '../../../core/interface/pipeline/cd-release.interface';
 import NotificationCard from '../../../shared/components/generic/notification-card/notification-card';
 import WeblinkDisplay from '../../../shared/components/generic/weblink-display/weblink-display';
 import StepSummary from '../../../shared/components/generic/step-summary/step-summary';
