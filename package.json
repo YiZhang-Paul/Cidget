@@ -5,8 +5,9 @@
     "scripts": {
         "lint": "vue-cli-service lint --no-fix",
         "test": "vue-cli-service test:unit",
-        "build": "npm run lint && vue-cli-service electron:build --publish never",
-        "serve:client": "npm run lint && vue-cli-service electron:serve",
+        "fix-access-token-js": "cp access-token.js node_modules/simple-oauth2/lib/access-token.js",
+        "build": "npm run lint && npm run fix-access-token-js && vue-cli-service electron:build --publish never",
+        "serve:client": "npm run lint && npm run fix-access-token-js && vue-cli-service electron:serve",
         "serve:server": "node server/server.js"
     },
     "main": "background.js",
@@ -49,6 +50,7 @@
         "@vue/eslint-config-standard": "^4.0.0",
         "@vue/eslint-config-typescript": "^4.0.0",
         "@vue/test-utils": "1.0.0-beta.29",
+        "cp": "^0.2.0",
         "electron": "^7.1.9",
         "eslint": "^5.16.0",
         "eslint-plugin-vue": "^5.0.0",
