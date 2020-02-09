@@ -14,6 +14,10 @@ express.get('/', (_, res) => {
     res.send('cidget server v0.1.0');
 });
 
+express.post('/outlook/mail', (req, res) => {
+    emit('outlook-mail', req, res);
+});
+
 express.post('/azure-devops/build', (req, res) => {
     emit('azure-devops-build', req, res);
 });

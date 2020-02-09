@@ -1,12 +1,20 @@
 import socketClient from 'socket.io-client';
 
 import Store from './store';
+import Types from './core/ioc/types';
+import Container from './core/ioc/container';
 import { logger } from './core/service/io/logger/logger';
+import OutlookApiProvider from './core/service/mail/outlook/outlook-api-provider';
 
 const { host } = require('config').get('cidget').server;
+const outlookService = Container.get<OutlookApiProvider>(Types.OutlookApiProvider);
 const socket = socketClient(host);
 socket.on('connect', () => logger.log('socket connected.'));
 socket.on('disconnect', () => logger.log('socket disconnected.'));
+
+socket.on('outlook-mail', (payload: any) => {
+    const mail = outlookService.toMail(payload);
+})
 
 socket.on('azure-devops-build', (payload: any) => {
     const action = `${Store.azureDevopsStoreName}/addCiBuild`;
