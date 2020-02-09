@@ -5,15 +5,21 @@ import Types from './core/ioc/types';
 import Container from './core/ioc/container';
 import { logger } from './core/service/io/logger/logger';
 import OutlookApiProvider from './core/service/mail/outlook/outlook-api-provider';
+import ZendeskTicketByMailProvider from './core/service/customer-support/zendesk/zendesk-ticket-by-mail-provider.service';
 
 const { host } = require('config').get('cidget').server;
 const outlookService = Container.get<OutlookApiProvider>(Types.OutlookApiProvider);
+const zendeskService = Container.get<ZendeskTicketByMailProvider>(Types.ZendeskTicketByMailProvider);
 const socket = socketClient(host);
 socket.on('connect', () => logger.log('socket connected.'));
 socket.on('disconnect', () => logger.log('socket disconnected.'));
 
 socket.on('outlook-mail', (payload: any) => {
     const mail = outlookService.toMail(payload);
+
+    if (zendeskService.isZendeskEmail(mail)) {
+        console.log(zendeskService.toTicket(mail));
+    }
 })
 
 socket.on('azure-devops-build', (payload: any) => {
