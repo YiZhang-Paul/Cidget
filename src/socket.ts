@@ -18,7 +18,8 @@ socket.on('outlook-mail', (payload: any) => {
     const mail = outlookService.toMail(payload);
 
     if (zendeskService.isZendeskEmail(mail)) {
-        console.log(zendeskService.toTicket(mail));
+        const action = `${Store.zendeskStoreName}/addTicketFromMail`;
+        Store.store.dispatch(action, zendeskService.toTicket(mail));
     }
 })
 
