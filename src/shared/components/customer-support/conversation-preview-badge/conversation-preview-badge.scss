@@ -1,0 +1,27 @@
+.conversation-preview-badge-container {
+    color: rgb(255, 255, 255);
+    background-color: rgb(51, 153, 255);
+    box-shadow: -3px -3px 7px var(--light-shadow-color), 3px 3px 5px var(--dark-shadow-color);
+
+    &:hover {
+        background-color: rgb(91, 163, 235);
+        box-shadow: inset -3px -3px 7px rgb(57, 171, 255), inset 3px 3px 5px rgb(45, 135, 224);
+    }
+
+    &:active {
+        background-color: rgb(47, 135, 223);
+    }
+
+    .user-icon {
+        color: rgb(62, 224, 30);
+        margin-top: 1px;
+        margin-right: 5px;
+        width: 11px;
+        height: 14px;
+    }
+
+    .url {
+        cursor: pointer;
+        color: rgb(255, 255, 255);
+    }
+}

@@ -22,6 +22,10 @@
     .status-text {
         margin-top: 1px;
         margin-left: 6px;
+        max-width: 200px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
         font-size: 0.88em;
         font-weight: 500;
         color: var(--main-font-color);
@@ -41,11 +45,6 @@
         margin-top: 3px;
         max-width: 360px;
         font-size: 0.88em;
-        font-weight: 500;
-
-        .url {
-            color: var(--secondary-font-color);
-        }
     }
 
     .time {

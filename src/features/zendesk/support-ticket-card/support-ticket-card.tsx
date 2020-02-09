@@ -5,6 +5,7 @@ import ISupportTicket from '../../../core/interface/customer-support/support-tic
 import WeblinkDisplay from '../../../shared/components/generic/weblink-display/weblink-display';
 import NotificationCard from '../../../shared/components/generic/notification-card/notification-card';
 import RelativeTimeDisplay from '../../../shared/components/generic/relative-time-display/relative-time-display';
+import ConversationPreviewBadge from '../../../shared/components/customer-support/conversation-preview-badge/conversation-preview-badge';
 
 import './support-ticket-card.scss';
 
@@ -40,12 +41,10 @@ export default class SupportTicketCard extends tsx.Component<any> {
                 </div>
 
                 <div class="ticket-info-container">
-                    <WeblinkDisplay class="ticket-info"
-                        text={`${this.ticket.requester.name}: ${this.ticket.content}`}
-                        tooltip={this.ticket.content}
-                        tooltipPosition={'bottom'}>
-                        <i class="fas fa-user-ninja requester-icon"></i>
-                    </WeblinkDisplay>
+                    <ConversationPreviewBadge class="ticket-info"
+                        username={this.ticket.requester.name}
+                        conversation={this.ticket.content}>
+                    </ConversationPreviewBadge>
 
                     <RelativeTimeDisplay class="time" time={this.ticket.createdOn} />
                 </div>
