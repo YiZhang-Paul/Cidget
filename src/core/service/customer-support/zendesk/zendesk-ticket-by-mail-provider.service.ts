@@ -14,11 +14,13 @@ export default class ZendeskTicketByMailProvider implements ISupportTicketProvid
     public toTicket(data: IEmail): ISupportTicket {
         const { body, subject, from, to } = data;
         const url = this.getUrl(body);
+        from.name = from.name.replace(/\s?\(.*$/i, '');
 
         return ({
             id: url.split('/').slice(-1)[0],
-            title: subject,
+            title: subject.replace(/^.*assignment:?\s?/i, ''),
             content: this.getContent(body),
+            createdOn: data.created,
             url,
             status: /has been reopened/i.test(body) ? 'reopened' : 'opened',
             requester: from,

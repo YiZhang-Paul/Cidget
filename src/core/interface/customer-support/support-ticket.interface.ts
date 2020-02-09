@@ -4,6 +4,7 @@ export default interface ISupportTicket {
     id: string;
     title: string;
     content: string;
+    createdOn: Date;
     url: string;
     status: string;
     requester: IUser;

@@ -1,0 +1,81 @@
+.ticket-message-container, .ticket-info-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .ticket-message {
+        max-width: 240px;
+        margin-right: 2px;
+        font-weight: 500;
+
+        .url {
+            color: var(--secondary-font-color);
+        }
+    }
+
+    .right-arrow {
+        margin-top: 4px;
+        margin-left: 6px;
+        color: rgba(72, 158, 207, 0.9);
+    }
+
+    .status-text {
+        margin-top: 1px;
+        margin-left: 6px;
+        font-size: 0.88em;
+        font-weight: 500;
+        color: var(--main-font-color);
+    }
+
+    .highlighted {
+        font-weight: bold;
+        color: rgb(202, 44, 44);
+    }
+
+    .requester-icon {
+        margin-right: 4px;
+        color: var(--main-font-color);
+    }
+
+    .ticket-info {
+        margin-top: 3px;
+        max-width: 360px;
+        font-size: 0.88em;
+        font-weight: 500;
+
+        .url {
+            color: var(--secondary-font-color);
+        }
+    }
+
+    .time {
+        margin-top: 6px;
+        margin-left: 6px;
+    }
+}
+
+.support-ticket-card-actions {
+    position: absolute;
+    bottom: 8px;
+    right: 9px;
+    display: flex;
+
+    .open-options {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1px;
+        width: 20px;
+        height: 20px;
+        font-size: 0.85em;
+        color: var(--main-font-color);
+        border: 1px solid var(--border-color);
+        border-radius: 50%;
+        box-shadow: -3px -3px 7px var(--light-shadow-color), 3px 3px 5px var(--dark-shadow-color);
+        cursor: pointer;
+
+        &:hover {
+            box-shadow: inset -3px -3px 7px var(--light-shadow-color), inset 3px 3px 5px var(--dark-shadow-color);
+        }
+    }
+}
