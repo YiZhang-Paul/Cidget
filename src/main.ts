@@ -2,7 +2,7 @@ import Vue from 'vue';
 import VueNotification from 'vue-notification';
 
 import './socket';
-import './outlook-auth.js';
+import './outlook-auth';
 import './element-ui-non-test.js';
 import './styles.scss';
 import App from './app';
