@@ -4,9 +4,11 @@ import { Container } from 'inversify';
 import IHttpClient from '../interface/general/http-client.interface';
 import IRepositoryProvider from '../interface/repository/repository-provider.interface';
 import IAbbreviationResolver from '../interface/general/abbreviation-resolver.interface';
+import IOAuthProvider from '../interface/general/oauth-provider.interface';
 import HttpClient from '../service/io/http-client/http-client';
 import LanguageNameResolver from '../service/resolver/language-name-resolver/language-name-resolver';
 import LicenseNameResolver from '../service/resolver/license-name-resolver/license-name-resolver';
+import OutlookApiProvider from '../service/mail/outlook/outlook-api-provider';
 import GithubRepositoryProvider from '../service/repository/github/github-repository-provider/github-repository-provider.service';
 import GithubWebhookProviderService from '../service/webhook/github/github-webhook-provider.service';
 import GithubCommitService from '../service/repository/github/github-commit/github-commit.service';
@@ -43,6 +45,11 @@ container
     .to(GithubRepositoryProvider)
     .inSingletonScope()
     .whenTargetNamed('github');
+
+container
+    .bind<IOAuthProvider>(Types.IOAuthProvider)
+    .to(OutlookApiProvider)
+    .inSingletonScope();
 
 container
     .bind<LanguageNameResolver>(Types.LanguageNameResolver)

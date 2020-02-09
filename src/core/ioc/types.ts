@@ -1,5 +1,6 @@
 export default {
     IHttpClient: Symbol.for('IHttpClient'),
+    IOAuthProvider: Symbol.for('IOAuthProvider'),
     IAbbreviationResolver: Symbol.for('IAbbreviationResolver'),
     IRepositoryProvider: Symbol.for('IRepositoryProvider'),
     LanguageNameResolver: Symbol.for('LanguageNameResolver'),
