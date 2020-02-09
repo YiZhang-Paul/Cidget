@@ -4,12 +4,12 @@ import { remote } from 'electron';
 
 import Types from './core/ioc/types';
 import Container from './core/ioc/container';
-import IOAuthProvider from './core/interface/general/oauth-provider.interface';
 import { logger } from './core/service/io/logger/logger';
+import OutlookApiProvider from './core/service/mail/outlook/outlook-api-provider';
 
 const app = express();
 const { localPort } = config.get<any>('mail').outlook;
-const outlookApi = Container.get<IOAuthProvider>(Types.IOAuthProvider);
+const outlookApi = Container.get<OutlookApiProvider>(Types.OutlookApiProvider);
 const window = new remote.BrowserWindow({ width: 800, height: 600 });
 
 app.listen(localPort, () => logger.log(`outlook OAuth server listening on port ${localPort}.`));

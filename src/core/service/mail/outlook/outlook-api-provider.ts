@@ -1,7 +1,12 @@
+import 'isomorphic-fetch';
 import config from 'config';
 import { injectable } from 'inversify';
+import * as graph from '@microsoft/microsoft-graph-client';
 
+import IUser from '../../../interface/general/user.interface';
+import IMail from '../../../interface/general/email.interface';
 import IOAuthProvider from '../../../interface/general/oauth-provider.interface';
+import { logger } from '../../io/logger/logger';
 
 const outlookConfig = config.get<any>('mail').outlook;
 const { clientId, secret, callback, scope } = outlookConfig;
@@ -12,7 +17,8 @@ const oauth2 = require('simple-oauth2').create({ client, auth });
 
 @injectable()
 export default class OutlookApiProvider implements IOAuthProvider {
-    private _token: any = null;
+    private _token!: any;
+    private _client!: graph.Client;
 
     private get authorizeContext(): any {
         return ({ redirect_uri: callback, scope });
@@ -20,6 +26,12 @@ export default class OutlookApiProvider implements IOAuthProvider {
 
     public get authorizeUrl(): string {
         return oauth2.authorizationCode.authorizeURL(this.authorizeContext);
+    }
+
+    private async refreshToken(): Promise<void> {
+        if (this._token.expired()) {
+            await this._token.refresh();
+        }
     }
 
     public async authorize(code: string): Promise<void> {

@@ -4,7 +4,6 @@ import { Container } from 'inversify';
 import IHttpClient from '../interface/general/http-client.interface';
 import IRepositoryProvider from '../interface/repository/repository-provider.interface';
 import IAbbreviationResolver from '../interface/general/abbreviation-resolver.interface';
-import IOAuthProvider from '../interface/general/oauth-provider.interface';
 import HttpClient from '../service/io/http-client/http-client';
 import LanguageNameResolver from '../service/resolver/language-name-resolver/language-name-resolver';
 import LicenseNameResolver from '../service/resolver/license-name-resolver/license-name-resolver';
@@ -47,7 +46,7 @@ container
     .whenTargetNamed('github');
 
 container
-    .bind<IOAuthProvider>(Types.IOAuthProvider)
+    .bind<OutlookApiProvider>(Types.OutlookApiProvider)
     .to(OutlookApiProvider)
     .inSingletonScope();
 
