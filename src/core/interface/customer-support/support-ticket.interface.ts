@@ -7,6 +7,7 @@ export default interface ISupportTicket {
     url: string;
     status: string;
     requester: IUser;
+    group: string;
     assignee: IUser[];
     assignedToUser: boolean;
 }

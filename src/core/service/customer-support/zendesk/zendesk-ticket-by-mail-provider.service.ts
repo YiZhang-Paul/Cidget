@@ -12,17 +12,38 @@ export default class ZendeskTicketByMailProvider implements ISupportTicketProvid
     }
 
     public toTicket(data: IEmail): ISupportTicket {
-        const url = (data.body.match(/zendesk.com\/agent\/tickets\/\d+/i) || [''])[0];
+        const { body, subject, from, to } = data;
+        const url = this.getUrl(body);
 
         return ({
             id: url.split('/').slice(-1)[0],
-            title: data.subject,
-            content: '',
+            title: subject,
+            content: this.getContent(body),
             url,
-            status: '',
-            requester: data.from,
-            assignee: data.to,
-            assignedToUser: /you have been assigned to/i.test(data.body)
+            status: /has been reopened/i.test(body) ? 'reopened' : 'opened',
+            requester: from,
+            group: this.getGroup(body),
+            assignee: to,
+            assignedToUser: /you have been assigned to/i.test(body)
         }) as ISupportTicket;
+    }
+
+    private getUrl(data: string): string {
+        const match = data.match(/https:\/\/[^(https)]*zendesk.com\/agent\/tickets\/\d+/i);
+
+        return (match || [''])[0];
+    }
+
+    private getGroup(data: string): string {
+        const match = data.match(/(?<=assigned to group ['"]).*(?=['"], of)/i);
+
+        return (match || [''])[0];
+    }
+
+    private getContent(data: string): string {
+        return data
+            .replace(/<br\/?>/ig, '\n')
+            .replace(/<[^>]*>/g, '')
+            .replace(/^.*\d{1,2}, \d{2}:\d{2} \w{1,3}\s?/, '');
     }
 }
