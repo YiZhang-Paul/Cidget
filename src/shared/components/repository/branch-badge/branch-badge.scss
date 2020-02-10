@@ -13,16 +13,11 @@
     }
 
     .branch-icon {
-        float: left;
+        color: rgb(62, 224, 30);
         margin-top: 1px;
-        margin-right: 2px;
+        margin-right: 2.5px;
         width: 11px;
-        height: 17px;
-        background-image: url('../../../../../public/icons/git-branch.svg');
-        background-repeat: no-repeat;
-        background-position: center;
-        background-size: 11px 17px;
-        filter: invert(71%) sepia(61%) saturate(515%) hue-rotate(61deg) brightness(96%) contrast(102%);
+        height: 14px;
     }
 
     .url {
