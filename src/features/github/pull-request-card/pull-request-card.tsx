@@ -63,7 +63,7 @@ export default class PullRequestCard extends tsx.Component<any> {
                         url={this.sourceBranchUrl}>
                     </BranchBadge>
 
-                    <i class="fas fa-arrow-alt-circle-right right-arrow"></i>
+                    <div class="splitter">to</div>
 
                     <BranchBadge class="to-branch-badge"
                         name={this.pullRequest.branch.base}

@@ -61,12 +61,19 @@
     }
 
     .from-branch-badge, .to-branch-badge {
-        margin-top: 3px;
+        margin-top: 4px;
         max-width: 130px;
     }
 
+    .splitter {
+        margin-top: 3px;
+        margin-left: 5px;
+        font-weight: 500;
+        color: var(--main-font-color);
+    }
+
     .to-branch-badge {
-        margin-left: 6px;
+        margin-left: 5px;
     }
 
     .right-arrow {
