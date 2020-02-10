@@ -7,6 +7,7 @@
         max-width: 240px;
         margin-right: 2px;
         font-weight: 500;
+        color: var(--secondary-font-color);
 
         .url {
             color: var(--secondary-font-color);
@@ -76,4 +77,21 @@
             box-shadow: inset -3px -3px 7px var(--light-shadow-color), inset 3px 3px 5px var(--dark-shadow-color);
         }
     }
+}
+// zendesk ticket tooltip styling
+.zd-comment, .zd-comment p {
+    margin: 8px 0 !important;
+    line-height: 12px !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    color: var(--main-font-color) !important;
+}
+
+.zd-comment {
+    padding: 0 10px !important;
+}
+
+.el-tooltip__popper {
+    width: 65vw;
 }
