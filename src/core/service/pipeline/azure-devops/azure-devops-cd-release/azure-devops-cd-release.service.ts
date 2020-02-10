@@ -1,7 +1,7 @@
 import { injectable, inject } from 'inversify';
 
 import Types from '../../../../ioc/types';
-import ICdRelease from '../../../../interface/general/cd-release.interface';
+import ICdRelease from '../../../../interface/pipeline/cd-release.interface';
 import IHttpClient from '../../../../interface/general/http-client.interface';
 
 @injectable()

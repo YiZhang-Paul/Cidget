@@ -1,6 +1,7 @@
 import { Component, Ref } from 'vue-property-decorator';
 import * as tsx from 'vue-tsx-support';
 
+import SupportTicketCard from './features/zendesk/support-ticket-card/support-ticket-card';
 import BuildPipelineCard from './features/azure-devops/build-pipeline-card/build-pipeline-card';
 import ReleasePipelineCard from './features/azure-devops/release-pipeline-card/release-pipeline-card';
 import CommitCard from './features/github/commit-card/commit-card';
@@ -33,6 +34,8 @@ export default class App extends tsx.Component<any> {
         const { type, model } = props.item.data;
 
         switch (type) {
+            case 'support-ticket':
+                return <SupportTicketCard class={className} ticket={model} />;
             case 'ci-build':
                 return <BuildPipelineCard class={className} build={model} />;
             case 'cd-release':

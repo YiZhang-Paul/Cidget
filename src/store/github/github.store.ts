@@ -3,8 +3,8 @@ import { ActionContext, StoreOptions } from 'vuex';
 
 import Types from '../../core/ioc/types';
 import Container from '../../core/ioc/container';
-import ICommit from '../../core/interface/general/commit.interface';
-import IPullRequest from '../../core/interface/general/pull-request.interface';
+import ICommit from '../../core/interface/repository/commit.interface';
+import IPullRequest from '../../core/interface/repository/pull-request.interface';
 import IGithubUser from '../../core/interface/repository/github/github-user.interface';
 import GithubCommitService from '../../core/service/repository/github/github-commit/github-commit.service';
 import GithubPullRequestService from '../../core/service/repository/github/github-pull-request/github-pull-request.service';

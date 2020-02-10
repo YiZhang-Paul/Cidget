@@ -2,7 +2,7 @@ import { Component, Prop } from 'vue-property-decorator';
 import * as tsx from 'vue-tsx-support';
 import { shell } from 'electron';
 
-import ICommit from '../../../core/interface/general/commit.interface';
+import ICommit from '../../../core/interface/repository/commit.interface';
 import IGithubUser from '../../../core/interface/repository/github/github-user.interface';
 import NotificationCard from '../../../shared/components/generic/notification-card/notification-card';
 import WeblinkDisplay from '../../../shared/components/generic/weblink-display/weblink-display';

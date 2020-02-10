@@ -2,7 +2,7 @@ import { Component, Prop } from 'vue-property-decorator';
 import * as tsx from 'vue-tsx-support';
 
 import IGithubUser from '../../../core/interface/repository/github/github-user.interface';
-import IPullRequest from '../../../core/interface/general/pull-request.interface';
+import IPullRequest from '../../../core/interface/repository/pull-request.interface';
 import NotificationCard from '../../../shared/components/generic/notification-card/notification-card';
 import WeblinkDisplay from '../../../shared/components/generic/weblink-display/weblink-display';
 import ChangeStatsSummary from '../../../shared/components/generic/change-stats-summary/change-stats-summary';
@@ -63,7 +63,7 @@ export default class PullRequestCard extends tsx.Component<any> {
                         url={this.sourceBranchUrl}>
                     </BranchBadge>
 
-                    <i class="fas fa-arrow-alt-circle-right right-arrow"></i>
+                    <div class="splitter">to</div>
 
                     <BranchBadge class="to-branch-badge"
                         name={this.pullRequest.branch.base}

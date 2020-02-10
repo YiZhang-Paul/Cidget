@@ -5,8 +5,8 @@ import { assert as sinonExpect, stub, spy } from 'sinon';
 
 import Types from '../../core/ioc/types';
 import Container from '../../core/ioc/container';
-import ICiBuild from '../../core/interface/general/ci-build.interface';
-import ICdRelease from '../../core/interface/general/cd-release.interface';
+import ICiBuild from '../../core/interface/pipeline/ci-build.interface';
+import ICdRelease from '../../core/interface/pipeline/cd-release.interface';
 import AzureDevopsCiBuildService from '../../core/service/pipeline/azure-devops/azure-devops-ci-build/azure-devops-ci-build.service';
 import AzureDevopsCdReleaseService from '../../core/service/pipeline/azure-devops/azure-devops-cd-release/azure-devops-cd-release.service';
 

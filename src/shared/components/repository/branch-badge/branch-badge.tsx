@@ -19,7 +19,7 @@ export default class BranchBadge extends tsx.Component<any> {
                 text={this.name}
                 url={this.disabled ? '' : this.url}
                 noTooltip={true}>
-                <div class="branch-icon"></div>
+                <i class="fas fa-code-branch branch-icon"></i>
             </WeblinkDisplay>
         );
     }

@@ -2,7 +2,7 @@ import { injectable, inject, named } from 'inversify';
 
 import Types from '../../../../ioc/types';
 import IGithubUser from '../../../../interface/repository/github/github-user.interface';
-import IPullRequest from '../../../../interface/general/pull-request.interface';
+import IPullRequest from '../../../../interface/repository/pull-request.interface';
 import IHttpClient from '../../../../interface/general/http-client.interface';
 import IRepositoryProvider from '../../../../interface/repository/repository-provider.interface';
 
