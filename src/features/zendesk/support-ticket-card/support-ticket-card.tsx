@@ -43,7 +43,8 @@ export default class SupportTicketCard extends tsx.Component<any> {
                 <div class="ticket-info-container">
                     <ConversationPreviewBadge class="ticket-info"
                         username={this.ticket.requester.name}
-                        conversation={this.ticket.content}>
+                        conversation={this.ticket.content}
+                        tooltip={this.ticket.htmlContent}>
                     </ConversationPreviewBadge>
 
                     <RelativeTimeDisplay class="time" time={this.ticket.createdOn} />

@@ -9,13 +9,15 @@ import './conversation-preview-badge.scss';
 export default class ConversationPreviewBadge extends tsx.Component<any> {
     @Prop() public username!: string;
     @Prop() public conversation!: string;
+    @Prop() public tooltip!: string;
 
     public render(): any {
         return (
             <WeblinkDisplay class="conversation-preview-badge-container"
                 text={`${this.username}: ${this.conversation}`}
-                tooltip={this.conversation}
-                tooltipPosition={'bottom'}>
+                tooltip={this.tooltip}
+                useHtmlTooltip={true}
+                tooltipPosition={'bottom-start'}>
                 <i class="fas fa-user-ninja user-icon"></i>
             </WeblinkDisplay>
         );

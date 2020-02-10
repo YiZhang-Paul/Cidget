@@ -20,6 +20,7 @@ export default class ZendeskTicketByMailProvider implements ISupportTicketProvid
             id: url.split('/').slice(-1)[0],
             title: subject.replace(/^.*assignment:?\s?/i, ''),
             content: this.getContent(body),
+            htmlContent: this.getHtmlContent(body),
             createdOn: data.created,
             url,
             status: /has been reopened/i.test(body) ? 'reopened' : 'opened',
@@ -43,9 +44,10 @@ export default class ZendeskTicketByMailProvider implements ISupportTicketProvid
     }
 
     private getContent(data: string): string {
-        return data
-            .replace(/<br\/?>/ig, '\n')
-            .replace(/<[^>]*>/g, '')
-            .replace(/^.*\d{1,2}, \d{2}:\d{2} \w{1,3}\s?/, '');
+        return this.getHtmlContent(data).replace(/<[^<]*>/ig, '');
+    }
+
+    private getHtmlContent(data: string): string {
+        return (data.match(/<div class="zd-comment".*?div>/ig) || [''])[0];
     }
 }
