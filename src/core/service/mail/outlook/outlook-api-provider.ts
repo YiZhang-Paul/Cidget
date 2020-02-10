@@ -41,6 +41,27 @@ export default class OutlookApiProvider implements IOAuthProvider {
         const accessToken = this._token.token.access_token;
         this._client = graph.Client.init({ authProvider: _ => _(null, accessToken) });
     }
+
+    public async getMails(): Promise<IMail[]> {
+        try {
+            await this.refreshToken();
+
+            const mails = await this._client
+                .api('/me/messages')
+                .top(500)
+                .select('subject,body,sender,from,toRecipients,createdDateTime')
+                .orderby('createdDateTime DESC')
+                .get();
+
+            return mails.value.map(this.toMail.bind(this));
+        }
+        catch (error) {
+            logger.log(error);
+
+            return [];
+        }
+    }
+
     public toMail(data: any): IMail {
         const { subject, body, createdDateTime, from, toRecipients } = data;
 
