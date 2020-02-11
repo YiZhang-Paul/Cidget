@@ -43,6 +43,7 @@ export default class OutlookApiProvider implements IOAuthProvider {
         const token = await oauth2.authorizationCode.getToken(context);
         this._token = oauth2.accessToken.create(token);
         const accessToken = this._token.token.access_token;
+        config.set('mail.outlook.token', token);
         this._client = graph.Client.init({ authProvider: _ => _(null, accessToken) });
         this._window.close();
     }
