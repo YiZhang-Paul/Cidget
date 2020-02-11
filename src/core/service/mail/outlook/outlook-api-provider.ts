@@ -18,18 +18,17 @@ const oauth2 = require('simple-oauth2').create({ client, auth });
 
 @injectable()
 export default class OutlookApiProvider implements IOAuthProvider {
+    private _tokenPath = 'mail.outlook.token';
     private _token!: any;
     private _client!: graph.Client;
     private _window!: BrowserWindow;
 
-    private get authorizeContext(): any {
-        return ({ redirect_uri: callback, scope });
+    constructor() {
+        this.authorizeToken(config.get(this._tokenPath));
     }
 
-    private async refreshToken(): Promise<void> {
-        if (this._token.expired()) {
-            await this._token.refresh();
-        }
+    private get authorizeContext(): any {
+        return ({ redirect_uri: callback, scope });
     }
 
     public promptAuthorization(): void {
@@ -41,11 +40,32 @@ export default class OutlookApiProvider implements IOAuthProvider {
     public async authorize(code: string): Promise<void> {
         const context = Object.assign({ code }, this.authorizeContext);
         const token = await oauth2.authorizationCode.getToken(context);
-        this._token = oauth2.accessToken.create(token);
-        const accessToken = this._token.token.access_token;
-        config.set('mail.outlook.token', token);
-        this._client = graph.Client.init({ authProvider: _ => _(null, accessToken) });
+        // FIXME: potential loop
+        this.authorizeToken(token);
+        config.set(this._tokenPath, token);
         this._window.close();
+    }
+
+    private authorizeToken(token: any): void {
+        try {
+            this._token = oauth2.accessToken.create(token);
+            const accessToken = this._token.token.access_token;
+            this._client = graph.Client.init({ authProvider: _ => _(null, accessToken) });
+        }
+        catch {
+            this.promptAuthorization();
+        }
+    }
+
+    private async refreshToken(): Promise<void> {
+        if (this._token.expired()) {
+            try {
+                await this._token.refresh();
+            }
+            catch {
+                this.promptAuthorization();
+            }
+        }
     }
 
     public async getMails(): Promise<IMail[]> {
