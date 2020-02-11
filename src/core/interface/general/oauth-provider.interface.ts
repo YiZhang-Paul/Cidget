@@ -1,4 +1,4 @@
 export default interface IOAuthProvider {
-    authorizeUrl: string;
+    promptAuthorization(): void;
     authorize(code: string): Promise<void>;
 }

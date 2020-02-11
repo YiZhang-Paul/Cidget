@@ -1,5 +1,6 @@
 import 'isomorphic-fetch';
 import { injectable } from 'inversify';
+import { remote, BrowserWindow } from 'electron';
 import * as graph from '@microsoft/microsoft-graph-client';
 
 import config from '../../../../electron-config';
@@ -19,13 +20,10 @@ const oauth2 = require('simple-oauth2').create({ client, auth });
 export default class OutlookApiProvider implements IOAuthProvider {
     private _token!: any;
     private _client!: graph.Client;
+    private _window!: BrowserWindow;
 
     private get authorizeContext(): any {
         return ({ redirect_uri: callback, scope });
-    }
-
-    public get authorizeUrl(): string {
-        return oauth2.authorizationCode.authorizeURL(this.authorizeContext);
     }
 
     private async refreshToken(): Promise<void> {
@@ -34,12 +32,19 @@ export default class OutlookApiProvider implements IOAuthProvider {
         }
     }
 
+    public promptAuthorization(): void {
+        const url = oauth2.authorizationCode.authorizeURL(this.authorizeContext);
+        this._window = new remote.BrowserWindow({ width: 800, height: 600 });
+        this._window.loadURL(url);
+    }
+
     public async authorize(code: string): Promise<void> {
         const context = Object.assign({ code }, this.authorizeContext);
         const token = await oauth2.authorizationCode.getToken(context);
         this._token = oauth2.accessToken.create(token);
         const accessToken = this._token.token.access_token;
         this._client = graph.Client.init({ authProvider: _ => _(null, accessToken) });
+        this._window.close();
     }
 
     public async getMails(): Promise<IMail[]> {
