@@ -58,13 +58,16 @@ export default class OutlookApiProvider implements IOAuthProvider {
     }
 
     private async refreshToken(): Promise<void> {
-        if (this._token.expired()) {
-            try {
-                await this._token.refresh();
-            }
-            catch {
-                this.promptAuthorization();
-            }
+        if (!this._token.expired()) {
+            return;
+        }
+
+        try {
+            await this._token.refresh();
+            config.set(this._tokenPath, this._token.token);
+        }
+        catch {
+            this.promptAuthorization();
         }
     }
 
