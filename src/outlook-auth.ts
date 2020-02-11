@@ -1,7 +1,7 @@
 import express from 'express';
 import { remote } from 'electron';
 
-import config from './electron-store';
+import config from './electron-config';
 import Types from './core/ioc/types';
 import Container from './core/ioc/container';
 import { logger } from './core/service/io/logger/logger';

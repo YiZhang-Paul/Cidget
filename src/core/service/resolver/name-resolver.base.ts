@@ -1,6 +1,6 @@
 import { injectable } from 'inversify';
 
-import config from '../../../electron-store';
+import config from '../../../electron-config';
 import IAbbreviationResolver from '../../interface/general/abbreviation-resolver.interface';
 
 @injectable()

@@ -1,6 +1,6 @@
 import { injectable, inject, named } from 'inversify';
 
-import config from '../../../../../electron-store';
+import config from '../../../../../electron-config';
 import Types from '../../../../ioc/types';
 import IUser from '../../../../interface/general/user.interface';
 import IHttpClient from '../../../../interface/general/http-client.interface';

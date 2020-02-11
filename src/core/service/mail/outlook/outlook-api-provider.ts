@@ -2,7 +2,7 @@ import 'isomorphic-fetch';
 import { injectable } from 'inversify';
 import * as graph from '@microsoft/microsoft-graph-client';
 
-import config from '../../../../electron-store';
+import config from '../../../../electron-config';
 import IUser from '../../../interface/general/user.interface';
 import IMail from '../../../interface/general/email.interface';
 import IOAuthProvider from '../../../interface/general/oauth-provider.interface';

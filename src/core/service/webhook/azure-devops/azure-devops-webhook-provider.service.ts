@@ -1,6 +1,6 @@
 import { injectable, inject } from 'inversify';
 
-import config from '../../../../electron-store';
+import config from '../../../../electron-config';
 import Types from '../../../ioc/types';
 import IWebhook from '../../../interface/webhook/webhook.interface';
 import IWebhookProvider from '../../../interface/webhook/webhook-provider.interface';

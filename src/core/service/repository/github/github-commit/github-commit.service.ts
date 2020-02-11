@@ -1,6 +1,6 @@
 import { injectable, inject, named } from 'inversify';
 
-import config from '../../../../../electron-store';
+import config from '../../../../../electron-config';
 import Types from '../../../../ioc/types';
 import ICommit from '../../../../interface/repository/commit.interface';
 import ICommitStatus from '../../../../interface/repository/commit-status.interface';

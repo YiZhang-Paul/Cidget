@@ -1,6 +1,6 @@
 import socketClient from 'socket.io-client';
 
-import config from './electron-store';
+import config from './electron-config';
 import Store from './store';
 import Types from './core/ioc/types';
 import Container from './core/ioc/container';
