@@ -1,14 +1,14 @@
-import config from 'config';
 import express from 'express';
 import { remote } from 'electron';
 
+import config from './electron-store';
 import Types from './core/ioc/types';
 import Container from './core/ioc/container';
 import { logger } from './core/service/io/logger/logger';
 import OutlookApiProvider from './core/service/mail/outlook/outlook-api-provider';
 
 const app = express();
-const { localPort } = config.get<any>('mail').outlook;
+const { localPort } = config.get('mail').outlook;
 const outlookApi = Container.get<OutlookApiProvider>(Types.OutlookApiProvider);
 const window = new remote.BrowserWindow({ width: 800, height: 600 });
 

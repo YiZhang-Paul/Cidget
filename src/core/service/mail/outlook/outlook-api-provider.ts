@@ -1,14 +1,14 @@
 import 'isomorphic-fetch';
-import config from 'config';
 import { injectable } from 'inversify';
 import * as graph from '@microsoft/microsoft-graph-client';
 
+import config from '../../../../electron-store';
 import IUser from '../../../interface/general/user.interface';
 import IMail from '../../../interface/general/email.interface';
 import IOAuthProvider from '../../../interface/general/oauth-provider.interface';
 import { logger } from '../../io/logger/logger';
 
-const outlookConfig = config.get<any>('mail').outlook;
+const outlookConfig = config.get('mail').outlook;
 const { clientId, secret, callback, scope } = outlookConfig;
 const { tokenHost, authorizePath, tokenPath } = outlookConfig;
 const client = { id: clientId, secret };

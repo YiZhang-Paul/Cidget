@@ -1,11 +1,12 @@
 import { injectable, inject } from 'inversify';
 
+import config from '../../../../electron-store';
 import Types from '../../../ioc/types';
 import IWebhook from '../../../interface/webhook/webhook.interface';
 import IWebhookProvider from '../../../interface/webhook/webhook-provider.interface';
 import IHttpClient from '../../../interface/general/http-client.interface';
 
-const { url, token, user } = require('config').get('repository').github;
+const { url, token, user } = config.get('repository').github;
 
 @injectable()
 export default class GithubWebhookProviderService implements IWebhookProvider<any> {

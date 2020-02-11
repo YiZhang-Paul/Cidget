@@ -1,12 +1,13 @@
 import { injectable, inject } from 'inversify';
 
+import config from '../../../../electron-store';
 import Types from '../../../ioc/types';
 import IWebhook from '../../../interface/webhook/webhook.interface';
 import IWebhookProvider from '../../../interface/webhook/webhook-provider.interface';
 import IHttpClient from '../../../interface/general/http-client.interface';
 import IAzureDevopsWebhookContext from '@/core/interface/webhook/azure-devops/azure-devops-webhook-context.interface';
 
-const { url, token } = require('config').get('cicd').azureDevops;
+const { url, token } = config.get('cicd').azureDevops;
 
 @injectable()
 export default class AzureDevopsWebhookProviderService implements IWebhookProvider<IAzureDevopsWebhookContext> {

@@ -1,5 +1,6 @@
 import { injectable, inject, named } from 'inversify';
 
+import config from '../../../../../electron-store';
 import Types from '../../../../ioc/types';
 import IUser from '../../../../interface/general/user.interface';
 import IHttpClient from '../../../../interface/general/http-client.interface';
@@ -7,7 +8,7 @@ import IRepository from '../../../../interface/repository/repository.interface';
 import IRepositoryProvider from '../../../../interface/repository/repository-provider.interface';
 import IAbbreviationResolver from '../../../../interface/general/abbreviation-resolver.interface';
 
-const { url, token } = require('config').get('repository').github;
+const { url, token } = config.get('repository').github;
 
 @injectable()
 export default class GithubRepositoryProvider implements IRepositoryProvider<any> {
