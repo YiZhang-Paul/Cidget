@@ -8,7 +8,7 @@ import { logger } from './core/service/io/logger/logger';
 import OutlookApiProvider from './core/service/mail/outlook/outlook-api-provider';
 import ZendeskTicketByMailProvider from './core/service/customer-support/zendesk/zendesk-ticket-by-mail-provider.service';
 
-const { host } = config.get('cidget').server;
+const { host } = config.get('cidget.server');
 const outlookService = Container.get<OutlookApiProvider>(Types.OutlookApiProvider);
 const zendeskService = Container.get<ZendeskTicketByMailProvider>(Types.ZendeskTicketByMailProvider);
 const socket = socketClient(host);

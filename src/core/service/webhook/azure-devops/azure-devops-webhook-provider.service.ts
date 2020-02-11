@@ -7,7 +7,7 @@ import IWebhookProvider from '../../../interface/webhook/webhook-provider.interf
 import IHttpClient from '../../../interface/general/http-client.interface';
 import IAzureDevopsWebhookContext from '@/core/interface/webhook/azure-devops/azure-devops-webhook-context.interface';
 
-const { url, token } = config.get('cicd').azureDevops;
+const { url, token } = config.get('cicd.azureDevops');
 
 @injectable()
 export default class AzureDevopsWebhookProviderService implements IWebhookProvider<IAzureDevopsWebhookContext> {

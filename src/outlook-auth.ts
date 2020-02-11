@@ -7,7 +7,7 @@ import { logger } from './core/service/io/logger/logger';
 import OutlookApiProvider from './core/service/mail/outlook/outlook-api-provider';
 
 const app = express();
-const { localPort } = config.get('mail').outlook;
+const { localPort } = config.get('mail.outlook');
 const outlookApi = Container.get<OutlookApiProvider>(Types.OutlookApiProvider);
 
 app.listen(localPort, () => logger.log(`outlook OAuth server listening on port ${localPort}.`));

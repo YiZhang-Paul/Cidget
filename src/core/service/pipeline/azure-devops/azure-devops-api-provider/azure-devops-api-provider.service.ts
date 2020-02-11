@@ -5,7 +5,7 @@ import { IReleaseApi } from 'azure-devops-node-api/ReleaseApi';
 
 import config from '../../../../../electron-config';
 
-const { url, token } = config.get('cicd').azureDevops;
+const { url, token } = config.get('cicd.azureDevops');
 
 @injectable()
 export default class AzureDevopsApiProvider {

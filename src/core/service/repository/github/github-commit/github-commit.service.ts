@@ -8,7 +8,7 @@ import IGithubUser from '../../../../interface/repository/github/github-user.int
 import IHttpClient from '../../../../interface/general/http-client.interface';
 import IRepositoryProvider from '../../../../interface/repository/repository-provider.interface';
 
-const { url, user } = config.get('repository').github;
+const { url, user } = config.get('repository.github');
 
 @injectable()
 export default class GithubCommitService {

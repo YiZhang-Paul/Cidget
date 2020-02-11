@@ -9,7 +9,7 @@ import IMail from '../../../interface/general/email.interface';
 import IOAuthProvider from '../../../interface/general/oauth-provider.interface';
 import { logger } from '../../io/logger/logger';
 
-const outlookConfig = config.get('mail').outlook;
+const outlookConfig = config.get('mail.outlook');
 const { clientId, secret, callback, scope } = outlookConfig;
 const { tokenHost, authorizePath, tokenPath } = outlookConfig;
 const client = { id: clientId, secret };

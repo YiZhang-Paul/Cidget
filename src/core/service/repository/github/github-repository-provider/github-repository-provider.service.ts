@@ -8,7 +8,7 @@ import IRepository from '../../../../interface/repository/repository.interface';
 import IRepositoryProvider from '../../../../interface/repository/repository-provider.interface';
 import IAbbreviationResolver from '../../../../interface/general/abbreviation-resolver.interface';
 
-const { url, token } = config.get('repository').github;
+const { url, token } = config.get('repository.github');
 
 @injectable()
 export default class GithubRepositoryProvider implements IRepositoryProvider<any> {
