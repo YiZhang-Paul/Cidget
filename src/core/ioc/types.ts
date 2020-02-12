@@ -3,6 +3,7 @@ export default {
     IAbbreviationResolver: Symbol.for('IAbbreviationResolver'),
     IRepositoryProvider: Symbol.for('IRepositoryProvider'),
     OutlookApiProvider: Symbol.for('OutlookApiProvider'),
+    OutlookWebhookProvider: Symbol.for('OutlookWebhookProvider'),
     ZendeskTicketByMailProvider: Symbol.for('ZendeskTicketByMailProvider'),
     LanguageNameResolver: Symbol.for('LanguageNameResolver'),
     LicenseNameResolver: Symbol.for('LicenseNameResolver'),

@@ -8,6 +8,7 @@ import HttpClient from '../service/io/http-client/http-client';
 import LanguageNameResolver from '../service/resolver/language-name-resolver/language-name-resolver';
 import LicenseNameResolver from '../service/resolver/license-name-resolver/license-name-resolver';
 import OutlookApiProvider from '../service/mail/outlook/outlook-api-provider';
+import OutlookWebhookProvider from '../service/webhook/outlook/outlook-webhook-provider';
 import ZendeskTicketByMailProvider from '../service/customer-support/zendesk/zendesk-ticket-by-mail-provider.service';
 import GithubRepositoryProvider from '../service/repository/github/github-repository-provider/github-repository-provider.service';
 import GithubWebhookProviderService from '../service/webhook/github/github-webhook-provider.service';
@@ -49,6 +50,11 @@ container
 container
     .bind<OutlookApiProvider>(Types.OutlookApiProvider)
     .to(OutlookApiProvider)
+    .inSingletonScope();
+
+container
+    .bind<OutlookWebhookProvider>(Types.OutlookWebhookProvider)
+    .to(OutlookWebhookProvider)
     .inSingletonScope();
 
 container
