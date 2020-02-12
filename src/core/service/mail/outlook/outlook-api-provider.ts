@@ -2,6 +2,7 @@ import 'isomorphic-fetch';
 import { injectable } from 'inversify';
 import { remote, BrowserWindow } from 'electron';
 import * as graph from '@microsoft/microsoft-graph-client';
+import { GraphRequest } from '@microsoft/microsoft-graph-client';
 
 import config from '../../../../electron-config';
 import IUser from '../../../interface/general/user.interface';
@@ -71,23 +72,16 @@ export default class OutlookApiProvider implements IOAuthProvider {
         }
     }
 
-    public async getMails(): Promise<IMail[]> {
+    public async startGraphRequest(url: string): Promise<GraphRequest | null> {
         try {
             await this.refreshToken();
 
-            const mails = await this._client
-                .api('/me/messages')
-                .top(500)
-                .select('subject,body,sender,from,toRecipients,createdDateTime')
-                .orderby('createdDateTime DESC')
-                .get();
-
-            return mails.value.map(this.toMail.bind(this));
+            return this._client.api(url);
         }
         catch (error) {
             logger.log(error);
 
-            return [];
+            return null;
         }
     }
 
