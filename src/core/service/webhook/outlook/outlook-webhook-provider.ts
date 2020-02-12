@@ -16,17 +16,19 @@ export default class OutlookWebhookProvider implements IWebhookProvider<IOutlook
         this._graphApi = graphApi;
     }
 
-    public async listWebhooks(name: string): Promise<IWebhook[]> {
-        return [];
+    public async listWebhooks(_ = ''): Promise<IWebhook[]> {
+        return (config.get(this._webhookPath) || []) as IWebhook[];
     }
 
-    public async getWebhook(name: string, callback: string): Promise<IWebhook | null> {
-        return null;
+    public async getWebhook(_: string, callback: string): Promise<IWebhook | null> {
+        const hooks = await this.listWebhooks();
+
+        return hooks.find(_ => _.callback === callback) ?? null;
     }
 
     public async addWebhook(name: string, context: IOutlookWebhookContext): Promise<IWebhook> {
-        const hooks = config.get(this._webhookPath) || [];
         const { events, callback, resource } = context;
+        const hooks = await this.listWebhooks();
         const request = await this._graphApi.startGraphRequest('/subscriptions');
 
         const { id } = await request?.post({
@@ -47,8 +49,8 @@ export default class OutlookWebhookProvider implements IWebhookProvider<IOutlook
             isActive: true
         }) as IWebhook;
 
-        if (hooks.every((_: any) => _.id !== id)) {
-            config.set(this._webhookPath, [hook]);
+        if (hooks.every(_ => _.id !== id)) {
+            config.set(this._webhookPath, [...hooks, hook]);
         }
         return hook;
     }
