@@ -16,8 +16,21 @@ export default class OutlookWebhookProvider implements IWebhookProvider<IOutlook
         this._graphApi = graphApi;
     }
 
+    private get expireTime(): Date {
+        return new Date(Date.now() + 60000 * 4230);
+    }
+
+    private isExpired(hook: IWebhook): boolean {
+        return Date.now() - hook.createdOn.getTime() >= 60000 * 4230;
+    }
+
     public async listWebhooks(_ = ''): Promise<IWebhook[]> {
-        return (config.get(this._webhookPath) || []) as IWebhook[];
+        const hooks = (config.get(this._webhookPath) || []) as IWebhook[];
+
+        for (const hook of hooks) {
+            hook.createdOn = new Date(hook.createdOn);
+        }
+        return hooks;
     }
 
     public async getWebhook(_: string, callback: string): Promise<IWebhook | null> {
@@ -35,7 +48,7 @@ export default class OutlookWebhookProvider implements IWebhookProvider<IOutlook
             changeType: events.join(','),
             notificationUrl: callback,
             resource,
-            expirationDateTime: new Date(Date.now() + 60000 * 4230).toISOString(),
+            expirationDateTime: this.expireTime.toISOString(),
             clientState: name
         });
 
@@ -53,5 +66,31 @@ export default class OutlookWebhookProvider implements IWebhookProvider<IOutlook
             config.set(this._webhookPath, [...hooks, hook]);
         }
         return hook;
+    }
+
+    public async renewWebhook(callback: string): Promise<IWebhook> {
+        const hook = await this.getWebhook('', callback);
+
+        if (!hook) {
+            throw new Error('Outlook webhook not found.');
+        }
+
+        if (!this.isExpired(hook)) {
+            return hook;
+        }
+        const hooks = await this.listWebhooks();
+        const index = hooks.findIndex(_ => _.id === hook.id);
+        hooks[index].createdOn = new Date();
+        const request = await this._graphApi.startGraphRequest(`/subscriptions/${hook.id}`);
+        await request?.patch({ expirationDateTime: this.expireTime.toISOString() });
+        config.set(this._webhookPath, hooks);
+
+        return hooks[index];
+    }
+
+    public async renewAllWebhooks(): Promise<void> {
+        for (const hook of await this.listWebhooks()) {
+            await this.renewWebhook(hook.callback);
+        }
     }
 }
