@@ -9,20 +9,23 @@ import OutlookApiProvider from './core/service/mail/outlook/outlook-api-provider
 import ZendeskTicketByMailProvider from './core/service/customer-support/zendesk/zendesk-ticket-by-mail-provider.service';
 
 const { host } = config.get('cidget.server');
+const socket = socketClient(host);
 const outlookService = Container.get<OutlookApiProvider>(Types.OutlookApiProvider);
 const zendeskService = Container.get<ZendeskTicketByMailProvider>(Types.ZendeskTicketByMailProvider);
-const socket = socketClient(host);
+
 socket.on('connect', () => logger.log('socket connected.'));
 socket.on('disconnect', () => logger.log('socket disconnected.'));
 
-socket.on('outlook-mail', (payload: any) => {
-    const mail = outlookService.toMail(payload);
+socket.on('outlook-mail', async (payload: any) => {
+    const id = payload.value[0].resourceData['@odata.id'];
+    const request = await outlookService.startGraphRequest(id);
+    const mail = outlookService.toMail(await request?.get());
 
     if (zendeskService.isZendeskEmail(mail)) {
         const action = `${Store.zendeskStoreName}/addTicketFromMail`;
         Store.store.dispatch(action, zendeskService.toTicket(mail));
     }
-})
+});
 
 socket.on('azure-devops-build', (payload: any) => {
     const action = `${Store.azureDevopsStoreName}/addCiBuild`;

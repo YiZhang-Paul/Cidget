@@ -68,14 +68,10 @@ export default class OutlookWebhookProvider implements IWebhookProvider<IOutlook
         return hook;
     }
 
-    public async renewWebhook(callback: string): Promise<IWebhook> {
+    public async renewWebhook(callback: string): Promise<IWebhook | null> {
         const hook = await this.getWebhook('', callback);
 
-        if (!hook) {
-            throw new Error('Outlook webhook not found.');
-        }
-
-        if (!this.isExpired(hook)) {
+        if (!hook || !this.isExpired(hook)) {
             return hook;
         }
         const hooks = await this.listWebhooks();
