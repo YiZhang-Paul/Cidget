@@ -41,6 +41,7 @@ export default class OutlookApiProvider implements IOAuthProvider {
     public async authorize(code: string): Promise<void> {
         const context = Object.assign({ code }, this.authorizeContext);
         const token = await oauth2.authorizationCode.getToken(context);
+        token.created = new Date().toISOString();
         // FIXME: potential loop
         this.authorizeToken(token);
         config.set(this._tokenPath, token);
@@ -49,6 +50,12 @@ export default class OutlookApiProvider implements IOAuthProvider {
 
     private authorizeToken(token: any): void {
         try {
+            if (token.created) {
+                const timestamp = new Date(token.created).getTime();
+                const elapsed = (Date.now() - timestamp) / 1000;
+                token.expires_in = Math.max(token.expires_in - elapsed, 0);
+                token.ext_expires_in = Math.max(token.ext_expires_in - elapsed, 0);
+            }
             this._token = oauth2.accessToken.create(token);
             const accessToken = this._token.token.access_token;
             this._client = graph.Client.init({ authProvider: _ => _(null, accessToken) });
@@ -64,8 +71,9 @@ export default class OutlookApiProvider implements IOAuthProvider {
         }
 
         try {
-            this._token.token = await this._token.refresh();
-            config.set(this._tokenPath, this._token.token);
+            const token = await this._token.refresh();
+            token.created = new Date().toISOString();
+            config.set(this._tokenPath, token);
         }
         catch {
             this.promptAuthorization();
