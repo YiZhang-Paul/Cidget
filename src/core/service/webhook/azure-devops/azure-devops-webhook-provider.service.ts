@@ -3,14 +3,15 @@ import { injectable, inject } from 'inversify';
 import config from '../../../../electron-config';
 import Types from '../../../ioc/types';
 import IWebhook from '../../../interface/webhook/webhook.interface';
+import IWebhookQuery from '../../../interface/webhook/webhook-query.interface';
 import IWebhookProvider from '../../../interface/webhook/webhook-provider.interface';
 import IHttpClient from '../../../interface/general/http-client.interface';
-import IAzureDevopsWebhookContext from '@/core/interface/webhook/azure-devops/azure-devops-webhook-context.interface';
+import IAzureDevopsWebhookContext from '../../../interface/webhook/azure-devops/azure-devops-webhook-context.interface';
 
 const { url, token } = config.get('cicd.azureDevops');
 
 @injectable()
-export default class AzureDevopsWebhookProviderService implements IWebhookProvider<IAzureDevopsWebhookContext> {
+export default class AzureDevopsWebhookProviderService implements IWebhookProvider<IWebhookQuery, IAzureDevopsWebhookContext> {
     private _httpClient: IHttpClient;
     private _buildEndpoint = `${url}/_apis/hooks/subscriptions?api-version=5.0`;
     private _releaseEndpoint = this._buildEndpoint.replace(/^(https:\/\/)/, '$1vsrm.');
@@ -25,8 +26,8 @@ export default class AzureDevopsWebhookProviderService implements IWebhookProvid
         return ({ Authorization: `basic ${encoded}` });
     }
 
-    public async listWebhooks(name: string): Promise<IWebhook[]> {
-        const project = await this.getProject(name);
+    public async listWebhooks(query: IWebhookQuery): Promise<IWebhook[]> {
+        const project = await this.getProject(query.name);
 
         if (!project) {
             return [];
@@ -38,14 +39,15 @@ export default class AzureDevopsWebhookProviderService implements IWebhookProvid
             .filter((_: IWebhook) => _.project === project.id);
     }
 
-    public async getWebhook(name: string, callback: string): Promise<IWebhook | null> {
-        const hooks = await this.listWebhooks(name);
+    public async getWebhook(query: IWebhookQuery): Promise<IWebhook | null> {
+        const hooks = await this.listWebhooks(query);
 
-        return hooks.find(_ => _.callback === callback) ?? null;
+        return hooks.find(_ => _.callback === query.callback) ?? null;
     }
 
-    public async addWebhook(name: string, context: IAzureDevopsWebhookContext): Promise<IWebhook> {
-        const existingHook = await this.getWebhook(name, context.callback);
+    public async addWebhook(context: IAzureDevopsWebhookContext): Promise<IWebhook> {
+        const { project: name, callback, publisherId, eventType, isRelease } = context;
+        const existingHook = await this.getWebhook({ name, callback });
 
         if (existingHook) {
             return existingHook;
@@ -57,15 +59,15 @@ export default class AzureDevopsWebhookProviderService implements IWebhookProvid
         }
 
         const body = {
-            publisherId: context.publisherId,
-            eventType: context.eventType,
+            publisherId,
+            eventType,
             consumerId: 'webHooks',
             consumerActionId: 'httpRequest',
             publisherInputs: { projectId: project.id },
-            consumerInputs: { url: context.callback }
+            consumerInputs: { url: callback }
         };
 
-        const endpoint = context.isRelease ? this._releaseEndpoint : this._buildEndpoint;
+        const endpoint = isRelease ? this._releaseEndpoint : this._buildEndpoint;
         const { data } = await this._httpClient.post(endpoint, body, { headers: this.headers });
 
         return this.toWebhook(data);
