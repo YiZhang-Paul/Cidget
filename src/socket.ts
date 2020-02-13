@@ -17,13 +17,18 @@ socket.on('connect', () => logger.log('socket connected.'));
 socket.on('disconnect', () => logger.log('socket disconnected.'));
 
 socket.on('outlook-mail', async (payload: any) => {
-    const id = payload.value[0].resourceData['@odata.id'];
-    const request = await outlookService.startGraphRequest(id);
-    const mail = outlookService.toMail(await request?.get());
+    try {
+        const id = payload.value[0].resourceData['@odata.id'];
+        const request = await outlookService.startGraphRequest(id);
+        const mail = outlookService.toMail(await request?.get());
 
-    if (zendeskService.isZendeskEmail(mail)) {
-        const action = `${Store.zendeskStoreName}/addTicketFromMail`;
-        Store.store.dispatch(action, zendeskService.toTicket(mail));
+        if (zendeskService.isZendeskEmail(mail)) {
+            const action = `${Store.zendeskStoreName}/addTicketFromMail`;
+            Store.store.dispatch(action, zendeskService.toTicket(mail));
+        }
+    }
+    catch (error) {
+        logger.log(error);
     }
 });
 
