@@ -73,6 +73,7 @@ export default class OutlookApiProvider implements IOAuthProvider {
         try {
             const token = await this._token.refresh();
             token.created = new Date().toISOString();
+            this.authorizeToken(token);
             config.set(this._tokenPath, token);
         }
         catch {
