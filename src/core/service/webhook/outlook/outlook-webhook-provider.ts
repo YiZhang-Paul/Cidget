@@ -3,12 +3,13 @@ import { injectable, inject } from 'inversify';
 import config from '../../../../electron-config';
 import Types from '../../../ioc/types';
 import IWebhook from '../../../interface/webhook/webhook.interface';
+import IWebhookQuery from '../../../interface/webhook/webhook-query.interface';
 import IWebhookProvider from '../../../interface/webhook/webhook-provider.interface';
 import IOutlookWebhookContext from '../../../interface/webhook/outlook/outlook-webhook-context.interface';
 import OutlookApiProvider from '../../mail/outlook/outlook-api-provider';
 
 @injectable()
-export default class OutlookWebhookProvider implements IWebhookProvider<IOutlookWebhookContext> {
+export default class OutlookWebhookProvider implements IWebhookProvider<IWebhookQuery, IOutlookWebhookContext> {
     private _webhookPath = 'mail.outlook.webhooks';
     private _graphApi: OutlookApiProvider;
 
@@ -24,7 +25,7 @@ export default class OutlookWebhookProvider implements IWebhookProvider<IOutlook
         return Date.now() - hook.createdOn.getTime() >= 60000 * 4230;
     }
 
-    public async listWebhooks(_ = ''): Promise<IWebhook[]> {
+    public async listWebhooks(): Promise<IWebhook[]> {
         const hooks = (config.get(this._webhookPath) || []) as IWebhook[];
 
         for (const hook of hooks) {
@@ -33,14 +34,14 @@ export default class OutlookWebhookProvider implements IWebhookProvider<IOutlook
         return hooks;
     }
 
-    public async getWebhook(_: string, callback: string): Promise<IWebhook | null> {
+    public async getWebhook(query: IWebhookQuery): Promise<IWebhook | null> {
         const hooks = await this.listWebhooks();
 
-        return hooks.find(_ => _.callback === callback) ?? null;
+        return hooks.find(_ => _.callback === query.callback) ?? null;
     }
 
-    public async addWebhook(name: string, context: IOutlookWebhookContext): Promise<IWebhook> {
-        const { events, callback, resource } = context;
+    public async addWebhook(context: IOutlookWebhookContext): Promise<IWebhook> {
+        const { events, callback, resource, state } = context;
         const hooks = await this.listWebhooks();
         const request = await this._graphApi.startGraphRequest('/subscriptions');
 
@@ -49,12 +50,11 @@ export default class OutlookWebhookProvider implements IWebhookProvider<IOutlook
             notificationUrl: callback,
             resource,
             expirationDateTime: this.expireTime.toISOString(),
-            clientState: name
+            clientState: state
         });
 
         const hook = ({
             id,
-            name,
             url: 'https://graph.microsoft.com/v1.0/subscriptions',
             callback,
             events,
@@ -69,7 +69,7 @@ export default class OutlookWebhookProvider implements IWebhookProvider<IOutlook
     }
 
     public async renewWebhook(callback: string): Promise<IWebhook | null> {
-        const hook = await this.getWebhook('', callback);
+        const hook = await this.getWebhook({ name: '', callback });
 
         if (!hook || !this.isExpired(hook)) {
             return hook;
