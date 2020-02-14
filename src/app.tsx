@@ -15,7 +15,6 @@ export default class App extends tsx.Component<any> {
     private getNotificationCard(props: any): any {
         const { type, id } = props.item.data;
         const identifier = `${type}_card_${id}`;
-        const close = <div onClick={props.close}><i class="fas fa-times close-icon"></i></div>;
         remote.getCurrentWindow().moveTop();
 
         if (this.updateCard(id)) {
@@ -25,11 +24,45 @@ export default class App extends tsx.Component<any> {
         }
 
         return (
-            <div class="notification-wrapper">
-                {close}
+            <div class="notification-wrapper"
+                onMouseenter={() => this.stopTimer(id)}
+                onMouseleave={() => this.restoreTimer(id)}>
+
+                <div onClick={props.close}>
+                    <i class="fas fa-times close-icon"></i>
+                </div>
+
                 {this.getEventCard(props, identifier)}
             </div>
         );
+    }
+
+    private stopTimer(id: string): void {
+        const card = this._cards.$data.list.find((_: any) => _.data.id === id);
+
+        if (!card) {
+            return;
+        }
+
+        if (card.timer !== undefined && card.timer !== null) {
+            clearTimeout(card.timer);
+            card.timer = null;
+        }
+    }
+
+    private restoreTimer(id: string): void {
+        const card = this._cards.$data.list.find((_: any) => _.data.id === id);
+
+        if (!card) {
+            return;
+        }
+        const duration = card.length - card.speed * 2;
+
+        if (card.timer === null && duration >= 0) {
+            card.timer = setTimeout(() => {
+                this._cards.destroy(card);
+            }, duration / 4);
+        }
     }
 
     private getEventCard(props: any, className: string): any {
