@@ -66,11 +66,17 @@
         max-width: 130px;
     }
 
-    .splitter {
-        margin-top: 3px;
-        margin-left: 5px;
-        font-weight: 500;
-        color: var(--main-font-color);
+    .merge-icon {
+        margin-top: 6px;
+        margin-left: 6px;
+        width: 20px;
+        height: 25px;
+        background-image: url('../../../../public/icons/git-merge.svg');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 25px 25px;
+        transform: rotate(90deg);
+        filter: invert(51%) sepia(11%) saturate(7310%) hue-rotate(174deg) brightness(79%) contrast(79%);
     }
 
     .to-branch-badge {
