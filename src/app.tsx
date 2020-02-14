@@ -1,5 +1,6 @@
 import { Component, Ref } from 'vue-property-decorator';
 import * as tsx from 'vue-tsx-support';
+import { remote } from 'electron';
 
 import SupportTicketCard from './features/zendesk/support-ticket-card/support-ticket-card';
 import BuildPipelineCard from './features/azure-devops/build-pipeline-card/build-pipeline-card';
@@ -15,6 +16,7 @@ export default class App extends tsx.Component<any> {
         const { type, id } = props.item.data;
         const identifier = `${type}_card_${id}`;
         const close = <div onClick={props.close}><i class="fas fa-times close-icon"></i></div>;
+        remote.getCurrentWindow().moveTop();
 
         if (this.updateCard(id)) {
             this.applyEffect(identifier);
