@@ -1,6 +1,6 @@
 .notification-card-container {
     $container-width: 670px;
-    $container-height: 115px;
+    $container-height: 120px;
     $guard-inset: -96.5px;
 
     position: relative;
@@ -20,7 +20,8 @@
     .content {
         position: relative;
         width: 75.5%;
-        height: 70px;
+        height: 75px;
+        margin-top: 15px;
         margin-left: 5px;
         border: 1px solid transparent;
 
@@ -70,7 +71,7 @@
     .time {
         position: absolute;
         top: 8px;
-        right: 35px;
+        right: 45px;
     }
 
     .close-icon {

@@ -18,6 +18,7 @@
 
     .summary, .detail {
         position: absolute;
+        right: 0;
         -webkit-transition: opacity 0.4s;
         transition: opacity 0.4s;
     }
