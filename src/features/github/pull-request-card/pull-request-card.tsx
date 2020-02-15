@@ -8,7 +8,6 @@ import WeblinkDisplay from '../../../shared/components/generic/weblink-display/w
 import ChangeStatsSummary from '../../../shared/components/generic/change-stats-summary/change-stats-summary';
 import BranchBadge from '../../../shared/components/repository/branch-badge/branch-badge';
 import RepositoryBadge from '../../../shared/components/repository/repository-badge/repository-badge';
-import RelativeTimeDisplay from '../../../shared/components/generic/relative-time-display/relative-time-display';
 
 import './pull-request-card.scss';
 
@@ -39,7 +38,8 @@ export default class PullRequestCard extends tsx.Component<any> {
         }
 
         return (
-            <NotificationCard closeHandler={this.closeHandler}
+            <NotificationCard time={this.pullRequest.updatedOn}
+                closeHandler={this.closeHandler}
                 logoUrl={require('../../../../public/images/github-logo.png')}>
 
                 <div class="pull-request-message-container">
@@ -79,8 +79,6 @@ export default class PullRequestCard extends tsx.Component<any> {
                         repository={this.pullRequest.repository}
                         showPopover={false}>
                     </RepositoryBadge>
-
-                    <RelativeTimeDisplay class="time" time={this.pullRequest.updatedOn} />
                 </div>
 
                 <div class="pull-request-card-actions" slot="actions">

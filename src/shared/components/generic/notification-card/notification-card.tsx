@@ -2,6 +2,7 @@ import { Component, Prop } from 'vue-property-decorator';
 import * as tsx from 'vue-tsx-support';
 
 import UserAvatar from '../../generic/user-avatar/user-avatar';
+import RelativeTimeDisplay from '../relative-time-display/relative-time-display';
 
 import './notification-card.scss';
 
@@ -9,6 +10,7 @@ import './notification-card.scss';
 export default class NotificationCard extends tsx.Component<any> {
     @Prop({ default: '' }) public logoUrl!: string;
     @Prop({ default: false }) public showLogoPopover!: boolean;
+    @Prop({ default: () => new Date() }) public time!: Date;
     @Prop() public closeHandler!: () => void;
 
     public render(): any {
@@ -24,6 +26,8 @@ export default class NotificationCard extends tsx.Component<any> {
 
                 <div class="top-guard"></div>
                 <div class="bottom-guard"></div>
+
+                <RelativeTimeDisplay class="time" time={this.time} />
 
                 <div class="close-icon" onClick={this.closeHandler}>
                     <i class="fas fa-times"></i>

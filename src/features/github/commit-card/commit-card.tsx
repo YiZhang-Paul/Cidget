@@ -9,7 +9,6 @@ import WeblinkDisplay from '../../../shared/components/generic/weblink-display/w
 import ChangeStatsSummary from '../../../shared/components/generic/change-stats-summary/change-stats-summary';
 import BranchBadge from '../../../shared/components/repository/branch-badge/branch-badge';
 import RepositoryBadge from '../../../shared/components/repository/repository-badge/repository-badge';
-import RelativeTimeDisplay from '../../../shared/components/generic/relative-time-display/relative-time-display';
 
 import './commit-card.scss';
 
@@ -40,7 +39,8 @@ export default class CommitCard extends tsx.Component<any> {
 
     public render(): any {
         return (
-            <NotificationCard closeHandler={this.closeHandler}
+            <NotificationCard time={this.commit.time}
+                closeHandler={this.closeHandler}
                 logoUrl={require('../../../../public/images/github-logo.png')}>
 
                 <div class="commit-message-container">
@@ -69,8 +69,6 @@ export default class CommitCard extends tsx.Component<any> {
                         showPopover={false}
                         noTooltip={true}>
                     </RepositoryBadge>
-
-                    <RelativeTimeDisplay class="time" time={this.commit.time} />
                 </div>
 
                 <div class="commit-card-actions" slot="actions">

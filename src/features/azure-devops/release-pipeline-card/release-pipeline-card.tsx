@@ -5,7 +5,6 @@ import ICdRelease from '../../../core/interface/pipeline/cd-release.interface';
 import NotificationCard from '../../../shared/components/generic/notification-card/notification-card';
 import WeblinkDisplay from '../../../shared/components/generic/weblink-display/weblink-display';
 import StepSummary from '../../../shared/components/generic/step-summary/step-summary';
-import RelativeTimeDisplay from '../../../shared/components/generic/relative-time-display/relative-time-display';
 
 import './release-pipeline-card.scss';
 
@@ -57,7 +56,8 @@ export default class ReleasePipelineCard extends tsx.Component<any> {
         const className = `release-name ${this.release.status === 'abandoned' ? 'abandoned' : ''}`;
 
         return (
-            <NotificationCard closeHandler={this.closeHandler}
+            <NotificationCard time={this.release.createdOn}
+                closeHandler={this.closeHandler}
                 logoUrl={require('../../../../public/images/azure-devops-logo.png')}>
 
                 <div class="release-pipeline-message-container">
@@ -81,8 +81,6 @@ export default class ReleasePipelineCard extends tsx.Component<any> {
                         text={this.release.triggeredBy.name}
                         url={this.release.triggeredBy.url}>
                     </WeblinkDisplay>
-
-                    <RelativeTimeDisplay class="time" time={this.release.createdOn} />
                 </div>
 
                 <div class="release-pipeline-card-actions" slot="actions">

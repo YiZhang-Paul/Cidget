@@ -4,7 +4,6 @@ import * as tsx from 'vue-tsx-support';
 import ISupportTicket from '../../../core/interface/customer-support/support-ticket.interface';
 import WeblinkDisplay from '../../../shared/components/generic/weblink-display/weblink-display';
 import NotificationCard from '../../../shared/components/generic/notification-card/notification-card';
-import RelativeTimeDisplay from '../../../shared/components/generic/relative-time-display/relative-time-display';
 import ConversationPreviewBadge from '../../../shared/components/customer-support/conversation-preview-badge/conversation-preview-badge';
 
 import './support-ticket-card.scss';
@@ -29,7 +28,8 @@ export default class SupportTicketCard extends tsx.Component<any> {
         const statusTextClass = `status-text ${highlighted ? 'highlighted' : ''}`;
 
         return (
-            <NotificationCard closeHandler={this.closeHandler}
+            <NotificationCard time={this.ticket.createdOn}
+                closeHandler={this.closeHandler}
                 logoUrl={require('../../../../public/images/zendesk-logo.png')}>
 
                 <div class="ticket-message-container">
@@ -49,8 +49,6 @@ export default class SupportTicketCard extends tsx.Component<any> {
                         conversation={this.ticket.content}
                         tooltip={this.ticket.htmlContent}>
                     </ConversationPreviewBadge>
-
-                    <RelativeTimeDisplay class="time" time={this.ticket.createdOn} />
                 </div>
 
                 <div class="support-ticket-card-actions" slot="actions">

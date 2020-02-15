@@ -6,7 +6,6 @@ import NotificationCard from '../../../shared/components/generic/notification-ca
 import WeblinkDisplay from '../../../shared/components/generic/weblink-display/weblink-display';
 import BranchBadge from '../../../shared/components/repository/branch-badge/branch-badge';
 import RepositoryBadge from '../../../shared/components/repository/repository-badge/repository-badge';
-import RelativeTimeDisplay from '../../../shared/components/generic/relative-time-display/relative-time-display';
 
 import './build-pipeline-card.scss';
 
@@ -67,7 +66,8 @@ export default class BuildPipelineCard extends tsx.Component<any> {
         const elapsedTime = <div class={timeClass}> [{this.elapsedTime}]</div>;
 
         return (
-            <NotificationCard closeHandler={this.closeHandler}
+            <NotificationCard time={this.timestamp}
+                closeHandler={this.closeHandler}
                 logoUrl={require('../../../../public/images/azure-devops-logo.png')}>
 
                 <div class="build-pipeline-message-container">
@@ -96,8 +96,6 @@ export default class BuildPipelineCard extends tsx.Component<any> {
                         repository={triggeredBy}
                         showPopover={false}>
                     </RepositoryBadge>
-
-                    <RelativeTimeDisplay class="time" time={this.timestamp} />
                 </div>
 
                 <div class="build-pipeline-card-actions" slot="actions">
