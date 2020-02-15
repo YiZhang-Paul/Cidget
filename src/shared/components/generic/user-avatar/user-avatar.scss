@@ -10,7 +10,8 @@
         justify-content: center;
         border: 1px solid var(--border-color);
         border-radius: $avatar-border-radius;
-        box-shadow: -3px -3px 7px var(--light-shadow-color), 3px 3px 5px var(--dark-shadow-color);
+        background-color: var(--main-background-color);
+        box-shadow: 3px 3px 5px var(--dark-shadow-color);
 
         .avatar-overlay {
             position: absolute;

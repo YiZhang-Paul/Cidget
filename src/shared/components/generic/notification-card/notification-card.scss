@@ -1,5 +1,6 @@
 .notification-card-container {
-    $container-width: 670px;
+    $avatar-width: 80px;
+    $container-width: 570px;
     $container-height: 120px;
     $guard-inset: -96.5px;
 
@@ -14,7 +15,8 @@
     cursor: default;
 
     .service-provider-avatar {
-        margin-left: 15px;
+        position: absolute;
+        left: calc(-#{$avatar-width} / 2);
     }
 
     .content {
@@ -22,7 +24,7 @@
         width: 75.5%;
         height: 75px;
         margin-top: 15px;
-        margin-left: 5px;
+        margin-left: calc(#{$avatar-width} / 2 + 10px);
         border: 1px solid transparent;
 
         & > div {
