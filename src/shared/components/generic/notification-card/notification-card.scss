@@ -2,7 +2,6 @@
     $avatar-width: 80px;
     $container-width: 570px;
     $container-height: 120px;
-    $guard-inset: -96.5px;
 
     position: relative;
     width: $container-width;
@@ -99,34 +98,5 @@
             color: rgb(215, 215, 215);
             box-shadow: inset -3px -3px 7px rgba(206, 35, 63, 0.9), inset 3px 3px 5px rgba(172, 28, 52, 0.9);
         }
-    }
-
-    .top-guard, .bottom-guard {
-        width: 66%;
-        height: 100px;
-        position: absolute;
-        left: calc(#{$container-width} / 5.88);
-        border: 2px solid var(--border-color);
-        -webkit-transition: all 0.5s ease;
-        opacity: 0;
-        transition: all 0.5s ease;
-        transition-property: border, opacity;
-    }
-
-    .top-guard {
-        top: $guard-inset;
-        border-radius: 0 0 40px 40px;
-        box-shadow: inset -3px -3px 7px var(--dark-shadow-color), inset 3px 3px 5px var(--light-shadow-color);
-    }
-
-    .bottom-guard {
-        bottom: $guard-inset;
-        border-radius: 40px 40px 0 0;
-        box-shadow: inset -3px -3px 7px var(--light-shadow-color), inset 3px 3px 5px var(--dark-shadow-color);
-    }
-
-    &:hover .top-guard, &:hover .bottom-guard {
-        border: 2px solid var(--border-color);
-        opacity: 1;
     }
 }

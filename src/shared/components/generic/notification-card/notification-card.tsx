@@ -24,9 +24,6 @@ export default class NotificationCard extends tsx.Component<any> {
                 <div class="content">{this.$slots.default}</div>
                 <div class="actions">{this.$slots.actions}</div>
 
-                <div class="top-guard"></div>
-                <div class="bottom-guard"></div>
-
                 <RelativeTimeDisplay class="time" time={this.time} />
 
                 <div class="close-icon" onClick={this.closeHandler}>
