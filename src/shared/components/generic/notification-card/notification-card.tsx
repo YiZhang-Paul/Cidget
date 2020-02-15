@@ -9,6 +9,7 @@ import './notification-card.scss';
 export default class NotificationCard extends tsx.Component<any> {
     @Prop({ default: '' }) public logoUrl!: string;
     @Prop({ default: false }) public showLogoPopover!: boolean;
+    @Prop() public closeHandler!: () => void;
 
     public render(): any {
         return (
@@ -23,6 +24,10 @@ export default class NotificationCard extends tsx.Component<any> {
 
                 <div class="top-guard"></div>
                 <div class="bottom-guard"></div>
+
+                <div class="close-icon" onClick={this.closeHandler}>
+                    <i class="fas fa-times"></i>
+                </div>
             </div>
         );
     }

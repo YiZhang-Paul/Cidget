@@ -16,6 +16,7 @@ import './commit-card.scss';
 @Component
 export default class CommitCard extends tsx.Component<any> {
     @Prop() public commit!: ICommit<IGithubUser>;
+    @Prop() public closeHandler!: () => void;
 
     private get added(): number {
         return (this.commit.added ?? []).length;
@@ -39,7 +40,9 @@ export default class CommitCard extends tsx.Component<any> {
 
     public render(): any {
         return (
-            <NotificationCard logoUrl={require('../../../../public/images/github-logo.png')}>
+            <NotificationCard closeHandler={this.closeHandler}
+                logoUrl={require('../../../../public/images/github-logo.png')}>
+
                 <div class="commit-message-container">
                     <WeblinkDisplay class="commit-message"
                         text={this.commit.message}

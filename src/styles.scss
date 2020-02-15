@@ -35,35 +35,6 @@ html, body {
     box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.35);
 }
 
-.notification-wrapper {
-    position: relative;
-
-    .close-icon {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: absolute;
-        top: 8px;
-        right: 9px;
-        width: 20px;
-        height: 20px;
-        padding: 1px;
-        font-size: 0.85em;
-        background-color: rgba(228, 70, 97, 0.9);
-        border: 1px solid var(--border-color);
-        border-radius: 50%;
-        box-shadow: -3px -3px 7px var(--light-shadow-color), 3px 3px 5px var(--dark-shadow-color);
-        color: rgb(245, 245, 245);
-        transition: color 0.4s ease;
-        cursor: pointer;
-
-        &:hover {
-            color: rgb(215, 215, 215);
-            box-shadow: inset -3px -3px 7px rgba(206, 35, 63, 0.9), inset 3px 3px 5px rgba(172, 28, 52, 0.9);
-        }
-    }
-}
-
 .updated-card {
     -webkit-animation-name: updated-notify;
     -webkit-animation-duration: 2s;

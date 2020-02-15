@@ -12,6 +12,7 @@ import './support-ticket-card.scss';
 @Component
 export default class SupportTicketCard extends tsx.Component<any> {
     @Prop() public ticket!: ISupportTicket;
+    @Prop() public closeHandler!: () => void;
 
     private get statusText(): string {
         if (this.ticket.status === 'reopened') {
@@ -28,7 +29,9 @@ export default class SupportTicketCard extends tsx.Component<any> {
         const statusTextClass = `status-text ${highlighted ? 'highlighted' : ''}`;
 
         return (
-            <NotificationCard logoUrl={require('../../../../public/images/zendesk-logo.png')}>
+            <NotificationCard closeHandler={this.closeHandler}
+                logoUrl={require('../../../../public/images/zendesk-logo.png')}>
+
                 <div class="ticket-message-container">
                     <WeblinkDisplay class="ticket-message"
                         text={`#${this.ticket.id} ${this.ticket.title}`}

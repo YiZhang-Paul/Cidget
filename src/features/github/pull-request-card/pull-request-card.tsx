@@ -15,6 +15,7 @@ import './pull-request-card.scss';
 @Component
 export default class PullRequestCard extends tsx.Component<any> {
     @Prop() public pullRequest!: IPullRequest<IGithubUser>;
+    @Prop() public closeHandler!: () => void;
 
     private get action(): string {
         const words = this.pullRequest.action.split(' ');
@@ -38,7 +39,9 @@ export default class PullRequestCard extends tsx.Component<any> {
         }
 
         return (
-            <NotificationCard logoUrl={require('../../../../public/images/github-logo.png')}>
+            <NotificationCard closeHandler={this.closeHandler}
+                logoUrl={require('../../../../public/images/github-logo.png')}>
+
                 <div class="pull-request-message-container">
                     <div class="pull-request-message-wrapper">
                         <WeblinkDisplay class="pull-request-message"

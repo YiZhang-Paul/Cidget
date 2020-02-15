@@ -28,10 +28,6 @@ export default class App extends tsx.Component<any> {
                 onMouseenter={() => this.stopTimer(id)}
                 onMouseleave={() => this.restoreTimer(id)}>
 
-                <div onClick={props.close}>
-                    <i class="fas fa-times close-icon"></i>
-                </div>
-
                 {this.getEventCard(props, identifier)}
             </div>
         );
@@ -70,15 +66,15 @@ export default class App extends tsx.Component<any> {
 
         switch (type) {
             case 'support-ticket':
-                return <SupportTicketCard class={className} ticket={model} />;
+                return <SupportTicketCard class={className} ticket={model} closeHandler={props.close} />;
             case 'ci-build':
-                return <BuildPipelineCard class={className} build={model} />;
+                return <BuildPipelineCard class={className} build={model} closeHandler={props.close} />;
             case 'cd-release':
-                return <ReleasePipelineCard class={className} release={model} />;
+                return <ReleasePipelineCard class={className} release={model} closeHandler={props.close} />;
             case 'commit':
-                return <CommitCard class={className} commit={model} />;
+                return <CommitCard class={className} commit={model} closeHandler={props.close} />;
             case 'pull-request':
-                return <PullRequestCard class={className} pullRequest={model} />;
+                return <PullRequestCard class={className} pullRequest={model} closeHandler={props.close} />;
         }
     }
 

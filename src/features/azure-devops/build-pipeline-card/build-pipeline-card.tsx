@@ -13,6 +13,7 @@ import './build-pipeline-card.scss';
 @Component
 export default class BuildPipelineCard extends tsx.Component<any> {
     @Prop() public build!: ICiBuild;
+    @Prop() public closeHandler!: () => void;
 
     private get status(): string {
         const status = this.build.result || `is ${this.build.status}`;
@@ -66,7 +67,9 @@ export default class BuildPipelineCard extends tsx.Component<any> {
         const elapsedTime = <div class={timeClass}> [{this.elapsedTime}]</div>;
 
         return (
-            <NotificationCard logoUrl={require('../../../../public/images/azure-devops-logo.png')}>
+            <NotificationCard closeHandler={this.closeHandler}
+                logoUrl={require('../../../../public/images/azure-devops-logo.png')}>
+
                 <div class="build-pipeline-message-container">
                     <div class="build-pipeline-message-wrapper">
                         <WeblinkDisplay class="build-name"
