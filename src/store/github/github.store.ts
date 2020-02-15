@@ -42,7 +42,7 @@ const actions = {
 
         Vue.notify({
             group: 'notification',
-            duration: 12000,
+            duration: 10000,
             data: { type: 'commit', id: push.id, model: push }
         });
     },
@@ -60,7 +60,7 @@ const actions = {
 
         Vue.notify({
             group: 'notification',
-            duration: pullRequest.isActive ? -1 : 12000,
+            duration: pullRequest.isActive ? -1 : 10000,
             data: { type: 'pull-request', id: pullRequest.id, model: pullRequest }
         });
     },

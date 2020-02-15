@@ -61,7 +61,7 @@ export default class App extends tsx.Component<any> {
         if (card.timer === null && duration >= 0) {
             card.timer = setTimeout(() => {
                 this._cards.destroy(card);
-            }, duration / 4);
+            }, duration);
         }
     }
 
