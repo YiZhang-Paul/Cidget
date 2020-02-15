@@ -1,7 +1,7 @@
 .notification-card-container {
     $avatar-width: 80px;
     $container-width: 570px;
-    $container-height: 120px;
+    $container-height: 110px;
 
     position: relative;
     width: $container-width;
@@ -9,7 +9,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-radius: 5px;
+    border-radius: 6px;
     background-color: var(--main-background-color);
     cursor: default;
 
@@ -20,9 +20,9 @@
 
     .content {
         position: relative;
-        width: 75.5%;
+        width: 78%;
         height: 75px;
-        margin-top: 15px;
+        margin-top: 10px;
         margin-left: calc(#{$avatar-width} / 2 + 10px);
         border: 1px solid transparent;
 
