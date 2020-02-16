@@ -1,11 +1,14 @@
 import { injectable, inject, named } from 'inversify';
 
+import config from '../../../../../electron-config';
 import Types from '../../../../ioc/types';
 import IGithubUser from '../../../../interface/repository/github/github-user.interface';
 import IPullRequest from '../../../../interface/repository/pull-request.interface';
 import IPullRequestReview from '../../../../interface/repository/pull-request-review.interface';
 import IHttpClient from '../../../../interface/general/http-client.interface';
 import IRepositoryProvider from '../../../../interface/repository/repository-provider.interface';
+
+const { token } = config.get('repository.github');
 
 @injectable()
 export default class GithubPullRequestService {
@@ -18,6 +21,10 @@ export default class GithubPullRequestService {
     ) {
         this._httpClient = httpClient;
         this._repositoryProvider = repositoryProvider;
+    }
+
+    private get headers(): { [key: string]: string } {
+        return ({ Authorization: `token ${token}` });
     }
 
     public async toReview(payload: any): Promise<IPullRequestReview<IGithubUser>> {
@@ -73,7 +80,7 @@ export default class GithubPullRequestService {
     }
 
     private async getSubmittedReviewers(data: any): Promise<IGithubUser[][]> {
-        const { data: reviews } = await this._httpClient.get(`${data.url}/reviews`);
+        const { data: reviews } = await this._httpClient.get(`${data.url}/reviews`, { headers: this.headers });
         const rejecters: IGithubUser[] = [];
         const approvers: IGithubUser[] = [];
         const names = new Set<string>();
