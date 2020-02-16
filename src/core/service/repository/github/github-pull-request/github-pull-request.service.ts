@@ -20,26 +20,13 @@ export default class GithubPullRequestService {
     }
 
     public async toPullRequest(payload: any): Promise<IPullRequest<IGithubUser>> {
-        const { action, repository, pull_request } = payload;
+        const { action, repository, pull_request, requested_reviewer } = payload;
         const user = pull_request.merged ? pull_request.merged_by : pull_request.user;
-        const repositories = await this._httpClient.get(`${user.url}/repos`);
-        const followers = await this._httpClient.get(`${user.url}/followers`);
-        const gists = await this._httpClient.get(`${user.url}/gists`);
-
-        const initiator = ({
-            name: user.login,
-            avatar: user.avatar_url,
-            profileUrl: user.html_url,
-            repositoryCount: (repositories.data || []).length,
-            followerCount: (followers.data || []).length,
-            gistCount: (gists.data || []).length,
-            gistUrl: user.html_url.replace(/^(https:\/\/)/, '$1gist.')
-        }) as IGithubUser;
 
         return ({
             id: String(pull_request.id),
             action: this.getAction(payload),
-            initiator,
+            initiator: await this.getUser(user, true),
             repository: this._repositoryProvider.toRepository(repository),
             branch: {
                 source: pull_request.head.ref,
@@ -52,7 +39,7 @@ export default class GithubPullRequestService {
             diffUrl: pull_request.diff_url,
             pullRequestUrl: pull_request.html_url,
             headCommitSha: pull_request.head.sha,
-            reviewers: [],
+            reviewers: requested_reviewer ? [await this.getUser(requested_reviewer)] : [],
             createdOn: new Date(pull_request.created_at),
             updatedOn: new Date(pull_request.updated_at),
             mergeable: this.isMergeable(pull_request.mergeable_state),
@@ -64,11 +51,35 @@ export default class GithubPullRequestService {
         }) as IPullRequest<IGithubUser>;
     }
 
+    private async getUser(data: any, includeDetails = false): Promise<IGithubUser> {
+        const user = ({
+            name: data.login,
+            avatar: data.avatar_url,
+            profileUrl: data.html_url,
+            gistUrl: data.html_url.replace(/^(https:\/\/)/, '$1gist.')
+        }) as IGithubUser;
+
+        if (includeDetails) {
+            const repositories = await this._httpClient.get(`${data.url}/repos`);
+            const followers = await this._httpClient.get(`${data.url}/followers`);
+            const gists = await this._httpClient.get(`${data.url}/gists`);
+            user.repositoryCount = (repositories.data || []).length;
+            user.followerCount = (followers.data || []).length;
+            user.gistCount = (gists.data || []).length;
+        }
+
+        return user;
+    }
+
     private getAction(payload: any): string {
         const { action, pull_request } = payload;
 
         if (pull_request.merged) {
             return 'merged';
+        }
+
+        if (action === 'review_requested') {
+            return 'needs review';
         }
         return action === 'synchronize' ? 'updated' : action;
     }

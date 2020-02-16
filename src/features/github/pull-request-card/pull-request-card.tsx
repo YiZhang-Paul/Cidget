@@ -53,6 +53,11 @@ export default class PullRequestCard extends tsx.Component<any> {
 
                     <div class="pull-request-action">{this.action}</div>
 
+                    <div class="reviewers-summary">
+                        <i class="fas fa-user-check reviewers-icon"></i>
+                        {`[0/${this.pullRequest.reviewers.length}]`}
+                    </div>
+
                     <ChangeStatsSummary class="change-summary"
                         added={this.pullRequest.added}
                         removed={this.pullRequest.removed}
