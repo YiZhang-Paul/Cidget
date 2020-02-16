@@ -22,9 +22,8 @@ export default class RelativeTimeDisplay extends tsx.Component<any> {
         const passed = Math.round((now.getTime() - past.getTime()) / 1000);
         const [unit, threshold] = checks.find(_ => passed > _[1]) || ['second', 0];
         const total = Math.round(passed / (threshold + 1));
-        const isSecondsAgo = this.$data.timerCounter > 11 && unit === 'second';
 
-        return isSecondsAgo ? 'few seconds' : `${total} ${unit}${total > 1 ? 's' : ''}`;
+        return `${total} ${unit}${total > 1 ? 's' : ''}`;
     }
 
     private get absoluteTime(): string {
