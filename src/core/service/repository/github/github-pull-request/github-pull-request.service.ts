@@ -20,7 +20,7 @@ export default class GithubPullRequestService {
     }
 
     public async toPullRequest(payload: any): Promise<IPullRequest<IGithubUser>> {
-        const { action, repository, pull_request, requested_reviewer } = payload;
+        const { action, repository, pull_request } = payload;
         const user = pull_request.merged ? pull_request.merged_by : pull_request.user;
 
         return ({
@@ -39,7 +39,7 @@ export default class GithubPullRequestService {
             diffUrl: pull_request.diff_url,
             pullRequestUrl: pull_request.html_url,
             headCommitSha: pull_request.head.sha,
-            reviewers: requested_reviewer ? [await this.getUser(requested_reviewer)] : [],
+            reviewers: (pull_request.requested_reviewers || []).map(this.getUser.bind(this)),
             createdOn: new Date(pull_request.created_at),
             updatedOn: new Date(pull_request.updated_at),
             mergeable: this.isMergeable(pull_request.mergeable_state),

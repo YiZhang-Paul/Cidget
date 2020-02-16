@@ -56,7 +56,6 @@ const actions = {
         const existing = state.pullRequests.find(_ => _.id === pullRequest.id);
         const action = existing ? 'updatePullRequest' : 'addPullRequest';
         pullRequest.mergeable = existing ? existing.mergeable : pullRequest.mergeable;
-        pullRequest.reviewers = mergeReviewers(pullRequest.reviewers, existing?.reviewers ?? []);
         commit(action, pullRequest);
 
         Vue.notify({
@@ -99,20 +98,6 @@ const getters = {
         return state.pullRequests;
     }
 };
-
-function mergeReviewers(a: IGithubUser[], b: IGithubUser[]): IGithubUser[] {
-    const names = new Set<string>();
-    const reviewers: IGithubUser[] = [];
-
-    for (const reviewer of [...a, ...b]) {
-        if (!names.has(reviewer.name)) {
-            names.add(reviewer.name);
-            reviewers.push(reviewer);
-        }
-    }
-
-    return reviewers;
-}
 
 export const createStore = () => {
     commitService = Container.get<GithubCommitService>(Types.GithubCommitService);
