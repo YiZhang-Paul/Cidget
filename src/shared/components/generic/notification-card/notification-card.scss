@@ -1,6 +1,6 @@
 .notification-card-container {
     $avatar-width: 80px;
-    $container-width: 570px;
+    $container-width: 600px;
     $container-height: 110px;
 
     position: relative;
@@ -20,10 +20,10 @@
 
     .content {
         position: relative;
-        width: 78%;
+        width: 78.5%;
         height: 75px;
         margin-top: 10px;
-        margin-left: calc(#{$avatar-width} / 2 + 10px);
+        margin-left: calc(#{$avatar-width} / 2 + 8px);
         border: 1px solid transparent;
 
         & > div {

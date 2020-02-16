@@ -4,7 +4,7 @@
     align-items: center;
 
     .ticket-message {
-        max-width: 240px;
+        max-width: 200px;
         margin-right: 2px;
         font-weight: 500;
         color: var(--secondary-font-color);
@@ -23,7 +23,7 @@
     .status-text {
         margin-top: 3px;
         margin-left: 6px;
-        max-width: 200px;
+        max-width: 230px;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
@@ -43,7 +43,7 @@
 
     .ticket-info {
         margin-top: 3px;
-        max-width: 400px;
+        max-width: 380px;
         font-size: 0.88em;
     }
 }

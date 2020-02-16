@@ -111,7 +111,7 @@ export default class App extends tsx.Component<any> {
                 ref="cards"
                 group="notification"
                 position="top left"
-                width={570}
+                width={600}
                 scopedSlots={{ body: this.getNotificationCard }}>
             </notifications>
         );
