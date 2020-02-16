@@ -46,18 +46,19 @@ export default class WeblinkDisplay extends tsx.Component<any> {
             <div slot="content">{tooltipText}</div>;
 
         return (
-            <div class={className} ref="container">
-                <el-tooltip disabled={!this.$data.showTooltip}
-                    placement={this.tooltipPosition}
-                    effect={this.colorMode}>
+            <el-tooltip class="tooltips"
+                disabled={!this.$data.showTooltip}
+                placement={this.tooltipPosition}
+                effect={this.colorMode}>
 
-                    {tooltip}
+                {tooltip}
+                <div class={className} ref="container">
                     <a class="url" onClick={this.toUrl}>
                         {this.$slots.default}
                         {this.text}
                     </a>
-                </el-tooltip>
-            </div>
+                </div>
+            </el-tooltip>
         );
     }
 }
