@@ -49,10 +49,6 @@ const actions = {
     async addPullRequest(context: ActionContext<State, any>, payload: any): Promise<void> {
         const { commit, state } = context;
         const pullRequest = await pullRequestService.toPullRequest(payload);
-
-        if (pullRequest.action === 'review_request_removed') {
-            return;
-        }
         const existing = state.pullRequests.find(_ => _.id === pullRequest.id);
         const action = existing ? 'updatePullRequest' : 'addPullRequest';
         pullRequest.mergeable = existing ? existing.mergeable : pullRequest.mergeable;

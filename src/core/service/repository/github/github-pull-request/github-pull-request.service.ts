@@ -108,7 +108,7 @@ export default class GithubPullRequestService {
             return 'merged';
         }
 
-        if (action === 'review_requested') {
+        if (/^review_request/.test(action)) {
             return 'needs review';
         }
         return action === 'synchronize' ? 'updated' : action;
