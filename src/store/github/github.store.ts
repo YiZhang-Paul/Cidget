@@ -93,7 +93,8 @@ const actions = {
     async addPullRequestCheck(context: ActionContext<State, any>, payload: any): Promise<void> {
         const { commit, state } = context;
         const { repository, sha } = payload;
-        const { ref, status } = await commitService.getStatus(repository.name, sha);
+        const { name, owner } = repository;
+        const { ref, status } = await commitService.getStatus(name, sha, owner.login);
         const isMergeable = status === 'pending' ? null : status === 'success';
         const pullRequest = state.pullRequests.find(_ => _.headCommitSha === ref);
 

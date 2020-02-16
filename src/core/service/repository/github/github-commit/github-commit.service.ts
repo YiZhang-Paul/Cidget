@@ -8,7 +8,7 @@ import IGithubUser from '../../../../interface/repository/github/github-user.int
 import IHttpClient from '../../../../interface/general/http-client.interface';
 import IRepositoryProvider from '../../../../interface/repository/repository-provider.interface';
 
-const { url, user } = config.get('repository.github');
+const { url, token } = config.get('repository.github');
 
 @injectable()
 export default class GithubCommitService {
@@ -23,9 +23,13 @@ export default class GithubCommitService {
         this._repositoryProvider = repositoryProvider;
     }
 
-    public async getStatus(name: string, ref: string): Promise<ICommitStatus> {
-        const endpoint = `${url}/repos/${user}/${name}/commits/${ref}/status`;
-        const { data } = await this._httpClient.get(endpoint);
+    private get headers(): { [key: string]: string } {
+        return ({ Authorization: `token ${token}` });
+    }
+
+    public async getStatus(name: string, ref: string, owner: string): Promise<ICommitStatus> {
+        const endpoint = `${url}/repos/${owner}/${name}/commits/${ref}/status`;
+        const { data } = await this._httpClient.get(endpoint, { headers: this.headers });
         const { sha, state } = data;
 
         return ({ ref: sha, status: state }) as ICommitStatus;
