@@ -64,6 +64,38 @@ const actions = {
             data: { type: 'pull-request', id: pullRequest.id, model: pullRequest }
         });
     },
+    async addPullRequestReview(context: ActionContext<State, any>, payload: any): Promise<void> {
+        const { commit, state } = context;
+        const { pull_request, sender, review } = payload;
+        const existing = state.pullRequests.find(_ => _.id === String(pull_request.id));
+
+        if (!existing || review.state === 'commented' || existing.reviewers.requested.every(_ => _.name !== sender.login)) {
+            return;
+        }
+        const { requested, approved } = existing.reviewers;
+        const reviewer = requested.find(_ => _.name === sender.login) ?? {} as IGithubUser;
+        let updated = false;
+
+        if (review.state === 'approved' && approved.every(_ => _.name !== reviewer.name)) {
+            existing.reviewers.approved.push(reviewer);
+            updated = true;
+        }
+        else if (review.state === 'changes_requested' && approved.some(_ => _.name === reviewer.name)) {
+            existing.reviewers.approved = approved.filter(_ => _.name !== reviewer.name);
+            updated = true;
+        }
+
+        if (!updated) {
+            return;
+        }
+        commit('updatePullRequest', existing);
+
+        Vue.notify({
+            group: 'notification',
+            duration: -1,
+            data: { type: 'pull-request', id: existing.id, model: existing }
+        });
+    },
     async addPullRequestCheck(context: ActionContext<State, any>, payload: any): Promise<void> {
         const { commit, state } = context;
         const { repository, sha } = payload;

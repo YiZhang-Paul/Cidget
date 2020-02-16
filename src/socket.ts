@@ -52,6 +52,11 @@ socket.on('github-pull-request', (payload: any) => {
     Store.store.dispatch(action, payload);
 });
 
+socket.on('github-pull-request-review', (payload: any) => {
+    const action = `${Store.githubStoreName}/addPullRequestReview`;
+    Store.store.dispatch(action, payload);
+});
+
 socket.on('github-pull-request-check', (payload: any) => {
     const action = `${Store.githubStoreName}/addPullRequestCheck`;
     Store.store.dispatch(action, payload);

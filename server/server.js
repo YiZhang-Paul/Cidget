@@ -38,6 +38,10 @@ express.post('/github/pull_request', (req, res) => {
     emit('github-pull-request', req, res);
 });
 
+express.post('/github/pull_request/review', (req, res) => {
+    emit('github-pull-request-review', req, res);
+});
+
 express.post('/github/pull_request/check', (req, res) => {
     emit('github-pull-request-check', req, res);
 });
