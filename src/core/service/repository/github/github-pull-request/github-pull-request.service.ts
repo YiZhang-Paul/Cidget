@@ -50,7 +50,7 @@ export default class GithubPullRequestService {
             diffUrl: pull_request.diff_url,
             pullRequestUrl: pull_request.html_url,
             headCommitSha: pull_request.head.sha,
-            reviewers: await this.getReviewers(pull_request),
+            reviewers: await this.getAllReviewers(pull_request),
             createdOn: new Date(pull_request.created_at),
             updatedOn: new Date(pull_request.updated_at),
             mergeable: this.isMergeable(pull_request.mergeable_state),
@@ -62,29 +62,32 @@ export default class GithubPullRequestService {
         }) as IPullRequest<IGithubUser>;
     }
 
-    private async getReviewers(data: any): Promise<{ requested: IGithubUser[], approved: IGithubUser[] }> {
+    private async getAllReviewers(data: any): Promise<{ requested: IGithubUser[], approved: IGithubUser[] }> {
         const { requested_reviewers } = data;
-        const approved = await this.getApprovers(data);
+        const [approved, rejected] = await this.getSubmittedReviewers(data);
         const reviewers: IGithubUser[] = await Promise.all(requested_reviewers.map(this.getUser.bind(this)));
-        const requested = this.removeDuplicateUsers([...reviewers, ...approved]);
+        const requested = this.removeDuplicateUsers([...reviewers, ...approved, ...rejected]);
         const approverNames = new Set<string>(approved.map(_ => _.name));
 
         return { requested, approved: requested.filter(_ => approverNames.has(_.name)) };
     }
 
-    private async getApprovers(data: any): Promise<IGithubUser[]> {
+    private async getSubmittedReviewers(data: any): Promise<IGithubUser[][]> {
         const { data: reviews } = await this._httpClient.get(`${data.url}/reviews`);
+        const rejecters: IGithubUser[] = [];
         const approvers: IGithubUser[] = [];
         const names = new Set<string>();
 
-        for (const { user, state } of reviews) {
-            if (state.toLowerCase() === 'approved' && !names.has(user.login)) {
+        for (const { user, state } of reviews.sort((a: any, b: any) => b.id - a.id)) {
+            const type = state.toLowerCase();
+
+            if ((type === 'approved' || type === 'changes_requested') && !names.has(user.login)) {
                 names.add(user.login);
-                approvers.push(await this.getUser(user));
+                (type === 'approved' ? approvers : rejecters).push(await this.getUser(user));
             }
         }
 
-        return approvers;
+        return [approvers, rejecters];
     }
 
     private removeDuplicateUsers(users: IGithubUser[]): IGithubUser[] {
