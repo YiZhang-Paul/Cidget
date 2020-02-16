@@ -58,3 +58,18 @@ html, body {
         background-color: var(--main-background-color);
     }
 }
+
+.el-tooltip__popper, .zd-comment, .zd-comment p {
+    max-width: 65vw;
+    margin: 8px 0 !important;
+    line-height: 12px !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    color: var(--main-font-color) !important;
+    background-color: rgb(242, 242, 242) !important;
+}
+
+.zd-comment {
+    padding: 0 10px !important;
+}

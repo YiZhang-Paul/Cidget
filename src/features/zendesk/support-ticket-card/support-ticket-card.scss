@@ -73,20 +73,3 @@
         }
     }
 }
-// zendesk ticket tooltip styling
-.zd-comment, .zd-comment p {
-    margin: 8px 0 !important;
-    line-height: 12px !important;
-    font-size: 12px !important;
-    font-weight: 500 !important;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-    color: var(--main-font-color) !important;
-}
-
-.zd-comment {
-    padding: 0 10px !important;
-}
-
-.el-tooltip__popper {
-    width: 65vw;
-}
