@@ -43,18 +43,18 @@ html, body {
 
 @-webkit-keyframes updated-notify {
     from {
-        background-color: rgb(82, 113, 143);
+        background-color: rgb(132, 138, 143);
     }
     to {
-        background-color: rgb(255, 255, 255);
+        background-color: var(--main-background-color);
     }
 }
 
 @keyframes updated-notify {
     from {
-        background-color: rgb(82, 113, 143);
+        background-color: rgb(132, 138, 143);
     }
     to {
-        background-color: rgb(255, 255, 255);
+        background-color: var(--main-background-color);
     }
 }
