@@ -3,6 +3,7 @@ import { injectable, inject, named } from 'inversify';
 import Types from '../../../../ioc/types';
 import IGithubUser from '../../../../interface/repository/github/github-user.interface';
 import IPullRequest from '../../../../interface/repository/pull-request.interface';
+import IPullRequestReview from '../../../../interface/repository/pull-request-review.interface';
 import IHttpClient from '../../../../interface/general/http-client.interface';
 import IRepositoryProvider from '../../../../interface/repository/repository-provider.interface';
 
@@ -17,6 +18,16 @@ export default class GithubPullRequestService {
     ) {
         this._httpClient = httpClient;
         this._repositoryProvider = repositoryProvider;
+    }
+
+    public async toReview(payload: any): Promise<IPullRequestReview<IGithubUser>> {
+        const { user, state } = payload.review;
+
+        return ({
+            pullRequestId: String(payload.pull_request.id),
+            reviewer: await this.getUser(user),
+            type: state === 'changes_requested' ? 'change' : state
+        }) as IPullRequestReview<IGithubUser>;
     }
 
     public async toPullRequest(payload: any): Promise<IPullRequest<IGithubUser>> {

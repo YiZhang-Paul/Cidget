@@ -66,34 +66,32 @@ const actions = {
     },
     async addPullRequestReview(context: ActionContext<State, any>, payload: any): Promise<void> {
         const { commit, state } = context;
-        const { pull_request, sender, review } = payload;
-        const existing = state.pullRequests.find(_ => _.id === String(pull_request.id));
+        const { pullRequestId, type, reviewer } = await pullRequestService.toReview(payload);
+        const pullRequest = state.pullRequests.find(_ => _.id === pullRequestId);
 
-        if (!existing || review.state === 'commented' || existing.reviewers.requested.every(_ => _.name !== sender.login)) {
+        if (!pullRequest || type === 'commented') {
             return;
         }
-        const { requested, approved } = existing.reviewers;
-        const reviewer = requested.find(_ => _.name === sender.login) ?? {} as IGithubUser;
-        let updated = false;
+        const { requested, approved } = pullRequest.reviewers;
+        const isReviewer = requested.some(_ => _.name === reviewer.name);
+        const isApprover = approved.some(_ => _.name === reviewer.name);
 
-        if (review.state === 'approved' && approved.every(_ => _.name !== reviewer.name)) {
-            existing.reviewers.approved.push(reviewer);
-            updated = true;
-        }
-        else if (review.state === 'changes_requested' && approved.some(_ => _.name === reviewer.name)) {
-            existing.reviewers.approved = approved.filter(_ => _.name !== reviewer.name);
-            updated = true;
-        }
-
-        if (!updated) {
+        if (!isReviewer || type === 'approved' && isApprover || type === 'change' && !isApprover) {
             return;
         }
-        commit('updatePullRequest', existing);
+
+        if (type === 'approved') {
+            pullRequest.reviewers.approved.push(reviewer);
+        }
+        else {
+            pullRequest.reviewers.approved = approved.filter(_ => _.name !== reviewer.name);
+        }
+        commit('updatePullRequest', pullRequest);
 
         Vue.notify({
             group: 'notification',
             duration: -1,
-            data: { type: 'pull-request', id: existing.id, model: existing }
+            data: { type: 'pull-request', id: pullRequest.id, model: pullRequest }
         });
     },
     async addPullRequestCheck(context: ActionContext<State, any>, payload: any): Promise<void> {
