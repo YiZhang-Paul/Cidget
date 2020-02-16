@@ -30,6 +30,12 @@ export default class PullRequestCard extends tsx.Component<any> {
         return `${this.pullRequest.repository.url}/tree/${this.pullRequest.branch.base}`;
     }
 
+    private get reviewerSummary(): string {
+        const { requested, approved } = this.pullRequest.reviewers;
+
+        return `[${approved.length}/${requested.length}]`;
+    }
+
     public render(): any {
         let statusClass = 'pending';
 
@@ -55,7 +61,7 @@ export default class PullRequestCard extends tsx.Component<any> {
 
                     <div class="reviewers-summary">
                         <i class="fas fa-user-check reviewers-icon"></i>
-                        {`[0/${this.pullRequest.reviewers.length}]`}
+                        {this.reviewerSummary}
                     </div>
 
                     <ChangeStatsSummary class="change-summary"

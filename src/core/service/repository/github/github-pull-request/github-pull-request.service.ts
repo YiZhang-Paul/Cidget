@@ -39,7 +39,7 @@ export default class GithubPullRequestService {
             diffUrl: pull_request.diff_url,
             pullRequestUrl: pull_request.html_url,
             headCommitSha: pull_request.head.sha,
-            reviewers: (pull_request.requested_reviewers || []).map(this.getUser.bind(this)),
+            reviewers: await this.getReviewers(pull_request),
             createdOn: new Date(pull_request.created_at),
             updatedOn: new Date(pull_request.updated_at),
             mergeable: this.isMergeable(pull_request.mergeable_state),
@@ -51,24 +51,43 @@ export default class GithubPullRequestService {
         }) as IPullRequest<IGithubUser>;
     }
 
-    private async getUser(data: any, includeDetails = false): Promise<IGithubUser> {
-        const user = ({
-            name: data.login,
-            avatar: data.avatar_url,
-            profileUrl: data.html_url,
-            gistUrl: data.html_url.replace(/^(https:\/\/)/, '$1gist.')
-        }) as IGithubUser;
+    private async getReviewers(data: any): Promise<{ requested: IGithubUser[], approved: IGithubUser[] }> {
+        const { requested_reviewers } = data;
+        const approved = await this.getApprovers(data);
+        const reviewers: IGithubUser[] = await Promise.all(requested_reviewers.map(this.getUser.bind(this)));
+        const requested = this.removeDuplicateUsers([...reviewers, ...approved]);
+        const approverNames = new Set<string>(approved.map(_ => _.name));
 
-        if (includeDetails) {
-            const repositories = await this._httpClient.get(`${data.url}/repos`);
-            const followers = await this._httpClient.get(`${data.url}/followers`);
-            const gists = await this._httpClient.get(`${data.url}/gists`);
-            user.repositoryCount = (repositories.data || []).length;
-            user.followerCount = (followers.data || []).length;
-            user.gistCount = (gists.data || []).length;
+        return { requested, approved: requested.filter(_ => approverNames.has(_.name)) };
+    }
+
+    private async getApprovers(data: any): Promise<IGithubUser[]> {
+        const { data: reviews } = await this._httpClient.get(`${data.url}/reviews`);
+        const approvers: IGithubUser[] = [];
+        const names = new Set<string>();
+
+        for (const { user, state } of reviews) {
+            if (state.toLowerCase() === 'approved' && !names.has(user.login)) {
+                names.add(user.login);
+                approvers.push(await this.getUser(user));
+            }
         }
 
-        return user;
+        return approvers;
+    }
+
+    private removeDuplicateUsers(users: IGithubUser[]): IGithubUser[] {
+        const uniqueUsers: IGithubUser[] = [];
+        const names = new Set<string>();
+
+        for (const user of users) {
+            if (!names.has(user.name)) {
+                names.add(user.name);
+                uniqueUsers.push(user);
+            }
+        }
+
+        return uniqueUsers;
     }
 
     private getAction(payload: any): string {
@@ -82,6 +101,28 @@ export default class GithubPullRequestService {
             return 'needs review';
         }
         return action === 'synchronize' ? 'updated' : action;
+    }
+
+    private async getUser(data: any, includeDetails = false): Promise<IGithubUser> {
+        const { login, avatar_url, html_url, url } = data;
+
+        const user = ({
+            name: login,
+            avatar: avatar_url,
+            profileUrl: html_url,
+            gistUrl: html_url.replace(/^(https:\/\/)/, '$1gist.')
+        }) as IGithubUser;
+
+        if (includeDetails) {
+            const repositories = await this._httpClient.get(`${url}/repos`);
+            const followers = await this._httpClient.get(`${url}/followers`);
+            const gists = await this._httpClient.get(`${url}/gists`);
+            user.repositoryCount = (repositories.data || []).length;
+            user.followerCount = (followers.data || []).length;
+            user.gistCount = (gists.data || []).length;
+        }
+
+        return user;
     }
 
     private isMergeable(state: string): boolean | null {
