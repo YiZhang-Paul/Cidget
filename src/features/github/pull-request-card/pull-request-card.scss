@@ -51,7 +51,7 @@
     }
 
     .pull-request-action {
-        margin-top: 1px;
+        margin-top: 2px;
         font-size: 0.88em;
         font-weight: 500;
         color: var(--main-font-color);
@@ -59,11 +59,13 @@
 
     .reviewers-summary {
         margin-top: 1px;
+        margin-left: 7px;
         font-size: 0.9em;
         color: var(--main-font-color);
 
         .reviewers-icon {
             margin-right: 2px;
+            color: rgba(72, 158, 207, 0.9);
         }
     }
 
@@ -93,7 +95,7 @@
         margin-left: 5px;
     }
 
-    .reviewers-icon, .right-arrow {
+    .right-arrow {
         margin-top: 4px;
         margin-left: 6px;
         color: rgba(72, 158, 207, 0.9);
