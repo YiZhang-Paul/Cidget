@@ -1,34 +1,38 @@
 import { injectable, inject, named } from 'inversify';
 
-import config from '../../../../../electron-config';
 import Types from '../../../../ioc/types';
 import ICommit from '../../../../interface/repository/commit.interface';
 import ICommitStatus from '../../../../interface/repository/commit-status.interface';
 import IGithubUser from '../../../../interface/repository/github/github-user.interface';
 import IHttpClient from '../../../../interface/general/http-client.interface';
 import IRepositoryProvider from '../../../../interface/repository/repository-provider.interface';
-
-const { url, token } = config.get('repository.github');
+import AppSettings from '../../../io/app-settings/app-settings';
 
 @injectable()
 export default class GithubCommitService {
+    private _url: string;
+    private _token: string;
     private _httpClient: IHttpClient;
     private _repositoryProvider: IRepositoryProvider<any>;
 
     constructor(
+        @inject(Types.AppSettings) settings: AppSettings,
         @inject(Types.IHttpClient) httpClient: IHttpClient,
         @inject(Types.IRepositoryProvider) @named('github') repositoryProvider: IRepositoryProvider<any>
     ) {
+        const { url, token } = settings.get('repository.github');
+        this._url = url;
+        this._token = token;
         this._httpClient = httpClient;
         this._repositoryProvider = repositoryProvider;
     }
 
     private get headers(): { [key: string]: string } {
-        return ({ Authorization: `token ${token}` });
+        return ({ Authorization: `token ${this._token}` });
     }
 
     public async getStatus(name: string, ref: string, owner: string): Promise<ICommitStatus> {
-        const endpoint = `${url}/repos/${owner}/${name}/commits/${ref}/status`;
+        const endpoint = `${this._url}/repos/${owner}/${name}/commits/${ref}/status`;
         const { data } = await this._httpClient.get(endpoint, { headers: this.headers });
         const { sha, state } = data;
 
