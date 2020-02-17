@@ -1,5 +1,10 @@
+jest.mock('electron', () => ({
+    shell: { async openExternal(_: string): Promise<void> { } }
+}));
+
 import { mount, Wrapper } from '@vue/test-utils';
 import { assert as sinonExpect, spy } from 'sinon';
+import { shell } from 'electron';
 
 import '../../../element-ui-test.js';
 
@@ -9,8 +14,6 @@ describe('commit card card component unit test', () => {
     let wrapper: Wrapper<CommitCard>;
     let shellSpy: any;
     let commit: any;
-    const shell = { async openExternal(_: string): Promise<void> { } };
-    jest.mock('electron', () => ({ shell }));
 
     beforeEach(() => {
         commit = {

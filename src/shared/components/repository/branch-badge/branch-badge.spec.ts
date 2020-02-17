@@ -1,5 +1,10 @@
+jest.mock('electron', () => ({
+    shell: { async openExternal(_: string): Promise<void> { } }
+}));
+
 import { mount, Wrapper } from '@vue/test-utils';
 import { assert as sinonExpect, spy } from 'sinon';
+import { shell } from 'electron';
 
 import '../../../../element-ui-test.js'
 
@@ -8,8 +13,6 @@ import BranchBadge from './branch-badge';
 describe('branch badge component unit test', () => {
     let wrapper: Wrapper<BranchBadge>;
     let shellSpy: any;
-    const shell = { async openExternal(_: string): Promise<void> { } };
-    jest.mock('electron', () => ({ shell }));
 
     beforeEach(() => {
         const propsData = { name: 'development', url: 'branch_url' };
