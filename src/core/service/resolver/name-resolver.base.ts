@@ -1,14 +1,14 @@
 import { injectable } from 'inversify';
 
-import config from '../../../electron-config';
 import IAbbreviationResolver from '../../interface/general/abbreviation-resolver.interface';
+import AppSettings from '../io/app-settings/app-settings';
 
 @injectable()
 export default abstract class NameResolverBase implements IAbbreviationResolver {
     private _lookup = new Map<string, string>();
 
-    constructor(category: string) {
-        const input = config.get('abbreviations')[category];
+    constructor(category: string, settings: AppSettings) {
+        const input = settings.get('abbreviations')[category];
 
         for (const abbr of Object.keys(input)) {
             for (const value of input[abbr]) {
