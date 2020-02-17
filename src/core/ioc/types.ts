@@ -16,5 +16,6 @@ export default {
     AzureDevopsCdReleaseService: Symbol.for('AzureDevopsCdReleaseService'),
     AzureDevopsApiProvider: Symbol.for('AzureDevopsApiProvider'),
     AzureDevopsPipelineProvider: Symbol.for('AzureDevopsPipelineProvider'),
-    ResolverType: Symbol.for('ResolverType')
+    ResolverType: Symbol.for('ResolverType'),
+    AppSettings: Symbol.for('AppSettings')
 }
