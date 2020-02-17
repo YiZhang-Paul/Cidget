@@ -1,30 +1,31 @@
 import { injectable, inject, named } from 'inversify';
 
-import config from '../../../../../electron-config';
 import Types from '../../../../ioc/types';
 import IGithubUser from '../../../../interface/repository/github/github-user.interface';
 import IPullRequest from '../../../../interface/repository/pull-request.interface';
 import IPullRequestReview from '../../../../interface/repository/pull-request-review.interface';
 import IHttpClient from '../../../../interface/general/http-client.interface';
 import IRepositoryProvider from '../../../../interface/repository/repository-provider.interface';
-
-const { token } = config.get('repository.github');
+import AppSettings from '../../../io/app-settings/app-settings';
 
 @injectable()
 export default class GithubPullRequestService {
+    private _token: string;
     private _httpClient: IHttpClient;
     private _repositoryProvider: IRepositoryProvider<any>;
 
     constructor(
+        @inject(Types.AppSettings) settings: AppSettings,
         @inject(Types.IHttpClient) httpClient: IHttpClient,
         @inject(Types.IRepositoryProvider) @named('github') repositoryProvider: IRepositoryProvider<any>
     ) {
+        this._token = settings.get('repository.github').token;
         this._httpClient = httpClient;
         this._repositoryProvider = repositoryProvider;
     }
 
     private get headers(): { [key: string]: string } {
-        return ({ Authorization: `token ${token}` });
+        return ({ Authorization: `token ${this._token}` });
     }
 
     public async toReview(payload: any): Promise<IPullRequestReview<IGithubUser>> {
