@@ -1,21 +1,15 @@
 import 'isomorphic-fetch';
-import { injectable } from 'inversify';
+import { injectable, inject } from 'inversify';
 import { remote, BrowserWindow } from 'electron';
 import * as graph from '@microsoft/microsoft-graph-client';
 import { GraphRequest } from '@microsoft/microsoft-graph-client';
 
-import config from '../../../../electron-config';
+import Types from '../../../ioc/types';
 import IUser from '../../../interface/general/user.interface';
 import IMail from '../../../interface/general/email.interface';
 import IOAuthProvider from '../../../interface/general/oauth-provider.interface';
 import { logger } from '../../io/logger/logger';
-
-const outlookConfig = config.get('mail.outlook');
-const { clientId, secret, callback, scope } = outlookConfig;
-const { tokenHost, authorizePath, tokenPath } = outlookConfig;
-const client = { id: clientId, secret };
-const auth = { tokenHost, authorizePath, tokenPath };
-const oauth2 = require('simple-oauth2').create({ client, auth });
+import AppSettings from '../../io/app-settings/app-settings';
 
 @injectable()
 export default class OutlookApiProvider implements IOAuthProvider {
@@ -23,28 +17,40 @@ export default class OutlookApiProvider implements IOAuthProvider {
     private _token!: any;
     private _client!: graph.Client;
     private _window!: BrowserWindow;
+    private _oauth2: any;
+    private _callback: string;
+    private _scope: string;
+    private _settings: AppSettings;
 
-    constructor() {
-        this.authorizeToken(config.get(this._tokenPath));
+    constructor(@inject(Types.AppSettings) settings: AppSettings) {
+        const config = settings.get('mail.outlook');
+        const { clientId, secret, callback, scope, tokenHost, authorizePath, tokenPath } = config;
+        const client = { id: clientId, secret };
+        const auth = { tokenHost, authorizePath, tokenPath };
+        this._callback = callback;
+        this._scope = scope;
+        this._settings = settings;
+        this._oauth2 = require('simple-oauth2').create({ client, auth });
+        this.authorizeToken(this._settings.get(this._tokenPath));
     }
 
     private get authorizeContext(): any {
-        return ({ redirect_uri: callback, scope });
+        return ({ redirect_uri: this._callback, scope: this._scope });
     }
 
     public promptAuthorization(): void {
-        const url = oauth2.authorizationCode.authorizeURL(this.authorizeContext);
+        const url = this._oauth2.authorizationCode.authorizeURL(this.authorizeContext);
         this._window = new remote.BrowserWindow({ width: 800, height: 600 });
         this._window.loadURL(url);
     }
 
     public async authorize(code: string): Promise<void> {
         const context = Object.assign({ code }, this.authorizeContext);
-        const token = await oauth2.authorizationCode.getToken(context);
+        const token = await this._oauth2.authorizationCode.getToken(context);
         token.created = new Date().toISOString();
         // FIXME: potential loop
         this.authorizeToken(token);
-        config.set(this._tokenPath, token);
+        this._settings.set(this._tokenPath, token);
         this._window.close();
     }
 
@@ -56,7 +62,7 @@ export default class OutlookApiProvider implements IOAuthProvider {
                 token.expires_in = Math.max(token.expires_in - elapsed, 0);
                 token.ext_expires_in = Math.max(token.ext_expires_in - elapsed, 0);
             }
-            this._token = oauth2.accessToken.create(token);
+            this._token = this._oauth2.accessToken.create(token);
             const accessToken = this._token.token.access_token;
             this._client = graph.Client.init({ authProvider: _ => _(null, accessToken) });
         }
@@ -74,7 +80,7 @@ export default class OutlookApiProvider implements IOAuthProvider {
             const token = await this._token.refresh();
             token.created = new Date().toISOString();
             this.authorizeToken(token);
-            config.set(this._tokenPath, token);
+            this._settings.set(this._tokenPath, token);
         }
         catch {
             this.promptAuthorization();
