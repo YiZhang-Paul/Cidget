@@ -1,27 +1,35 @@
 import { injectable, inject } from 'inversify';
 
-import config from '../../../../electron-config';
 import Types from '../../../ioc/types';
 import IWebhook from '../../../interface/webhook/webhook.interface';
 import IWebhookQuery from '../../../interface/webhook/webhook-query.interface';
 import IWebhookProvider from '../../../interface/webhook/webhook-provider.interface';
 import IHttpClient from '../../../interface/general/http-client.interface';
 import IAzureDevopsWebhookContext from '../../../interface/webhook/azure-devops/azure-devops-webhook-context.interface';
-
-const { url, token } = config.get('cicd.azureDevops');
+import AppSettings from '../../io/app-settings/app-settings';
 
 @injectable()
 export default class AzureDevopsWebhookProviderService implements IWebhookProvider<IWebhookQuery, IAzureDevopsWebhookContext> {
+    private _url: string;
+    private _token: string;
     private _httpClient: IHttpClient;
-    private _buildEndpoint = `${url}/_apis/hooks/subscriptions?api-version=5.0`;
-    private _releaseEndpoint = this._buildEndpoint.replace(/^(https:\/\/)/, '$1vsrm.');
+    private _buildEndpoint: string;
+    private _releaseEndpoint: string;
 
-    constructor(@inject(Types.IHttpClient) httpClient: IHttpClient) {
+    constructor(
+        @inject(Types.IHttpClient) httpClient: IHttpClient,
+        @inject(Types.AppSettings) settings: AppSettings
+    ) {
+        const { url, token } = settings.get('cicd.azureDevops');
+        this._url = url;
+        this._token = token;
+        this._buildEndpoint = `${url}/_apis/hooks/subscriptions?api-version=5.0`;
+        this._releaseEndpoint = this._buildEndpoint.replace(/^(https:\/\/)/, '$1vsrm.');
         this._httpClient = httpClient;
     }
 
     private get headers(): { [key: string]: any } {
-        const encoded = btoa(`:${token}`);
+        const encoded = btoa(`:${this._token}`);
 
         return ({ Authorization: `basic ${encoded}` });
     }
@@ -74,7 +82,7 @@ export default class AzureDevopsWebhookProviderService implements IWebhookProvid
     }
 
     private async getProject(idOrName: string): Promise<{ id: string; name: string } | null> {
-        const endpoint = `${url}/_apis/projects/${idOrName}`;
+        const endpoint = `${this._url}/_apis/projects/${idOrName}`;
         const { data } = await this._httpClient.get(endpoint);
 
         return data ? ({ id: data.id, name: data.name }) : null;
