@@ -2,13 +2,14 @@ import { shallowMount, Wrapper } from '@vue/test-utils';
 import { assert as sinonExpect, spy } from 'sinon';
 
 import '../../../../element-ui-test.js';
-import { shell } from '../../../../mocks/third-party/electron';
 
 import WeblinkDisplay from './weblink-display';
 
 describe('weblink display component unit test', () => {
     let wrapper: Wrapper<WeblinkDisplay>;
     let shellSpy: any;
+    const shell = { async openExternal(_: string): Promise<void> { } };
+    jest.mock('electron', () => ({ shell }));
 
     beforeEach(() => {
         const propsData = { text: 'link_text', url: 'link_url' };

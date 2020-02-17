@@ -2,13 +2,14 @@ import { mount, Wrapper } from '@vue/test-utils';
 import { assert as sinonExpect, spy } from 'sinon';
 
 import '../../../../element-ui-test.js';
-import { shell } from '../../../../mocks/third-party/electron';
 
 import RepositoryBadge from './repository-badge';
 
 describe('repository badge component unit test', () => {
     let wrapper: Wrapper<RepositoryBadge>;
     let shellSpy: any;
+    const shell = { async openExternal(_: string): Promise<void> { } };
+    jest.mock('electron', () => ({ shell }));
 
     beforeEach(() => {
         const propsData = { repository: { id: 'repository_id', url: 'repository_url' } };

@@ -1,13 +1,13 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
 import { assert as sinonExpect, spy } from 'sinon';
 
-import { shell } from '../../../mocks/third-party/electron';
-
 import UserInfoCard from './user-info-card';
 
 describe('user info card component unit test', () => {
     let wrapper: Wrapper<UserInfoCard>;
     let shellSpy: any;
+    const shell = { async openExternal(_: string): Promise<void> { } };
+    jest.mock('electron', () => ({ shell }));
 
     beforeEach(() => {
         const propsData = {
