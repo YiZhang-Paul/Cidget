@@ -1,20 +1,25 @@
 import { injectable, inject } from 'inversify';
 
-import config from '../../../../electron-config';
 import Types from '../../../ioc/types';
 import IWebhook from '../../../interface/webhook/webhook.interface';
 import IWebhookQuery from '../../../interface/webhook/webhook-query.interface';
 import IWebhookProvider from '../../../interface/webhook/webhook-provider.interface';
 import IOutlookWebhookContext from '../../../interface/webhook/outlook/outlook-webhook-context.interface';
 import OutlookApiProvider from '../../mail/outlook/outlook-api-provider';
+import AppSettings from '../../io/app-settings/app-settings';
 
 @injectable()
 export default class OutlookWebhookProvider implements IWebhookProvider<IWebhookQuery, IOutlookWebhookContext> {
     private _webhookPath = 'mail.outlook.webhooks';
     private _graphApi: OutlookApiProvider;
+    private _settings: AppSettings;
 
-    constructor(@inject(Types.OutlookApiProvider) graphApi: OutlookApiProvider) {
+    constructor(
+        @inject(Types.OutlookApiProvider) graphApi: OutlookApiProvider,
+        @inject(Types.AppSettings) settings: AppSettings
+    ) {
         this._graphApi = graphApi;
+        this._settings = settings;
     }
 
     private get expireTime(): Date {
@@ -26,7 +31,7 @@ export default class OutlookWebhookProvider implements IWebhookProvider<IWebhook
     }
 
     public async listWebhooks(): Promise<IWebhook[]> {
-        const hooks = (config.get(this._webhookPath) || []) as IWebhook[];
+        const hooks = (this._settings.get(this._webhookPath) || []) as IWebhook[];
 
         for (const hook of hooks) {
             hook.createdOn = new Date(hook.createdOn);
@@ -63,7 +68,7 @@ export default class OutlookWebhookProvider implements IWebhookProvider<IWebhook
         }) as IWebhook;
 
         if (hooks.every(_ => _.id !== id)) {
-            config.set(this._webhookPath, [...hooks, hook]);
+            this._settings.set(this._webhookPath, [...hooks, hook]);
         }
         return hook;
     }
@@ -79,7 +84,7 @@ export default class OutlookWebhookProvider implements IWebhookProvider<IWebhook
         hooks[index].createdOn = new Date();
         const request = await this._graphApi.startGraphRequest(`/subscriptions/${hook.id}`);
         await request?.patch({ expirationDateTime: this.expireTime.toISOString() });
-        config.set(this._webhookPath, hooks);
+        this._settings.set(this._webhookPath, hooks);
 
         return hooks[index];
     }
