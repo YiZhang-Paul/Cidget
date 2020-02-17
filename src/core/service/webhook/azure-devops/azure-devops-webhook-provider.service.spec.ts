@@ -3,6 +3,7 @@ import { assert as sinonExpect, stub } from 'sinon';
 import Types from '../../../ioc/types';
 import Container from '../../../ioc/container';
 import IHttpClient from '../../../interface/general/http-client.interface';
+import IWebhookQuery from '../../../interface/webhook/webhook-query.interface';
 import IAzureDevopsWebhookContext from '../../../interface/webhook/azure-devops/azure-devops-webhook-context.interface';
 
 import AzureDevopsWebhookProviderService from './azure-devops-webhook-provider.service';
@@ -12,6 +13,7 @@ describe('azure devops webhook provider service unit test', () => {
     let service: AzureDevopsWebhookProviderService;
     let httpStub: any;
     let data: any;
+    let query: IWebhookQuery;
 
     beforeEach(() => {
         Container.snapshot();
@@ -68,6 +70,7 @@ describe('azure devops webhook provider service unit test', () => {
             status: 'enabled'
         };
 
+        query = { name: 'project_name', callback: '' };
         httpStub.get.onCall(0).resolves({ data: { id: 'project_id_2', name: 'project_name' } });
         httpStub.get.onCall(1).resolves({ data });
         httpStub.post.resolves({ data: response });
@@ -79,7 +82,7 @@ describe('azure devops webhook provider service unit test', () => {
 
     describe('listWebhooks', () => {
         test('should call correct api endpoint with authorization token', async () => {
-            await service.listWebhooks('project_name');
+            await service.listWebhooks(query);
 
             sinonExpect.calledTwice(httpStub.get);
             expect(httpStub.get.args[0][0]).toBe(`${api}projects/project_name`);
@@ -88,7 +91,7 @@ describe('azure devops webhook provider service unit test', () => {
         });
 
         test('should return hooks found', async () => {
-            const result = await service.listWebhooks('project_name');
+            const result = await service.listWebhooks(query);
 
             expect(result.length).toBe(1);
             expect(result[0].id).toBe('id_2');
@@ -105,7 +108,7 @@ describe('azure devops webhook provider service unit test', () => {
         test('should return empty collection when no project found', async () => {
             httpStub.get.onCall(0).resolves({ data: null });
 
-            const result = await service.listWebhooks('project_name');
+            const result = await service.listWebhooks(query);
 
             sinonExpect.calledOnce(httpStub.get);
             expect(result.length).toBe(0);
@@ -114,7 +117,7 @@ describe('azure devops webhook provider service unit test', () => {
         test('should return empty collection when no hooks found', async () => {
             httpStub.get.onCall(1).resolves({ data: null });
 
-            const result = await service.listWebhooks('project_name');
+            const result = await service.listWebhooks(query);
 
             sinonExpect.calledTwice(httpStub.get);
             expect(result.length).toBe(0);
@@ -123,7 +126,9 @@ describe('azure devops webhook provider service unit test', () => {
 
     describe('getWebhook', () => {
         test('should return hook found', async () => {
-            const result = await service.getWebhook('project_name', 'callback_url');
+            query.callback = 'callback_url';
+
+            const result = await service.getWebhook(query);
 
             expect(result?.id).toBe('id_2');
             expect(result?.name).toBe('action_description_2 by display_name_2');
@@ -137,7 +142,9 @@ describe('azure devops webhook provider service unit test', () => {
         });
 
         test('should return null when no hook found', async () => {
-            expect(await service.getWebhook('project_name', 'invalid_url')).toBeNull();
+            query.callback = 'invalid_url';
+
+            expect(await service.getWebhook(query)).toBeNull();
         });
     });
 
@@ -146,6 +153,7 @@ describe('azure devops webhook provider service unit test', () => {
 
         beforeEach(() => {
             context = {
+                project: 'project_name',
                 publisherId: 'tfs',
                 eventType: 'event_name',
                 callback: 'new_callback_url',
@@ -158,7 +166,7 @@ describe('azure devops webhook provider service unit test', () => {
         test('should return existing hook instead of adding new hook when possible', async () => {
             context.callback = 'callback_url';
 
-            const result = await service.addWebhook('project_name', context);
+            const result = await service.addWebhook(context);
 
             sinonExpect.calledTwice(httpStub.get);
             sinonExpect.notCalled(httpStub.post);
@@ -177,7 +185,7 @@ describe('azure devops webhook provider service unit test', () => {
             httpStub.get.onCall(2).resolves({ data: null });
 
             try {
-                await service.addWebhook('project_name', context);
+                await service.addWebhook(context);
             }
             catch {
                 return;
@@ -186,7 +194,7 @@ describe('azure devops webhook provider service unit test', () => {
         });
 
         test('should call correct api endpoint with authentication token for non-release hooks', async () => {
-            await service.addWebhook('project_name', context);
+            await service.addWebhook(context);
 
             sinonExpect.calledOnce(httpStub.post);
             expect(httpStub.post.args[0][0]).toBe(`${api}hooks/subscriptions?api-version=5.0`);
@@ -201,15 +209,10 @@ describe('azure devops webhook provider service unit test', () => {
 
         test('should call correct api endpoint with authentication token for non-release hooks', async () => {
             const releaseApi = 'https://vsrm.dev.azure.com/yizhang9206/_apis/';
+            context.publisherId = 'rm';
+            context.isRelease = true;
 
-            context = {
-                publisherId: 'rm',
-                eventType: 'event_name',
-                callback: 'new_callback_url',
-                isRelease: true
-            };
-
-            await service.addWebhook('project_name', context);
+            await service.addWebhook(context);
 
             sinonExpect.calledOnce(httpStub.post);
             expect(httpStub.post.args[0][0]).toBe(`${releaseApi}hooks/subscriptions?api-version=5.0`);
@@ -223,7 +226,7 @@ describe('azure devops webhook provider service unit test', () => {
         });
 
         test('should return hook added', async () => {
-            const result = await service.addWebhook('project_name', context);
+            const result = await service.addWebhook(context);
 
             sinonExpect.calledOnce(httpStub.post);
             expect(result?.id).toBe('id_3');

@@ -27,7 +27,7 @@ describe('github store unit test', () => {
         Container.snapshot();
 
         commitServiceStub = stub({
-            async getStatus(_a: any, _b: any): Promise<ICommitStatus> {
+            async getStatus(_a: any, _b: any, _c: any): Promise<ICommitStatus> {
                 return ({} as ICommitStatus);
             },
             async toCommit(_: any): Promise<ICommit<IGithubUser>> {

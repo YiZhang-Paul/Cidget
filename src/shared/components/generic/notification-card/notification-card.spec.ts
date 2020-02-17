@@ -6,7 +6,7 @@ describe('notification card component unit test', () => {
     let wrapper: Wrapper<NotificationCard>;
 
     beforeEach(() => {
-        const propsData = { logoUrl: 'logo_url' };
+        const propsData = { logoUrl: 'logo_url', closeHandler: () => undefined };
         const stubs = { UserAvatar: '<div></div>' };
         wrapper = shallowMount(NotificationCard, { propsData, stubs });
     });

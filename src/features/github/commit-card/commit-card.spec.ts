@@ -33,7 +33,8 @@ describe('commit card card component unit test', () => {
             RelativeTimeDisplay: '<div></div>'
         };
 
-        wrapper = mount(CommitCard, { propsData: { commit }, stubs });
+        const closeHandler = () => undefined;
+        wrapper = mount(CommitCard, { propsData: { commit, closeHandler }, stubs });
         shellSpy = spy(shell, 'openExternal');
     });
 

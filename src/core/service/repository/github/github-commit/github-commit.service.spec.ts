@@ -51,14 +51,14 @@ describe('github commit service unit test', () => {
         test('should call correct endpoint', async () => {
             const api = 'https://api.github.com/repos/yizhang-paul/project_name/commits/ref_name/status';
 
-            await service.getStatus('project_name', 'ref_name');
+            await service.getStatus('project_name', 'ref_name', 'yizhang-paul');
 
             sinonExpect.calledOnce(httpStub.get);
             expect(httpStub.get.args[0][0]).toBe(api);
         });
 
         test('should return commit status', async () => {
-            const result = await service.getStatus('project_name', 'ref_name');
+            const result = await service.getStatus('project_name', 'ref_name', 'yizhang-paul');
 
             expect(result.ref).toBe('sha_sequence');
             expect(result.status).toBe('pending');
