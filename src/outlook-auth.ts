@@ -1,14 +1,15 @@
 import express from 'express';
 
-import config from './electron-config';
 import Types from './core/ioc/types';
 import Container from './core/ioc/container';
 import { logger } from './core/service/io/logger/logger';
 import OutlookApiProvider from './core/service/mail/outlook/outlook-api-provider';
 import OutlookWebhookProvider from './core/service/webhook/outlook/outlook-webhook-provider';
+import AppSettings from './core/service/io/app-settings/app-settings';
 
 const app = express();
-const { localPort } = config.get('mail.outlook');
+const settings = Container.get<AppSettings>(Types.AppSettings);
+const { localPort } = settings.get('mail.outlook');
 const outlookApi = Container.get<OutlookApiProvider>(Types.OutlookApiProvider);
 const outlookWebhook = Container.get<OutlookWebhookProvider>(Types.OutlookWebhookProvider);
 
