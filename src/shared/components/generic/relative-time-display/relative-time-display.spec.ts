@@ -12,6 +12,7 @@ describe('relative time display component unit test', () => {
 
     afterEach(() => {
         wrapper.destroy();
+        jest.useRealTimers();
     });
 
     test('should create component instance', () => {
@@ -19,6 +20,7 @@ describe('relative time display component unit test', () => {
     });
 
     test('should run timer every second for the first minute', () => {
+        jest.useFakeTimers();
         wrapper = shallowMount(RelativeTimeDisplay, { propsData: { time: new Date() } });
         jest.advanceTimersByTime(60000);
 
@@ -26,6 +28,7 @@ describe('relative time display component unit test', () => {
     });
 
     test('should run timer every minute after the first minute', () => {
+        jest.useFakeTimers();
         wrapper = shallowMount(RelativeTimeDisplay, { propsData: { time: new Date() } });
         jest.advanceTimersByTime(120000);
 

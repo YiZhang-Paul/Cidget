@@ -64,7 +64,7 @@ describe('github webhook provider service unit test', () => {
             await service.listWebhooks(query);
 
             sinonExpect.calledOnce(httpStub.get);
-            expect(httpStub.get.args[0][0]).toBe('https://api.github.com/repos/yizhang-paul/project_name/hooks');
+            expect(httpStub.get.args[0][0]).toBe('https://api.github.com/repos/test_github_user/project_name/hooks');
             expect(httpStub.get.args[0][1].headers.Authorization).toBe('token test_github_token');
         });
 
@@ -137,7 +137,7 @@ describe('github webhook provider service unit test', () => {
             await service.addWebhook(context);
 
             sinonExpect.calledOnce(httpStub.post);
-            expect(httpStub.post.args[0][0]).toBe('https://api.github.com/repos/yizhang-paul/project_name/hooks');
+            expect(httpStub.post.args[0][0]).toBe('https://api.github.com/repos/test_github_user/project_name/hooks');
             expect(httpStub.post.args[0][1].events).toStrictEqual(['push', 'check']);
             expect(httpStub.post.args[0][1].config.url).toBe('new_callback_url');
             expect(httpStub.post.args[0][1].config.content_type).toBe('json');

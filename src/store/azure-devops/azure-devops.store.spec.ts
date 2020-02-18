@@ -44,6 +44,7 @@ describe('azure devops store unit test', () => {
 
     afterEach(() => {
         notifySpy.restore();
+        jest.useRealTimers();
     });
 
     describe('addCiBuild', () => {
@@ -219,8 +220,7 @@ describe('azure devops store unit test', () => {
         });
 
         test('should add auto notification when release is approved', async () => {
-            releaseServiceStub.toCdRelease.onCall(0).resolves(release);
-            releaseServiceStub.toCdRelease.onCall(1).resolves({ id: '147', status: 'in progress' });
+            jest.useFakeTimers();
             store.state.cdReleases = [];
 
             await store.dispatch('addCdRelease', { resource: { approval: {} } });
@@ -245,6 +245,7 @@ describe('azure devops store unit test', () => {
         });
 
         test('should not add auto notification when another event happens during delay', async () => {
+            jest.useFakeTimers();
             releaseServiceStub.toCdRelease.resolves(Object.assign({ id: '147', status: 'rejected' }));
             store.state.cdReleases = [];
 

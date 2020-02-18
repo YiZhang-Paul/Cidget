@@ -20,6 +20,7 @@ describe('step summary component unit test', () => {
 
     afterEach(() => {
         wrapper.destroy();
+        jest.useRealTimers();
     });
 
     test('should create component instance', () => {
@@ -39,6 +40,7 @@ describe('step summary component unit test', () => {
     });
 
     test('should blink active step icon', () => {
+        jest.useFakeTimers();
         wrapper = shallowMount(StepSummary, { propsData: { steps } });
         wrapper.vm.$data.colorOn = true;
 
@@ -68,6 +70,7 @@ describe('step summary component unit test', () => {
 
     test('should not blink active step icon when blink mode is off', () => {
         wrapper = shallowMount(StepSummary, { propsData: { steps, blinkMode: false } });
+        jest.useFakeTimers();
 
         jest.advanceTimersByTime(400);
 

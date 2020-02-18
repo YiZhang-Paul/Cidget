@@ -28,6 +28,7 @@ describe('app component unit test', () => {
     afterEach(() => {
         getCurrentWindowStub.restore();
         wrapper.destroy();
+        jest.useRealTimers();
     });
 
     test('should create component instance', () => {
@@ -124,6 +125,7 @@ describe('app component unit test', () => {
     });
 
     test('should update existing notification for same event', () => {
+        jest.useFakeTimers();
         const classListStub = stub({ add() {}, remove() {} });
         const elements = [{ classList: classListStub }, { classList: classListStub }];
         const getElementsStub = stub((global as any).document, 'getElementsByClassName');

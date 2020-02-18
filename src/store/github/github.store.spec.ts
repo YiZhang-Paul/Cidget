@@ -168,16 +168,6 @@ describe('github store unit test', () => {
             sinonExpect.calledOnce(notifySpy);
             expect(notifySpy.args[0][0].duration).toBe(10000);
         });
-
-        test('should ignore review request removed event', async () => {
-            pullRequest.action = 'review_request_removed';
-            store.state.pullRequests = [];
-
-            await store.dispatch('addPullRequest', {});
-
-            sinonExpect.notCalled(notifySpy);
-            expect(store.state.pullRequests.length).toBe(0);
-        });
     });
 
     describe('addPullRequestCheck', () => {

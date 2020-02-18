@@ -9,7 +9,7 @@ import IAzureDevopsWebhookContext from '../../../interface/webhook/azure-devops/
 import AzureDevopsWebhookProviderService from './azure-devops-webhook-provider.service';
 
 describe('azure devops webhook provider service unit test', () => {
-    const api = 'https://dev.azure.com/yizhang9206/_apis/';
+    const api = 'https://dev.azure.com/test_azure_organization/_apis/';
     let service: AzureDevopsWebhookProviderService;
     let httpStub: any;
     let data: any;
@@ -202,7 +202,7 @@ describe('azure devops webhook provider service unit test', () => {
         });
 
         test('should call correct api endpoint with authentication token for non-release hooks', async () => {
-            const releaseApi = 'https://vsrm.dev.azure.com/yizhang9206/_apis/';
+            const releaseApi = 'https://vsrm.dev.azure.com/test_azure_organization/_apis/';
             context.publisherId = 'rm';
             context.isRelease = true;
 
