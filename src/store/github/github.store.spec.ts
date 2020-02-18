@@ -24,8 +24,6 @@ describe('github store unit test', () => {
     let pullRequestServiceStub: any;
 
     beforeEach(() => {
-        Container.snapshot();
-
         commitServiceStub = stub({
             async getStatus(_a: any, _b: any, _c: any): Promise<ICommitStatus> {
                 return ({} as ICommitStatus);
@@ -54,7 +52,6 @@ describe('github store unit test', () => {
     });
 
     afterEach(() => {
-        Container.restore();
         notifySpy.restore();
     });
 

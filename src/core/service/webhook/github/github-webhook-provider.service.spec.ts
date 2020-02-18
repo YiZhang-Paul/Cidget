@@ -14,8 +14,6 @@ describe('github webhook provider service unit test', () => {
     let query: IWebhookQuery;
 
     beforeEach(() => {
-        Container.snapshot();
-
         httpStub = stub({
             async get(): Promise<any> { return null; },
             async post(): Promise<any> { return null; }
@@ -59,10 +57,6 @@ describe('github webhook provider service unit test', () => {
         query = { name: 'project_name', callback: '' };
         httpStub.get.resolves({ data });
         httpStub.post.resolves({ data: data[1] });
-    });
-
-    afterEach(() => {
-        Container.restore();
     });
 
     describe('listWebhooks', () => {

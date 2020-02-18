@@ -22,8 +22,6 @@ describe('azure devops store unit test', () => {
     let releaseServiceStub: any;
 
     beforeEach(() => {
-        Container.snapshot();
-
         buildServiceStub = stub({
             async toCiBuild(_: any): Promise<ICiBuild> { return ({} as ICiBuild); }
         } as AzureDevopsCiBuildService);
@@ -45,9 +43,7 @@ describe('azure devops store unit test', () => {
     });
 
     afterEach(() => {
-        Container.restore();
         notifySpy.restore();
-        jest.useRealTimers();
     });
 
     describe('addCiBuild', () => {
@@ -223,7 +219,6 @@ describe('azure devops store unit test', () => {
         });
 
         test('should add auto notification when release is approved', async () => {
-            jest.useFakeTimers();
             releaseServiceStub.toCdRelease.onCall(0).resolves(release);
             releaseServiceStub.toCdRelease.onCall(1).resolves({ id: '147', status: 'in progress' });
             store.state.cdReleases = [];
@@ -246,7 +241,6 @@ describe('azure devops store unit test', () => {
         let release: any;
 
         beforeEach(() => {
-            jest.useFakeTimers();
             release = { id: '147', status: 'approved' };
         });
 

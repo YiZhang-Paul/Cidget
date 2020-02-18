@@ -15,7 +15,6 @@ describe('azure devops pipeline provider unit test', () => {
     let releaseApiStub: any;
 
     beforeEach(() => {
-        Container.snapshot();
         buildApiStub = stub({ async getDefinition(): Promise<any> { return null; } });
         releaseApiStub = stub({ async getReleaseDefinition(): Promise<any> { return null; } });
 
@@ -29,10 +28,6 @@ describe('azure devops pipeline provider unit test', () => {
             .toConstantValue(apiProviderStub);
 
         pipelineProvider = Container.get<AzureDevopsPipelineProvider>(Types.AzureDevopsPipelineProvider);
-    });
-
-    afterEach(() => {
-        Container.restore();
     });
 
     describe('fetchBuildDefinition', () => {

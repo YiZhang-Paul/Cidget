@@ -14,8 +14,6 @@ describe('github commit service unit test', () => {
     let repositoryProviderStub: any;
 
     beforeEach(() => {
-        Container.snapshot();
-
         httpStub = stub({
             async get(): Promise<any> { return null },
             async post(): Promise<any> { return null }
@@ -37,10 +35,6 @@ describe('github commit service unit test', () => {
             .whenTargetNamed('github');
 
         service = Container.get<GithubCommitService>(Types.GithubCommitService);
-    });
-
-    afterEach(() => {
-        Container.restore();
     });
 
     describe('getStatus', () => {

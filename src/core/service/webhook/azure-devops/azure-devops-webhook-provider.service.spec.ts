@@ -16,8 +16,6 @@ describe('azure devops webhook provider service unit test', () => {
     let query: IWebhookQuery;
 
     beforeEach(() => {
-        Container.snapshot();
-
         httpStub = stub({
             async get(): Promise<any> { return null; },
             async post(): Promise<any> { return null; }
@@ -74,10 +72,6 @@ describe('azure devops webhook provider service unit test', () => {
         httpStub.get.onCall(0).resolves({ data: { id: 'project_id_2', name: 'project_name' } });
         httpStub.get.onCall(1).resolves({ data });
         httpStub.post.resolves({ data: response });
-    });
-
-    afterEach(() => {
-        Container.restore();
     });
 
     describe('listWebhooks', () => {

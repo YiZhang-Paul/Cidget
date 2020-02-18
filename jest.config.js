@@ -3,6 +3,7 @@ module.exports = {
     testMatch: ['**/src/**/*.spec.ts'],
     collectCoverage: true,
     coverageReporters: ['cobertura', 'text', 'text-summary'],
+    setupFilesAfterEnv: ['<rootDir>/src/specs.ts'],
     collectCoverageFrom: [
         'src/**/*.{js,ts,jsx,tsx,vue}',
         '!**/node_modules/**',
