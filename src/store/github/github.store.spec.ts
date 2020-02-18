@@ -100,7 +100,7 @@ describe('github store unit test', () => {
             sinonExpect.calledOnce(notifySpy);
             expect(notifySpy.args[0][0].data.type).toBe('commit');
             expect(notifySpy.args[0][0].data.id).toBe('147');
-            expect(notifySpy.args[0][0].duration).toBe(12000);
+            expect(notifySpy.args[0][0].duration).toBe(10000);
         });
     });
 
@@ -166,7 +166,7 @@ describe('github store unit test', () => {
             await store.dispatch('addPullRequest', {});
 
             sinonExpect.calledOnce(notifySpy);
-            expect(notifySpy.args[0][0].duration).toBe(12000);
+            expect(notifySpy.args[0][0].duration).toBe(10000);
         });
 
         test('should ignore review request removed event', async () => {

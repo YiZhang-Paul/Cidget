@@ -1,6 +1,11 @@
+jest.mock('electron', () => ({
+    remote: { getCurrentWindow(): any { } }
+}));
+
 import VueNotification from 'vue-notification';
 import { createLocalVue, mount, Wrapper } from '@vue/test-utils';
 import { assert as sinonExpect, stub } from 'sinon';
+import { remote } from 'electron';
 
 import Store from './store';
 import App from './app';
@@ -10,12 +15,18 @@ vue.use(VueNotification);
 
 describe('app component unit test', () => {
     let wrapper: Wrapper<App>;
+    let moveTopStub: any;
+    let getCurrentWindowStub: any;
 
     beforeEach(() => {
+        moveTopStub = stub();
+        getCurrentWindowStub = stub(remote, 'getCurrentWindow');
+        getCurrentWindowStub.returns({ moveTop: moveTopStub });
         wrapper = mount(App, { localVue: vue, store: Store.store });
     });
 
     afterEach(() => {
+        getCurrentWindowStub.restore();
         wrapper.destroy();
     });
 
@@ -32,6 +43,7 @@ describe('app component unit test', () => {
             data: { type: 'ci-build', id: 'build_id' }
         });
 
+        sinonExpect.calledOnce(moveTopStub);
         expect(getList(wrapper).length).toBe(1);
         expect(getList(wrapper)[0].data.type).toBe('ci-build');
         expect(getList(wrapper)[0].data.id).toBe('build_id');
@@ -46,6 +58,7 @@ describe('app component unit test', () => {
             data: { type: 'cd-release', id: 'release_id' }
         });
 
+        sinonExpect.calledOnce(moveTopStub);
         expect(getList(wrapper).length).toBe(1);
         expect(getList(wrapper)[0].data.type).toBe('cd-release');
         expect(getList(wrapper)[0].data.id).toBe('release_id');
@@ -60,6 +73,7 @@ describe('app component unit test', () => {
             data: { type: 'commit', id: 'commit_id' }
         });
 
+        sinonExpect.calledOnce(moveTopStub);
         expect(getList(wrapper).length).toBe(1);
         expect(getList(wrapper)[0].data.type).toBe('commit');
         expect(getList(wrapper)[0].data.id).toBe('commit_id');
@@ -74,6 +88,7 @@ describe('app component unit test', () => {
             data: { type: 'pull-request', id: 'pull_request_id' }
         });
 
+        sinonExpect.calledOnce(moveTopStub);
         expect(getList(wrapper).length).toBe(1);
         expect(getList(wrapper)[0].data.type).toBe('pull-request');
         expect(getList(wrapper)[0].data.id).toBe('pull_request_id');

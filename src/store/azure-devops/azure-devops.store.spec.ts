@@ -82,7 +82,7 @@ describe('azure devops store unit test', () => {
             await store.dispatch('addCiBuild', {});
 
             sinonExpect.calledOnce(notifySpy);
-            expect(notifySpy.args[0][0].duration).toBe(12000);
+            expect(notifySpy.args[0][0].duration).toBe(10000);
             expect(notifySpy.args[0][0].data.id).toBe('147');
             expect(notifySpy.args[0][0].data.type).toBe('ci-build');
         });
@@ -95,7 +95,7 @@ describe('azure devops store unit test', () => {
             await store.dispatch('addCiBuild', {});
 
             sinonExpect.calledOnce(notifySpy);
-            expect(notifySpy.args[0][0].duration).toBe(12000);
+            expect(notifySpy.args[0][0].duration).toBe(10000);
             expect(notifySpy.args[0][0].data.id).toBe('147');
             expect(notifySpy.args[0][0].data.type).toBe('ci-build');
         });
@@ -137,7 +137,7 @@ describe('azure devops store unit test', () => {
             await store.dispatch('addCdRelease', {});
 
             sinonExpect.calledOnce(notifySpy);
-            expect(notifySpy.args[0][0].duration).toBe(12000);
+            expect(notifySpy.args[0][0].duration).toBe(10000);
             expect(notifySpy.args[0][0].data.id).toBe('147');
             expect(notifySpy.args[0][0].data.type).toBe('cd-release');
         });
@@ -150,7 +150,7 @@ describe('azure devops store unit test', () => {
             await store.dispatch('addCdRelease', {});
 
             sinonExpect.calledOnce(notifySpy);
-            expect(notifySpy.args[0][0].duration).toBe(12000);
+            expect(notifySpy.args[0][0].duration).toBe(10000);
             expect(notifySpy.args[0][0].data.id).toBe('147');
             expect(notifySpy.args[0][0].data.type).toBe('cd-release');
         });
@@ -179,7 +179,7 @@ describe('azure devops store unit test', () => {
             await store.dispatch('addCdRelease', {});
 
             sinonExpect.calledOnce(notifySpy);
-            expect(notifySpy.args[0][0].duration).toBe(12000);
+            expect(notifySpy.args[0][0].duration).toBe(10000);
             expect(notifySpy.args[0][0].data.id).toBe('147');
             expect(notifySpy.args[0][0].data.type).toBe('cd-release');
         });
@@ -191,7 +191,7 @@ describe('azure devops store unit test', () => {
             await store.dispatch('addCdRelease', {});
 
             sinonExpect.calledOnce(notifySpy);
-            expect(notifySpy.args[0][0].duration).toBe(12000);
+            expect(notifySpy.args[0][0].duration).toBe(10000);
             expect(notifySpy.args[0][0].data.id).toBe('147');
             expect(notifySpy.args[0][0].data.type).toBe('cd-release');
         });
@@ -203,7 +203,7 @@ describe('azure devops store unit test', () => {
             await store.dispatch('addCdRelease', {});
 
             sinonExpect.calledOnce(notifySpy);
-            expect(notifySpy.args[0][0].duration).toBe(12000);
+            expect(notifySpy.args[0][0].duration).toBe(10000);
             expect(notifySpy.args[0][0].data.id).toBe('147');
             expect(notifySpy.args[0][0].data.type).toBe('cd-release');
         });
