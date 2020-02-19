@@ -60,7 +60,7 @@ export default class OutlookWebhookProvider implements IWebhookProvider<IWebhook
 
         const hook = ({
             id,
-            url: 'https://graph.microsoft.com/v1.0/subscriptions',
+            url: 'https://graph.microsoft.com/v2.0/subscriptions',
             callback,
             events,
             createdOn: new Date(),
@@ -73,6 +73,18 @@ export default class OutlookWebhookProvider implements IWebhookProvider<IWebhook
         return hook;
     }
 
+    private async recreateWebhook(hook: IWebhook): Promise<IWebhook> {
+        const hooks = await this.listWebhooks();
+        this._settings.set(this._webhookPath, hooks.filter(_ => _.id !== hook.id));
+
+        return await this.addWebhook({
+            events: hook.events,
+            callback: hook.callback,
+            resource: '/me/messages',
+            state: '12345'
+        });
+    }
+
     public async renewWebhook(callback: string): Promise<IWebhook | null> {
         const hook = await this.getWebhook({ name: '', callback });
 
@@ -82,11 +94,17 @@ export default class OutlookWebhookProvider implements IWebhookProvider<IWebhook
         const hooks = await this.listWebhooks();
         const index = hooks.findIndex(_ => _.id === hook.id);
         hooks[index].createdOn = new Date();
-        const request = await this._graphApi.startGraphRequest(`/subscriptions/${hook.id}`);
-        await request?.patch({ expirationDateTime: this.expireTime.toISOString() });
-        this._settings.set(this._webhookPath, hooks);
 
-        return hooks[index];
+        try {
+            const request = await this._graphApi.startGraphRequest(`/subscriptions/${hook.id}`);
+            await request?.patch({ expirationDateTime: this.expireTime.toISOString() });
+            this._settings.set(this._webhookPath, hooks);
+
+            return hooks[index];
+        }
+        catch (error) {
+            return error.statusCode === 404 ? await this.recreateWebhook(hook) : null;
+        }
     }
 
     public async renewAllWebhooks(): Promise<void> {

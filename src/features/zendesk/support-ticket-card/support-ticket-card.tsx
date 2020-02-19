@@ -18,8 +18,9 @@ export default class SupportTicketCard extends tsx.Component<any> {
             return 'Reopened';
         }
         const group = this.ticket.assignedToUser ? 'YOU' : this.ticket.group;
+        const assignees = this.ticket.assignee.length;
 
-        return group || `${this.ticket.assignee.length} assignees`;
+        return group || `${assignees} assignee${assignees > 1 ? 's' : ''}`;
     }
 
     public render(): any {
