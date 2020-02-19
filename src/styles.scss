@@ -24,14 +24,14 @@ html, body {
 .notification {
     margin-top: 60px;
     margin-left: 52px;
-    z-index: 0;
+    z-index: 0 !important;
 }
 
 .vue-notification-wrapper {
-    overflow: visible;
-    margin-bottom: 8px;
-    border-radius: 6px;
-    box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.35);
+    overflow: visible !important;
+    margin-bottom: 8px !important;
+    border-radius: 6px !important;
+    box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.35) !important;
 }
 
 .updated-card {
