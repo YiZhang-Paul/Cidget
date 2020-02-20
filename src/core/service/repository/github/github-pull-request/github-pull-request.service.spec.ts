@@ -41,6 +41,27 @@ describe('github pull request service unit test', () => {
         let payload: any;
 
         beforeEach(() => {
+            const reviewer1 = {
+                login: 'reviewer_1',
+                avatar_url: 'reviewer_1_avatar_url',
+                html_url: 'https://reviewer_1_html_url',
+                url: 'reviewer_1_url'
+            };
+
+            const reviewer2 = {
+                login: 'reviewer_2',
+                avatar_url: 'reviewer_2_avatar_url',
+                html_url: 'https://reviewer_2_html_url',
+                url: 'reviewer_2_url'
+            };
+
+            const reviewer3 = {
+                login: 'reviewer_3',
+                avatar_url: 'reviewer_3_avatar_url',
+                html_url: 'https://reviewer_3_html_url',
+                url: 'reviewer_3_url'
+            };
+
             payload = {
                 action: 'opened',
                 pull_request: {
@@ -58,6 +79,7 @@ describe('github pull request service unit test', () => {
                     additions: 1523,
                     deletions: 312,
                     changed_files: 56,
+                    requested_reviewers: [reviewer1, reviewer3],
                     user: {
                         login: 'user_login_name',
                         avatar_url: 'user_avatar_url',
@@ -73,15 +95,23 @@ describe('github pull request service unit test', () => {
                 }
             };
 
-            httpStub.get.onCall(0).resolves({ data: [{}, {}, {}] });
-            httpStub.get.onCall(1).resolves({ data: [{}] });
-            httpStub.get.onCall(2).resolves({ data: [{}, {}] });
+            const reviews = [
+                { id: 1, user: reviewer1, state: 'Approved' },
+                { id: 2, user: reviewer2, state: 'Approved' },
+                { id: 3, user: reviewer1, state: 'Changes_Requested' },
+                { id: 4, user: reviewer2, state: 'Commented' }
+            ];
+
+            httpStub.get.onCall(0).resolves({ data: new Array(3).fill({}) });
+            httpStub.get.onCall(1).resolves({ data: new Array(1).fill({}) });
+            httpStub.get.onCall(2).resolves({ data: new Array(2).fill({}) });
+            httpStub.get.onCall(3).resolves({ data: reviews });
         });
 
         test('should convert payload into pull request', async () => {
             const result = await service.toPullRequest(payload);
 
-            sinonExpect.calledThrice(httpStub.get);
+            sinonExpect.callCount(httpStub.get, 4);
             expect(httpStub.get.args[0][0]).toBe('user_url/repos');
             expect(httpStub.get.args[1][0]).toBe('user_url/followers');
             expect(httpStub.get.args[2][0]).toBe('user_url/gists');
@@ -109,6 +139,17 @@ describe('github pull request service unit test', () => {
             expect(result.added).toBe(1523);
             expect(result.removed).toBe(312);
             expect(result.modified).toBe(56);
+        });
+
+        test('should include reviewer information', async () => {
+            const result = await service.toPullRequest(payload);
+
+            expect(result.reviewers.approved.length).toBe(1);
+            expect(result.reviewers.requested.length).toBe(3);
+            expect(result.reviewers.approved[0].name).toBe('reviewer_2');
+            expect(result.reviewers.requested[0].name).toBe('reviewer_1');
+            expect(result.reviewers.requested[1].name).toBe('reviewer_3');
+            expect(result.reviewers.requested[2].name).toBe('reviewer_2');
         });
 
         test('should convert payload into merged pull request', async () => {

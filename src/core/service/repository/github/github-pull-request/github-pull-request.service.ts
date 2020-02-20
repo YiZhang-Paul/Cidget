@@ -73,7 +73,7 @@ export default class GithubPullRequestService {
     private async getAllReviewers(data: any): Promise<{ requested: IGithubUser[], approved: IGithubUser[] }> {
         const { requested_reviewers } = data;
         const [approved, rejected] = await this.getSubmittedReviewers(data);
-        const reviewers: IGithubUser[] = await Promise.all(requested_reviewers.map(this.getUser.bind(this)));
+        const reviewers: IGithubUser[] = await Promise.all(requested_reviewers.map((_: any) => this.getUser(_)));
         const requested = this.removeDuplicateUsers([...reviewers, ...approved, ...rejected]);
         const approverNames = new Set<string>(approved.map(_ => _.name));
 
