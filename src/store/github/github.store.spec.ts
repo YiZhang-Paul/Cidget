@@ -176,7 +176,14 @@ describe('github store unit test', () => {
         let status: any;
 
         beforeEach(() => {
-            payload = { repository: { name: 'cidget' } };
+            payload = {
+                repository: {
+                    name: 'cidget',
+                    owner: { login: 'user_name' }
+                },
+                sha: 'head_sha'
+            };
+
             pullRequest = { id: '147', mergeable: true, headCommitSha: 'head_sha', isActive: true };
             status = { ref: 'head_sha', status: 'pending' };
             store.state.pullRequests = [pullRequest];
@@ -186,6 +193,10 @@ describe('github store unit test', () => {
         test('should update pull request', async () => {
             await store.dispatch('addPullRequestCheck', payload);
 
+            sinonExpect.calledOnce(commitServiceStub.getStatus);
+            expect(commitServiceStub.getStatus.args[0][0]).toBe('cidget');
+            expect(commitServiceStub.getStatus.args[0][1]).toBe('head_sha');
+            expect(commitServiceStub.getStatus.args[0][2]).toBe('user_name');
             expect(pullRequest.mergeable).toBeNull();
         });
 
