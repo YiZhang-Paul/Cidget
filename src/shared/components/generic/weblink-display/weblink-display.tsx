@@ -42,8 +42,8 @@ export default class WeblinkDisplay extends tsx.Component<any> {
         const className = `weblink-display-container ${this.borderless ? '' : 'border-mode'}`;
 
         const tooltip = this.useHtmlTooltip ?
-            <div slot="content" domPropsInnerHTML={tooltipText}></div> :
-            <div slot="content">{tooltipText}</div>;
+            <div class="tooltip-content" slot="content" domPropsInnerHTML={tooltipText}></div> :
+            <div class="tooltip-content" slot="content">{tooltipText}</div>;
 
         return (
             <el-tooltip class="tooltips"

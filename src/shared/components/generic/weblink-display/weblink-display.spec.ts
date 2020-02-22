@@ -58,4 +58,14 @@ describe('weblink display component unit test', () => {
         expect(wrapper.vm.$props.url).toBeFalsy();
         sinonExpect.notCalled(shellSpy);
     });
+
+    test('should properly display tooltip', () => {
+        wrapper.setProps({ tooltip: 'some plain text', useHtmlTooltip: false });
+
+        expect(wrapper.find('.tooltip-content').contains('h2')).toBeFalsy();
+
+        wrapper.setProps({ tooltip: '<h2>some plain text</h2>', useHtmlTooltip: true });
+
+        expect(wrapper.find('.tooltip-content').contains('h2')).toBeTruthy();
+    });
 });
