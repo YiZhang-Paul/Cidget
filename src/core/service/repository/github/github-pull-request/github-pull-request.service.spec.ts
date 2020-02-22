@@ -37,6 +37,43 @@ describe('github pull request service unit test', () => {
         service = Container.get<GithubPullRequestService>(Types.GithubPullRequestService);
     });
 
+    describe('toReview', () => {
+        let payload: any;
+
+        beforeEach(() => {
+            payload = {
+                pull_request: {
+                    id: 'pull_request_id'
+                },
+                review: {
+                    state: 'approved',
+                    user: {
+                        login: 'user_login_name',
+                        avatar_url: 'user_avatar_url',
+                        html_url: 'https://user_html_url',
+                        url: 'user_url'
+                    }
+                }
+            };
+        });
+
+        test('should convert payload into review', async () => {
+            const result = await service.toReview(payload);
+
+            expect(result.pullRequestId).toBe('pull_request_id');
+            expect(result.reviewer.name).toBe('user_login_name');
+            expect(result.type).toBe('approved');
+        });
+
+        test('should properly include review state', async () => {
+            payload.review.state = 'changes_requested';
+
+            const result = await service.toReview(payload);
+
+            expect(result.type).toBe('change');
+        });
+    });
+
     describe('toPullRequest', () => {
         let payload: any;
 
@@ -177,6 +214,14 @@ describe('github pull request service unit test', () => {
             const result = await service.toPullRequest(payload);
 
             expect(result.action).toBe('updated');
+        });
+
+        test('should properly include review status', async () => {
+            payload.action = 'review_requested';
+
+            const result = await service.toPullRequest(payload);
+
+            expect(result.action).toBe('needs review');
         });
 
         test('should properly set default values for missing fields', async () => {
