@@ -35,6 +35,15 @@ describe('relative time display component unit test', () => {
         expect(wrapper.vm.$data.timerCounter).toBe(62);
     });
 
+    test('should stop timer when component is destroyed', () => {
+        jest.useFakeTimers();
+        wrapper.destroy();
+        jest.advanceTimersByTime(120000);
+
+        expect(wrapper.vm.$data.timerActive).toBeFalsy();
+        expect(wrapper.vm.$data.timerCounter).toBe(1);
+    });
+
     describe('relativeTime', () => {
         test('should return proper relative time in seconds', () => {
             wrapper.setProps({ time: new Date(Date.now() - 1000) });
@@ -104,6 +113,13 @@ describe('relative time display component unit test', () => {
     describe('absoluteTime', () => {
         test('should return proper absolute time for today', () => {
             const time = new Date(Date.now() - 30 * 1000);
+            wrapper.setProps({ time });
+
+            expect(wrapper.vm['absoluteTime']).toBe(`today ${time.toLocaleTimeString()}`);
+        });
+
+        test('should return proper absolute time for today', () => {
+            const time = new Date(Date.now() - 2 * 60 * 60 * 1000);
             wrapper.setProps({ time });
 
             expect(wrapper.vm['absoluteTime']).toBe(`today ${time.toLocaleTimeString()}`);
