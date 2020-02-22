@@ -15,6 +15,8 @@ export default class App extends tsx.Component<any> {
     private getNotificationCard(props: any): any {
         const { type, id } = props.item.data;
         const identifier = `${type}_card_${id}`;
+        const onMouseenter = () => this.stopTimer(id);
+        const onMouseleave = () => this.restoreTimer(id);
         remote.getCurrentWindow().moveTop();
 
         if (this.updateCard(id)) {
@@ -25,8 +27,8 @@ export default class App extends tsx.Component<any> {
 
         return (
             <div class="notification-wrapper"
-                onMouseenter={() => this.stopTimer(id)}
-                onMouseleave={() => this.restoreTimer(id)}>
+                onMouseenter={onMouseenter}
+                onMouseleave={onMouseleave}>
 
                 {this.getEventCard(props, identifier)}
             </div>
@@ -53,11 +55,10 @@ export default class App extends tsx.Component<any> {
             return;
         }
         const duration = card.length - card.speed * 2;
+        const callback = () => this._cards.destroy(card);
 
         if (card.timer === null && duration >= 0) {
-            card.timer = setTimeout(() => {
-                this._cards.destroy(card);
-            }, duration);
+            card.timer = setTimeout(callback, duration);
         }
     }
 
