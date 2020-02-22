@@ -30,7 +30,7 @@ export default class RelativeTimeDisplay extends tsx.Component<any> {
         const relativeTime = this.relativeTime;
         const localeTime = this.time.toLocaleTimeString();
 
-        if (/1 day|(hour|second)s?$/.test(relativeTime)) {
+        if (/1 day$|(hour|second)s?$/.test(relativeTime)) {
             return `${/1 day/.test(relativeTime) ? 'yesterday' : 'today'} ${localeTime}`;
         }
         const month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dev'];
