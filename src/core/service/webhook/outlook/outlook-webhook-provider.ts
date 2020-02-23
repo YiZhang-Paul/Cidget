@@ -45,12 +45,15 @@ export default class OutlookWebhookProvider implements IWebhookProvider<IWebhook
         return hooks.find(_ => _.callback === query.callback) ?? null;
     }
 
-    public async addWebhook(context: IOutlookWebhookContext): Promise<IWebhook> {
+    public async addWebhook(context: IOutlookWebhookContext): Promise<IWebhook | null> {
         const { events, callback, resource, state } = context;
-        const hooks = await this.listWebhooks();
         const request = await this._graphApi.startGraphRequest('/subscriptions');
 
-        const { id } = await request?.post({
+        if (!request) {
+            return null;
+        }
+
+        const { id } = await request.post({
             changeType: events.join(','),
             notificationUrl: callback,
             resource,
@@ -67,13 +70,25 @@ export default class OutlookWebhookProvider implements IWebhookProvider<IWebhook
             isActive: true
         }) as IWebhook;
 
-        if (hooks.every(_ => _.id !== id)) {
-            this._settings.set(this._webhookPath, [...hooks, hook]);
-        }
+        await this.saveWebhook(hook);
+
         return hook;
     }
 
-    private async recreateWebhook(hook: IWebhook): Promise<IWebhook> {
+    private async saveWebhook(hook: IWebhook): Promise<void> {
+        const hooks = await this.listWebhooks();
+        const index = hooks.findIndex(_ => _.id === hook.id);
+
+        if (index === -1) {
+            hooks.push(hook);
+        }
+        else {
+            hooks[index] = hook;
+        }
+        this._settings.set(this._webhookPath, hooks);
+    }
+
+    private async recreateWebhook(hook: IWebhook): Promise<IWebhook | null> {
         const hooks = await this.listWebhooks();
         this._settings.set(this._webhookPath, hooks.filter(_ => _.id !== hook.id));
 
@@ -97,7 +112,12 @@ export default class OutlookWebhookProvider implements IWebhookProvider<IWebhook
 
         try {
             const request = await this._graphApi.startGraphRequest(`/subscriptions/${hook.id}`);
-            await request?.patch({ expirationDateTime: this.expireTime.toISOString() });
+
+            if (!request) {
+                return null;
+            }
+
+            await request.patch({ expirationDateTime: this.expireTime.toISOString() });
             this._settings.set(this._webhookPath, hooks);
 
             return hooks[index];

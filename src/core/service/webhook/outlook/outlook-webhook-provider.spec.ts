@@ -93,14 +93,18 @@ describe('outlook webhook provider service unit test', () => {
     });
 
     describe('addWebhook', () => {
-        test('', async () => {
-            const context = {
+        let context: any;
+
+        beforeEach(() => {
+            context = {
                 events: ['created', 'updated'],
                 callback: 'callback_url',
                 resource: 'me/messages',
                 state: '12345'
             };
+        });
 
+        test('should add webhook', async () => {
             const hooksCount = appSettings.get('mail.outlook.webhooks').length;
 
             const result = await service.addWebhook(context);
@@ -112,10 +116,27 @@ describe('outlook webhook provider service unit test', () => {
             expect(requestStub.post.args[0][0].resource).toBe('me/messages');
             expect(requestStub.post.args[0][0].clientState).toBe('12345');
             expect(appSettings.get('mail.outlook.webhooks').length).toBe(hooksCount + 1);
-            expect(result.id).toBe('hook_id');
-            expect(result.callback).toBe('callback_url');
-            expect(result.events).toStrictEqual(['created', 'updated']);
-            expect(result.isActive).toBeTruthy();
+            expect(result?.id).toBe('hook_id');
+            expect(result?.callback).toBe('callback_url');
+            expect(result?.events).toStrictEqual(['created', 'updated']);
+            expect(result?.isActive).toBeTruthy();
+        });
+
+        test('should update existing webhook if there is any', async () => {
+            requestStub.post.resolves({ id: 'id_2' });
+            const hooksCount = appSettings.get('mail.outlook.webhooks').length;
+
+            await service.addWebhook(context);
+
+            expect(appSettings.get('mail.outlook.webhooks').length).toBe(hooksCount);
+            expect(appSettings.get('mail.outlook.webhooks')[1].id).toBe('id_2');
+            expect(appSettings.get('mail.outlook.webhooks')[1].callback).toBe('callback_url');
+        });
+
+        test('should return null when failed to get request object', async () => {
+            apiProviderStub.startGraphRequest.resolves(null);
+
+            expect(await service.addWebhook(context)).toBeNull();
         });
     });
 
@@ -146,6 +167,12 @@ describe('outlook webhook provider service unit test', () => {
             sinonExpect.notCalled(requestStub.patch);
             sinonExpect.notCalled(requestStub.post);
             expect(result?.callback).toBe('callback_2');
+        });
+
+        test('should return null when failed to get request object', async () => {
+            apiProviderStub.startGraphRequest.resolves(null);
+
+            expect(await service.renewWebhook('callback_2')).toBeNull();
         });
 
         test('should recreate webhook on 404', async () => {
