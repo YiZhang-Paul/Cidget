@@ -51,7 +51,7 @@ export default class OutlookApiProvider implements IOAuthProvider {
         // FIXME: potential loop
         this.authorizeToken(token);
         this._settings.set(this._tokenPath, token);
-        this._window.close();
+        this._window?.close();
     }
 
     private authorizeToken(token: any): void {
@@ -104,7 +104,7 @@ export default class OutlookApiProvider implements IOAuthProvider {
         const { subject, body, createdDateTime, from, toRecipients } = data;
 
         return ({
-            subject: subject,
+            subject,
             body: body.content,
             created: new Date(createdDateTime),
             from: this.getUser(from),
