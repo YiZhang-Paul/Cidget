@@ -6,8 +6,7 @@ describe('relative time display component unit test', () => {
     let wrapper: Wrapper<RelativeTimeDisplay>;
 
     beforeEach(() => {
-        const propsData = { time: new Date('2020-01-03T06:45:41.370Z') };
-        wrapper = shallowMount(RelativeTimeDisplay, { propsData });
+        wrapper = shallowMount(RelativeTimeDisplay);
     });
 
     afterEach(() => {
@@ -16,6 +15,9 @@ describe('relative time display component unit test', () => {
     });
 
     test('should create component instance', () => {
+        const propsData = { time: new Date('2020-01-03T06:45:41.370Z') };
+        wrapper = shallowMount(RelativeTimeDisplay, { propsData });
+
         expect(wrapper.vm.$props.time.toISOString()).toBe('2020-01-03T06:45:41.370Z');
     });
 

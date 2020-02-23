@@ -191,7 +191,7 @@ describe('app component unit test', () => {
         expect(getList(wrapper).length).toBe(1);
         expect(isNaN(getList(wrapper)[0].timer)).toBeFalsy();
 
-        wrapper.vm['stopTimer']('pull_request_id');
+        wrapper.find('.notification-wrapper').trigger('mouseenter');
 
         expect(getList(wrapper).length).toBe(1);
         expect(getList(wrapper)[0].timer).toBeNull();
@@ -221,7 +221,7 @@ describe('app component unit test', () => {
         });
 
         getList(wrapper)[0].timer = undefined;
-        wrapper.vm['stopTimer']('pull_request_id');
+        wrapper.find('.notification-wrapper').trigger('mouseenter');
 
         expect(getList(wrapper).length).toBe(1);
         expect(getList(wrapper)[0].timer).toBeUndefined();
@@ -235,7 +235,7 @@ describe('app component unit test', () => {
         });
 
         getList(wrapper)[0].timer = null;
-        wrapper.vm['stopTimer']('pull_request_id');
+        wrapper.find('.notification-wrapper').trigger('mouseenter');
 
         expect(getList(wrapper).length).toBe(1);
         expect(getList(wrapper)[0].timer).toBeNull();
@@ -255,15 +255,15 @@ describe('app component unit test', () => {
         expect(getList(wrapper).length).toBe(1);
         expect(isNaN(getList(wrapper)[0].timer)).toBeFalsy();
 
-        getList(wrapper)[0].timer = null;
-        wrapper.vm['restoreTimer']('pull_request_id');
+        wrapper.find('.notification-wrapper').trigger('mouseenter');
+        wrapper.find('.notification-wrapper').trigger('mouseleave');
 
-        jest.advanceTimersByTime(600);
+        jest.advanceTimersByTime(999);
 
         expect(getList(wrapper).length).toBe(1);
         expect(isNaN(getList(wrapper)[0].timer)).toBeFalsy();
 
-        jest.advanceTimersByTime(400);
+        jest.advanceTimersByTime(1);
 
         expect(getList(wrapper).length).toBe(0);
     });
@@ -276,7 +276,7 @@ describe('app component unit test', () => {
         });
 
         getList(wrapper)[0].timer = null;
-        wrapper.vm['restoreTimer']('pull_request_id');
+        wrapper.find('.notification-wrapper').trigger('mouseleave');
 
         expect(getList(wrapper).length).toBe(1);
         expect(isNaN(getList(wrapper)[0].timer)).toBeFalsy();
@@ -290,7 +290,7 @@ describe('app component unit test', () => {
         });
 
         const timer = getList(wrapper)[0].timer;
-        wrapper.vm['restoreTimer']('pull_request_id');
+        wrapper.find('.notification-wrapper').trigger('mouseleave');
 
         expect(getList(wrapper).length).toBe(1);
         expect(getList(wrapper)[0].timer).toBe(timer);
