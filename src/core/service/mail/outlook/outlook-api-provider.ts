@@ -6,7 +6,7 @@ import { GraphRequest } from '@microsoft/microsoft-graph-client';
 
 import Types from '../../../ioc/types';
 import IUser from '../../../interface/general/user.interface';
-import IMail from '../../../interface/general/email.interface';
+import IEmail from '../../../interface/general/email.interface';
 import IOAuthProvider from '../../../interface/general/oauth-provider.interface';
 import { logger } from '../../io/logger/logger';
 import AppSettings from '../../io/app-settings/app-settings';
@@ -100,7 +100,7 @@ export default class OutlookApiProvider implements IOAuthProvider {
         }
     }
 
-    public toMail(data: any): IMail {
+    public toMail(data: any): IEmail {
         const { subject, body, createdDateTime, from, toRecipients } = data;
 
         return ({
@@ -109,7 +109,7 @@ export default class OutlookApiProvider implements IOAuthProvider {
             created: new Date(createdDateTime),
             from: this.getUser(from),
             to: toRecipients.map(this.getUser.bind(this))
-        }) as IMail;
+        }) as IEmail;
     }
 
     private getUser(data: any): IUser {
