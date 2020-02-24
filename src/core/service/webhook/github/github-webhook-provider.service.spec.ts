@@ -3,16 +3,17 @@ import { assert as sinonExpect, stub } from 'sinon';
 import Types from '../../../ioc/types';
 import Container from '../../../ioc/container';
 import IHttpClient from '../../../interface/general/http-client.interface';
+import IWebhookQuery from '../../../interface/webhook/webhook-query.interface';
+import IGithubWebhookContext from '../../../interface/webhook/github/github-webhook-context.interface';
 
 import GithubWebhookProviderService from './github-webhook-provider.service';
 
 describe('github webhook provider service unit test', () => {
     let service: GithubWebhookProviderService;
     let httpStub: any;
+    let query: IWebhookQuery;
 
     beforeEach(() => {
-        Container.snapshot();
-
         httpStub = stub({
             async get(): Promise<any> { return null; },
             async post(): Promise<any> { return null; }
@@ -53,25 +54,22 @@ describe('github webhook provider service unit test', () => {
             }
         ];
 
+        query = { name: 'project_name', callback: '' };
         httpStub.get.resolves({ data });
         httpStub.post.resolves({ data: data[1] });
     });
 
-    afterEach(() => {
-        Container.restore();
-    });
-
     describe('listWebhooks', () => {
         test('should call correct api endpoint with authorization token', async () => {
-            await service.listWebhooks('project_name');
+            await service.listWebhooks(query);
 
             sinonExpect.calledOnce(httpStub.get);
-            expect(httpStub.get.args[0][0]).toBe('https://api.github.com/repos/yizhang-paul/project_name/hooks');
+            expect(httpStub.get.args[0][0]).toBe('https://api.github.com/repos/test_github_user/project_name/hooks');
             expect(httpStub.get.args[0][1].headers.Authorization).toBe('token test_github_token');
         });
 
         test('should return webhooks found', async () => {
-            const result = await service.listWebhooks('project_name');
+            const result = await service.listWebhooks(query);
 
             expect(result.length).toBe(2);
             expect(result[0].id).toBe('id_1');
@@ -95,7 +93,7 @@ describe('github webhook provider service unit test', () => {
         test('should return empty collection when no webhooks found', async () => {
             httpStub.get.resolves({ data: null });
 
-            const result = await service.listWebhooks('project_name');
+            const result = await service.listWebhooks(query);
 
             expect(result.length).toBe(0);
         });
@@ -103,7 +101,9 @@ describe('github webhook provider service unit test', () => {
 
     describe('getWebhook', () => {
         test('should return webhook found', async () => {
-            const result = await service.getWebhook('project_name', 'callback_url_2');
+            query.callback = 'callback_url_2';
+
+            const result = await service.getWebhook(query);
 
             expect(result?.id).toBe('id_2');
             expect(result?.name).toBe('name_2');
@@ -116,18 +116,28 @@ describe('github webhook provider service unit test', () => {
         });
 
         test('should return null when no webhook found', async () => {
-            expect(await service.getWebhook('project_name', 'invalid_url')).toBeNull();
+            query.callback = 'invalid_url';
+
+            expect(await service.getWebhook(query)).toBeNull();
         });
     });
 
     describe('addWebhook', () => {
-        test('should call correct api endpoint with authorization token', async () => {
-            const context = { events: ['push', 'check'], callback: 'new_callback_url' };
+        let context: IGithubWebhookContext;
 
-            await service.addWebhook('project_name', context);
+        beforeEach(() => {
+            context = {
+                project: 'project_name',
+                events: ['push', 'check'],
+                callback: 'new_callback_url'
+            };
+        });
+
+        test('should call correct api endpoint with authorization token', async () => {
+            await service.addWebhook(context);
 
             sinonExpect.calledOnce(httpStub.post);
-            expect(httpStub.post.args[0][0]).toBe('https://api.github.com/repos/yizhang-paul/project_name/hooks');
+            expect(httpStub.post.args[0][0]).toBe('https://api.github.com/repos/test_github_user/project_name/hooks');
             expect(httpStub.post.args[0][1].events).toStrictEqual(['push', 'check']);
             expect(httpStub.post.args[0][1].config.url).toBe('new_callback_url');
             expect(httpStub.post.args[0][1].config.content_type).toBe('json');
@@ -136,9 +146,7 @@ describe('github webhook provider service unit test', () => {
         });
 
         test('should return new webhook created ', async () => {
-            const context = { events: ['push', 'check'], callback: 'new_callback_url' };
-
-            const result = await service.addWebhook('project_name', context);
+            const result = await service.addWebhook(context);
 
             expect(result.id).toBe('id_2');
             expect(result.name).toBe('name_2');
@@ -151,9 +159,9 @@ describe('github webhook provider service unit test', () => {
         });
 
         test('should return existing webhook without creating new webhook', async () => {
-            const context = { events: ['push', 'check'], callback: 'callback_url_1' };
+            context.callback = 'callback_url_1';
 
-            const result = await service.addWebhook('project_name', context);
+            const result = await service.addWebhook(context);
 
             sinonExpect.notCalled(httpStub.post);
             expect(result.id).toBe('id_1');

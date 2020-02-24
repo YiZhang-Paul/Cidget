@@ -11,7 +11,11 @@ describe('pull request card component unit test', () => {
             action: 'opened',
             branch: { source: 'yizhang', base: 'development' },
             initiator: { profileUrl: 'profile_url' },
-            repository: {}
+            repository: {},
+            reviewers: {
+                requested: [],
+                approved: []
+            }
         };
 
         const stubs = {

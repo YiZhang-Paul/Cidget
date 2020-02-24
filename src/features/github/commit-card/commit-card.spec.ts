@@ -1,8 +1,12 @@
+jest.mock('electron', () => ({
+    shell: { async openExternal(_: string): Promise<void> { } }
+}));
+
 import { mount, Wrapper } from '@vue/test-utils';
 import { assert as sinonExpect, spy } from 'sinon';
+import { shell } from 'electron';
 
 import '../../../element-ui-test.js';
-import { shell } from '../../../mocks/third-party/electron';
 
 import CommitCard from './commit-card';
 
@@ -33,7 +37,8 @@ describe('commit card card component unit test', () => {
             RelativeTimeDisplay: '<div></div>'
         };
 
-        wrapper = mount(CommitCard, { propsData: { commit }, stubs });
+        const closeHandler = () => undefined;
+        wrapper = mount(CommitCard, { propsData: { commit, closeHandler }, stubs });
         shellSpy = spy(shell, 'openExternal');
     });
 

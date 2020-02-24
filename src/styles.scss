@@ -22,46 +22,16 @@ html, body {
 }
 
 .notification {
-    margin-top: 45px;
-    z-index: 0;
+    margin-top: 60px;
+    margin-left: 52px;
+    z-index: 0 !important;
 }
 
 .vue-notification-wrapper {
-    margin-left: 4px !important;
+    overflow: visible !important;
     margin-bottom: 8px !important;
-    border-radius: 6px;
-    -webkit-box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.35);
-    -moz-box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.35);
-    box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.35);
-}
-
-.notification-wrapper {
-    position: relative;
-
-    .close-icon {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: absolute;
-        top: 8px;
-        right: 9px;
-        width: 20px;
-        height: 20px;
-        padding: 1px;
-        font-size: 0.85em;
-        background-color: rgba(228, 70, 97, 0.9);
-        border: 1px solid var(--border-color);
-        border-radius: 50%;
-        box-shadow: -3px -3px 7px var(--light-shadow-color), 3px 3px 5px var(--dark-shadow-color);
-        color: rgb(245, 245, 245);
-        transition: color 0.4s ease;
-        cursor: pointer;
-
-        &:hover {
-            color: rgb(215, 215, 215);
-            box-shadow: inset -3px -3px 7px rgba(206, 35, 63, 0.9), inset 3px 3px 5px rgba(172, 28, 52, 0.9);
-        }
-    }
+    border-radius: 6px !important;
+    box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.35) !important;
 }
 
 .updated-card {
@@ -73,18 +43,33 @@ html, body {
 
 @-webkit-keyframes updated-notify {
     from {
-        background-color: rgb(82, 113, 143);
+        background-color: rgb(132, 138, 143);
     }
     to {
-        background-color: rgb(255, 255, 255);
+        background-color: var(--main-background-color);
     }
 }
 
 @keyframes updated-notify {
     from {
-        background-color: rgb(82, 113, 143);
+        background-color: rgb(132, 138, 143);
     }
     to {
-        background-color: rgb(255, 255, 255);
+        background-color: var(--main-background-color);
     }
+}
+
+.el-tooltip__popper, .zd-comment, .zd-comment p {
+    max-width: 65vw;
+    margin: 8px 0 !important;
+    line-height: 12px !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    color: var(--main-font-color) !important;
+    background-color: rgb(242, 242, 242) !important;
+}
+
+.zd-comment {
+    padding: 0 10px !important;
 }

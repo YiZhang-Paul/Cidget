@@ -1,26 +1,29 @@
 .notification-card-container {
-    $container-width: 670px;
-    $container-height: 88px;
-    $guard-inset: -96.5px;
+    $avatar-width: 80px;
+    $container-width: 600px;
+    $container-height: 110px;
 
+    position: relative;
     width: $container-width;
     height: $container-height;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-radius: 5px;
+    border-radius: 6px;
     background-color: var(--main-background-color);
     cursor: default;
 
     .service-provider-avatar {
-        margin-left: 15px;
+        position: absolute;
+        left: calc(-#{$avatar-width} / 2);
     }
 
     .content {
         position: relative;
-        width: 75.5%;
-        height: 70px;
-        margin-left: 5px;
+        width: 78.5%;
+        height: 75px;
+        margin-top: 10px;
+        margin-left: calc(#{$avatar-width} / 2 + 8px);
         border: 1px solid transparent;
 
         & > div {
@@ -66,32 +69,34 @@
         opacity: 1;
     }
 
-    .top-guard, .bottom-guard {
-        width: 66%;
-        height: 100px;
+    .time {
         position: absolute;
-        left: calc(#{$container-width} / 5.88);
-        border: 2px solid var(--border-color);
-        -webkit-transition: all 0.5s ease;
-        opacity: 0;
-        transition: all 0.5s ease;
-        transition-property: border, opacity;
+        top: 8px;
+        right: 45px;
     }
 
-    .top-guard {
-        top: $guard-inset;
-        border-radius: 0 0 40px 40px;
-        box-shadow: inset -3px -3px 7px var(--dark-shadow-color), inset 3px 3px 5px var(--light-shadow-color);
-    }
+    .close-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 8px;
+        right: 9px;
+        width: 20px;
+        height: 20px;
+        padding: 1px;
+        font-size: 0.85em;
+        background-color: rgba(228, 70, 97, 0.9);
+        border: 1px solid var(--border-color);
+        border-radius: 50%;
+        box-shadow: -3px -3px 7px var(--light-shadow-color), 3px 3px 5px var(--dark-shadow-color);
+        color: rgb(245, 245, 245);
+        transition: color 0.4s ease;
+        cursor: pointer;
 
-    .bottom-guard {
-        bottom: $guard-inset;
-        border-radius: 40px 40px 0 0;
-        box-shadow: inset -3px -3px 7px var(--light-shadow-color), inset 3px 3px 5px var(--dark-shadow-color);
-    }
-
-    &:hover .top-guard, &:hover .bottom-guard {
-        border: 2px solid var(--border-color);
-        opacity: 1;
+        &:hover {
+            color: rgb(215, 215, 215);
+            box-shadow: inset -3px -3px 7px rgba(206, 35, 63, 0.9), inset 3px 3px 5px rgba(172, 28, 52, 0.9);
+        }
     }
 }

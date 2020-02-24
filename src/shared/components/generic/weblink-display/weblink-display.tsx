@@ -10,6 +10,7 @@ export default class WeblinkDisplay extends tsx.Component<any> {
     @Prop() public tooltip!: string;
     @Prop() public url!: string;
     @Prop({ default: 'top-start' }) public tooltipPosition!: string;
+    @Prop({ default: false }) public useHtmlTooltip!: boolean;
     @Prop({ default: false }) public noTooltip!: boolean;
     @Prop({ default: false }) public borderless!: boolean;
     @Prop({ default: false }) public isDarkMode!: boolean;
@@ -37,21 +38,27 @@ export default class WeblinkDisplay extends tsx.Component<any> {
     }
 
     public render(): any {
+        const tooltipText = this.tooltip || this.text;
         const className = `weblink-display-container ${this.borderless ? '' : 'border-mode'}`;
 
-        return (
-            <div class={className} ref="container">
-                <el-tooltip disabled={!this.$data.showTooltip}
-                    placement={this.tooltipPosition}
-                    effect={this.colorMode}
-                    content={this.tooltip || this.text}>
+        const tooltip = this.useHtmlTooltip ?
+            <div class="tooltip-content" slot="content" domPropsInnerHTML={tooltipText}></div> :
+            <div class="tooltip-content" slot="content">{tooltipText}</div>;
 
+        return (
+            <el-tooltip class="tooltips"
+                disabled={!this.$data.showTooltip}
+                placement={this.tooltipPosition}
+                effect={this.colorMode}>
+
+                {tooltip}
+                <div class={className} ref="container">
                     <a class="url" onClick={this.toUrl}>
                         {this.$slots.default}
                         {this.text}
                     </a>
-                </el-tooltip>
-            </div>
+                </div>
+            </el-tooltip>
         );
     }
 }

@@ -1,6 +1,8 @@
 import { Component, Ref } from 'vue-property-decorator';
 import * as tsx from 'vue-tsx-support';
+import { remote } from 'electron';
 
+import SupportTicketCard from './features/zendesk/support-ticket-card/support-ticket-card';
 import BuildPipelineCard from './features/azure-devops/build-pipeline-card/build-pipeline-card';
 import ReleasePipelineCard from './features/azure-devops/release-pipeline-card/release-pipeline-card';
 import CommitCard from './features/github/commit-card/commit-card';
@@ -13,7 +15,7 @@ export default class App extends tsx.Component<any> {
     private getNotificationCard(props: any): any {
         const { type, id } = props.item.data;
         const identifier = `${type}_card_${id}`;
-        const close = <div onClick={props.close}><i class="fas fa-times close-icon"></i></div>;
+        remote.getCurrentWindow().moveTop();
 
         if (this.updateCard(id)) {
             this.applyEffect(identifier);
@@ -22,25 +24,55 @@ export default class App extends tsx.Component<any> {
         }
 
         return (
-            <div class="notification-wrapper">
-                {close}
+            <div class="notification-wrapper"
+                onMouseenter={() => this.stopTimer(id)}
+                onMouseleave={() => this.restoreTimer(id)}>
+
                 {this.getEventCard(props, identifier)}
             </div>
         );
+    }
+
+    private stopTimer(id: string): void {
+        const card = this._cards.$data.list.find((_: any) => _.data.id === id);
+
+        if (!card) {
+            return;
+        }
+
+        if (card.timer !== undefined && card.timer !== null) {
+            clearTimeout(card.timer);
+            card.timer = null;
+        }
+    }
+
+    private restoreTimer(id: string): void {
+        const card = this._cards.$data.list.find((_: any) => _.data.id === id);
+
+        if (!card) {
+            return;
+        }
+        const duration = card.length - card.speed * 2;
+
+        if (card.timer === null && duration >= 0) {
+            card.timer = setTimeout(() => this._cards.destroy(card), duration);
+        }
     }
 
     private getEventCard(props: any, className: string): any {
         const { type, model } = props.item.data;
 
         switch (type) {
+            case 'support-ticket':
+                return <SupportTicketCard class={className} ticket={model} closeHandler={props.close} />;
             case 'ci-build':
-                return <BuildPipelineCard class={className} build={model} />;
+                return <BuildPipelineCard class={className} build={model} closeHandler={props.close} />;
             case 'cd-release':
-                return <ReleasePipelineCard class={className} release={model} />;
+                return <ReleasePipelineCard class={className} release={model} closeHandler={props.close} />;
             case 'commit':
-                return <CommitCard class={className} commit={model} />;
+                return <CommitCard class={className} commit={model} closeHandler={props.close} />;
             case 'pull-request':
-                return <PullRequestCard class={className} pullRequest={model} />;
+                return <PullRequestCard class={className} pullRequest={model} closeHandler={props.close} />;
         }
     }
 
@@ -77,7 +109,7 @@ export default class App extends tsx.Component<any> {
                 ref="cards"
                 group="notification"
                 position="top left"
-                width={670}
+                width={600}
                 scopedSlots={{ body: this.getNotificationCard }}>
             </notifications>
         );

@@ -6,31 +6,36 @@ import IHttpClient from '../../../../interface/general/http-client.interface';
 import IRepository from '../../../../interface/repository/repository.interface';
 import IRepositoryProvider from '../../../../interface/repository/repository-provider.interface';
 import IAbbreviationResolver from '../../../../interface/general/abbreviation-resolver.interface';
-
-const { url, token } = require('config').get('repository').github;
+import AppSettings from '../../../io/app-settings/app-settings';
 
 @injectable()
 export default class GithubRepositoryProvider implements IRepositoryProvider<any> {
+    private _url: string;
+    private _token: string;
     private _httpClient: IHttpClient;
     private _languageResolver: IAbbreviationResolver;
     private _licenseResolver: IAbbreviationResolver;
 
     constructor(
+        @inject(Types.AppSettings) settings: AppSettings,
         @inject(Types.IHttpClient) httpClient: IHttpClient,
         @inject(Types.IAbbreviationResolver) @named('language') languageResolver: IAbbreviationResolver,
         @inject(Types.IAbbreviationResolver) @named('license') licenseResolver: IAbbreviationResolver
     ) {
+        const { url, token } = settings.get('repository.github');
+        this._url = url;
+        this._token = token;
         this._httpClient = httpClient;
         this._languageResolver = languageResolver;
         this._licenseResolver = licenseResolver;
     }
 
     private get headers(): { [key: string]: string } {
-        return ({ Authorization: `token ${token}` });
+        return ({ Authorization: `token ${this._token}` });
     }
 
     public async listRepositories(): Promise<IRepository[]> {
-        const endpoint = `${url}/user/repos?type=all`;
+        const endpoint = `${this._url}/user/repos?type=all`;
         const { data } = await this._httpClient.get(endpoint, { headers: this.headers });
 
         return (data || []).map(this.toRepository.bind(this));

@@ -5,8 +5,8 @@ import { assert as sinonExpect, stub, spy } from 'sinon';
 
 import Types from '../../core/ioc/types';
 import Container from '../../core/ioc/container';
-import ICiBuild from '../../core/interface/general/ci-build.interface';
-import ICdRelease from '../../core/interface/general/cd-release.interface';
+import ICiBuild from '../../core/interface/pipeline/ci-build.interface';
+import ICdRelease from '../../core/interface/pipeline/cd-release.interface';
 import AzureDevopsCiBuildService from '../../core/service/pipeline/azure-devops/azure-devops-ci-build/azure-devops-ci-build.service';
 import AzureDevopsCdReleaseService from '../../core/service/pipeline/azure-devops/azure-devops-cd-release/azure-devops-cd-release.service';
 
@@ -22,8 +22,6 @@ describe('azure devops store unit test', () => {
     let releaseServiceStub: any;
 
     beforeEach(() => {
-        Container.snapshot();
-
         buildServiceStub = stub({
             async toCiBuild(_: any): Promise<ICiBuild> { return ({} as ICiBuild); }
         } as AzureDevopsCiBuildService);
@@ -45,7 +43,6 @@ describe('azure devops store unit test', () => {
     });
 
     afterEach(() => {
-        Container.restore();
         notifySpy.restore();
         jest.useRealTimers();
     });
@@ -86,7 +83,7 @@ describe('azure devops store unit test', () => {
             await store.dispatch('addCiBuild', {});
 
             sinonExpect.calledOnce(notifySpy);
-            expect(notifySpy.args[0][0].duration).toBe(12000);
+            expect(notifySpy.args[0][0].duration).toBe(10000);
             expect(notifySpy.args[0][0].data.id).toBe('147');
             expect(notifySpy.args[0][0].data.type).toBe('ci-build');
         });
@@ -99,7 +96,7 @@ describe('azure devops store unit test', () => {
             await store.dispatch('addCiBuild', {});
 
             sinonExpect.calledOnce(notifySpy);
-            expect(notifySpy.args[0][0].duration).toBe(12000);
+            expect(notifySpy.args[0][0].duration).toBe(10000);
             expect(notifySpy.args[0][0].data.id).toBe('147');
             expect(notifySpy.args[0][0].data.type).toBe('ci-build');
         });
@@ -141,7 +138,7 @@ describe('azure devops store unit test', () => {
             await store.dispatch('addCdRelease', {});
 
             sinonExpect.calledOnce(notifySpy);
-            expect(notifySpy.args[0][0].duration).toBe(12000);
+            expect(notifySpy.args[0][0].duration).toBe(10000);
             expect(notifySpy.args[0][0].data.id).toBe('147');
             expect(notifySpy.args[0][0].data.type).toBe('cd-release');
         });
@@ -154,7 +151,7 @@ describe('azure devops store unit test', () => {
             await store.dispatch('addCdRelease', {});
 
             sinonExpect.calledOnce(notifySpy);
-            expect(notifySpy.args[0][0].duration).toBe(12000);
+            expect(notifySpy.args[0][0].duration).toBe(10000);
             expect(notifySpy.args[0][0].data.id).toBe('147');
             expect(notifySpy.args[0][0].data.type).toBe('cd-release');
         });
@@ -183,7 +180,7 @@ describe('azure devops store unit test', () => {
             await store.dispatch('addCdRelease', {});
 
             sinonExpect.calledOnce(notifySpy);
-            expect(notifySpy.args[0][0].duration).toBe(12000);
+            expect(notifySpy.args[0][0].duration).toBe(10000);
             expect(notifySpy.args[0][0].data.id).toBe('147');
             expect(notifySpy.args[0][0].data.type).toBe('cd-release');
         });
@@ -195,7 +192,7 @@ describe('azure devops store unit test', () => {
             await store.dispatch('addCdRelease', {});
 
             sinonExpect.calledOnce(notifySpy);
-            expect(notifySpy.args[0][0].duration).toBe(12000);
+            expect(notifySpy.args[0][0].duration).toBe(10000);
             expect(notifySpy.args[0][0].data.id).toBe('147');
             expect(notifySpy.args[0][0].data.type).toBe('cd-release');
         });
@@ -207,7 +204,7 @@ describe('azure devops store unit test', () => {
             await store.dispatch('addCdRelease', {});
 
             sinonExpect.calledOnce(notifySpy);
-            expect(notifySpy.args[0][0].duration).toBe(12000);
+            expect(notifySpy.args[0][0].duration).toBe(10000);
             expect(notifySpy.args[0][0].data.id).toBe('147');
             expect(notifySpy.args[0][0].data.type).toBe('cd-release');
         });
@@ -224,8 +221,6 @@ describe('azure devops store unit test', () => {
 
         test('should add auto notification when release is approved', async () => {
             jest.useFakeTimers();
-            releaseServiceStub.toCdRelease.onCall(0).resolves(release);
-            releaseServiceStub.toCdRelease.onCall(1).resolves({ id: '147', status: 'in progress' });
             store.state.cdReleases = [];
 
             await store.dispatch('addCdRelease', { resource: { approval: {} } });
@@ -246,11 +241,11 @@ describe('azure devops store unit test', () => {
         let release: any;
 
         beforeEach(() => {
-            jest.useFakeTimers();
             release = { id: '147', status: 'approved' };
         });
 
         test('should not add auto notification when another event happens during delay', async () => {
+            jest.useFakeTimers();
             releaseServiceStub.toCdRelease.resolves(Object.assign({ id: '147', status: 'rejected' }));
             store.state.cdReleases = [];
 

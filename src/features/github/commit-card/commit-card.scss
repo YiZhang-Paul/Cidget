@@ -4,7 +4,8 @@
     align-items: center;
 
     .commit-message {
-        max-width: 325px;
+        color: var(--secondary-font-color);
+        max-width: 300px;
         font-weight: 500;
 
         .url {
@@ -18,7 +19,7 @@
 
     .branch-badge {
         margin-top: 3px;
-        max-width: 130px;
+        max-width: 160px;
     }
 
     .right-arrow {
@@ -30,11 +31,7 @@
     .repository-name {
         margin-top: 2px;
         font-weight: bold;
-        max-width: 200px;
-    }
-
-    .time {
-        margin-top: 6px;
+        max-width: 240px;
     }
 }
 

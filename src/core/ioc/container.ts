@@ -7,6 +7,9 @@ import IAbbreviationResolver from '../interface/general/abbreviation-resolver.in
 import HttpClient from '../service/io/http-client/http-client';
 import LanguageNameResolver from '../service/resolver/language-name-resolver/language-name-resolver';
 import LicenseNameResolver from '../service/resolver/license-name-resolver/license-name-resolver';
+import OutlookApiProvider from '../service/mail/outlook/outlook-api-provider';
+import OutlookWebhookProvider from '../service/webhook/outlook/outlook-webhook-provider';
+import ZendeskTicketByMailProvider from '../service/customer-support/zendesk/zendesk-ticket-by-mail-provider.service';
 import GithubRepositoryProvider from '../service/repository/github/github-repository-provider/github-repository-provider.service';
 import GithubWebhookProviderService from '../service/webhook/github/github-webhook-provider.service';
 import GithubCommitService from '../service/repository/github/github-commit/github-commit.service';
@@ -16,6 +19,7 @@ import AzureDevopsCiBuildService from '../service/pipeline/azure-devops/azure-de
 import AzureDevopsCdReleaseService from '../service/pipeline/azure-devops/azure-devops-cd-release/azure-devops-cd-release.service';
 import AzureDevopsApiProvider from '../service/pipeline/azure-devops/azure-devops-api-provider/azure-devops-api-provider.service';
 import AzureDevopsPipelineProvider from '../service/pipeline/azure-devops/azure-devops-pipeline-provider/azure-devops-pipeline-provider.service';
+import AppSettings from '../service/io/app-settings/app-settings';
 
 import Types from './types';
 
@@ -43,6 +47,21 @@ container
     .to(GithubRepositoryProvider)
     .inSingletonScope()
     .whenTargetNamed('github');
+
+container
+    .bind<OutlookApiProvider>(Types.OutlookApiProvider)
+    .to(OutlookApiProvider)
+    .inSingletonScope();
+
+container
+    .bind<OutlookWebhookProvider>(Types.OutlookWebhookProvider)
+    .to(OutlookWebhookProvider)
+    .inSingletonScope();
+
+container
+    .bind<ZendeskTicketByMailProvider>(Types.ZendeskTicketByMailProvider)
+    .to(ZendeskTicketByMailProvider)
+    .inSingletonScope();
 
 container
     .bind<LanguageNameResolver>(Types.LanguageNameResolver)
@@ -97,6 +116,11 @@ container
 container
     .bind<AzureDevopsPipelineProvider>(Types.AzureDevopsPipelineProvider)
     .to(AzureDevopsPipelineProvider)
+    .inSingletonScope();
+
+container
+    .bind<AppSettings>(Types.AppSettings)
+    .to(AppSettings)
     .inSingletonScope();
 
 container

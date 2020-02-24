@@ -22,17 +22,16 @@ export default class RelativeTimeDisplay extends tsx.Component<any> {
         const passed = Math.round((now.getTime() - past.getTime()) / 1000);
         const [unit, threshold] = checks.find(_ => passed > _[1]) || ['second', 0];
         const total = Math.round(passed / (threshold + 1));
-        const isSecondsAgo = this.$data.timerCounter > 11 && unit === 'second';
 
-        return isSecondsAgo ? 'few seconds ago' : `${total} ${unit}${total > 1 ? 's' : ''} ago`;
+        return `${total} ${unit}${total > 1 ? 's' : ''}`;
     }
 
     private get absoluteTime(): string {
         const relativeTime = this.relativeTime;
         const localeTime = this.time.toLocaleTimeString();
 
-        if (/1 day ago|hour/.test(relativeTime)) {
-            return `${/hour/.test(relativeTime) ? 'today' : 'yesterday'} ${localeTime}`;
+        if (/1 day$|(hour|second)s?$/.test(relativeTime)) {
+            return `${/1 day/.test(relativeTime) ? 'yesterday' : 'today'} ${localeTime}`;
         }
         const month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dev'];
 

@@ -2,20 +2,20 @@ import { Component, Prop } from 'vue-property-decorator';
 import * as tsx from 'vue-tsx-support';
 import { shell } from 'electron';
 
-import ICommit from '../../../core/interface/general/commit.interface';
+import ICommit from '../../../core/interface/repository/commit.interface';
 import IGithubUser from '../../../core/interface/repository/github/github-user.interface';
 import NotificationCard from '../../../shared/components/generic/notification-card/notification-card';
 import WeblinkDisplay from '../../../shared/components/generic/weblink-display/weblink-display';
 import ChangeStatsSummary from '../../../shared/components/generic/change-stats-summary/change-stats-summary';
 import BranchBadge from '../../../shared/components/repository/branch-badge/branch-badge';
 import RepositoryBadge from '../../../shared/components/repository/repository-badge/repository-badge';
-import RelativeTimeDisplay from '../../../shared/components/generic/relative-time-display/relative-time-display';
 
 import './commit-card.scss';
 
 @Component
 export default class CommitCard extends tsx.Component<any> {
     @Prop() public commit!: ICommit<IGithubUser>;
+    @Prop() public closeHandler!: () => void;
 
     private get added(): number {
         return (this.commit.added ?? []).length;
@@ -39,7 +39,10 @@ export default class CommitCard extends tsx.Component<any> {
 
     public render(): any {
         return (
-            <NotificationCard logoUrl={require('../../../../public/images/github-logo.png')}>
+            <NotificationCard time={this.commit.time}
+                closeHandler={this.closeHandler}
+                logoUrl={require('../../../../public/images/github-logo.png')}>
+
                 <div class="commit-message-container">
                     <WeblinkDisplay class="commit-message"
                         text={this.commit.message}
@@ -66,8 +69,6 @@ export default class CommitCard extends tsx.Component<any> {
                         showPopover={false}
                         noTooltip={true}>
                     </RepositoryBadge>
-
-                    <RelativeTimeDisplay class="time" time={this.commit.time} />
                 </div>
 
                 <div class="commit-card-actions" slot="actions">

@@ -1,6 +1,6 @@
-import IRepository from '../repository/repository.interface';
+import IRepository from './repository.interface';
 
-import IUser from './user.interface';
+import IUser from '../general/user.interface';
 
 export default interface IPullRequest<TUser = IUser, TRepository = IRepository> {
     id: string;
@@ -15,7 +15,7 @@ export default interface IPullRequest<TUser = IUser, TRepository = IRepository> 
     diffUrl: string;
     pullRequestUrl: string;
     headCommitSha: string;
-    reviewers: TUser[];
+    reviewers: { requested: TUser[], approved: TUser[] };
     createdOn: Date;
     updatedOn: Date;
     mergeable: boolean | null;
