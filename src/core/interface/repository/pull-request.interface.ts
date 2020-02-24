@@ -15,7 +15,7 @@ export default interface IPullRequest<TUser = IUser, TRepository = IRepository> 
     diffUrl: string;
     pullRequestUrl: string;
     headCommitSha: string;
-    reviewers: TUser[];
+    reviewers: { requested: TUser[], approved: TUser[] };
     createdOn: Date;
     updatedOn: Date;
     mergeable: boolean | null;

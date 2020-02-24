@@ -1,77 +1,115 @@
 import 'isomorphic-fetch';
-import config from 'config';
-import { injectable } from 'inversify';
+import { injectable, inject } from 'inversify';
+import { remote, BrowserWindow } from 'electron';
 import * as graph from '@microsoft/microsoft-graph-client';
+import { GraphRequest } from '@microsoft/microsoft-graph-client';
 
+import Types from '../../../ioc/types';
 import IUser from '../../../interface/general/user.interface';
-import IMail from '../../../interface/general/email.interface';
+import IEmail from '../../../interface/general/email.interface';
 import IOAuthProvider from '../../../interface/general/oauth-provider.interface';
 import { logger } from '../../io/logger/logger';
-
-const outlookConfig = config.get<any>('mail').outlook;
-const { clientId, secret, callback, scope } = outlookConfig;
-const { tokenHost, authorizePath, tokenPath } = outlookConfig;
-const client = { id: clientId, secret };
-const auth = { tokenHost, authorizePath, tokenPath };
-const oauth2 = require('simple-oauth2').create({ client, auth });
+import AppSettings from '../../io/app-settings/app-settings';
 
 @injectable()
 export default class OutlookApiProvider implements IOAuthProvider {
+    private _tokenPath = 'mail.outlook.token';
     private _token!: any;
     private _client!: graph.Client;
+    private _window!: BrowserWindow;
+    private _oauth2: any;
+    private _callback: string;
+    private _scope: string;
+    private _settings: AppSettings;
+
+    constructor(@inject(Types.AppSettings) settings: AppSettings) {
+        const config = settings.get('mail.outlook');
+        const { clientId, secret, callback, scope, tokenHost, authorizePath, tokenPath } = config;
+        const client = { id: clientId, secret };
+        const auth = { tokenHost, authorizePath, tokenPath };
+        this._callback = callback;
+        this._scope = scope;
+        this._settings = settings;
+        this._oauth2 = require('simple-oauth2').create({ client, auth });
+        this.authorizeToken(this._settings.get(this._tokenPath));
+    }
 
     private get authorizeContext(): any {
-        return ({ redirect_uri: callback, scope });
+        return ({ redirect_uri: this._callback, scope: this._scope });
     }
 
-    public get authorizeUrl(): string {
-        return oauth2.authorizationCode.authorizeURL(this.authorizeContext);
-    }
-
-    private async refreshToken(): Promise<void> {
-        if (this._token.expired()) {
-            await this._token.refresh();
-        }
+    public promptAuthorization(): void {
+        const url = this._oauth2.authorizationCode.authorizeURL(this.authorizeContext);
+        this._window = new remote.BrowserWindow({ width: 800, height: 600 });
+        this._window.loadURL(url);
     }
 
     public async authorize(code: string): Promise<void> {
         const context = Object.assign({ code }, this.authorizeContext);
-        const token = await oauth2.authorizationCode.getToken(context);
-        this._token = oauth2.accessToken.create(token);
-        const accessToken = this._token.token.access_token;
-        this._client = graph.Client.init({ authProvider: _ => _(null, accessToken) });
+        const token = await this._oauth2.authorizationCode.getToken(context);
+        token.created = new Date().toISOString();
+        // FIXME: potential loop
+        this.authorizeToken(token);
+        this._settings.set(this._tokenPath, token);
+        this._window?.close();
     }
 
-    public async getMails(): Promise<IMail[]> {
+    private authorizeToken(token: any): void {
+        try {
+            if (token.created) {
+                const timestamp = new Date(token.created).getTime();
+                const elapsed = (Date.now() - timestamp) / 1000;
+                token.expires_in = Math.max(token.expires_in - elapsed, 0);
+                token.ext_expires_in = Math.max(token.ext_expires_in - elapsed, 0);
+            }
+            this._token = this._oauth2.accessToken.create(token);
+            const accessToken = this._token.token.access_token;
+            this._client = graph.Client.init({ authProvider: _ => _(null, accessToken) });
+        }
+        catch {
+            this.promptAuthorization();
+        }
+    }
+
+    private async refreshToken(): Promise<void> {
+        if (!this._token.expired()) {
+            return;
+        }
+
+        try {
+            const token = await this._token.refresh();
+            token.created = new Date().toISOString();
+            this.authorizeToken(token);
+            this._settings.set(this._tokenPath, token);
+        }
+        catch {
+            this.promptAuthorization();
+        }
+    }
+
+    public async startGraphRequest(url: string): Promise<GraphRequest | null> {
         try {
             await this.refreshToken();
 
-            const mails = await this._client
-                .api('/me/messages')
-                .top(500)
-                .select('subject,body,sender,from,toRecipients,createdDateTime')
-                .orderby('createdDateTime DESC')
-                .get();
-
-            return mails.value.map(this.toMail.bind(this));
+            return this._client.api(url);
         }
         catch (error) {
             logger.log(error);
 
-            return [];
+            return null;
         }
     }
 
-    public toMail(data: any): IMail {
+    public toMail(data: any): IEmail {
         const { subject, body, createdDateTime, from, toRecipients } = data;
 
         return ({
-            subject: subject,
+            subject,
             body: body.content,
             created: new Date(createdDateTime),
             from: this.getUser(from),
             to: toRecipients.map(this.getUser.bind(this))
-        }) as IMail;
+        }) as IEmail;
     }
 
     private getUser(data: any): IUser {

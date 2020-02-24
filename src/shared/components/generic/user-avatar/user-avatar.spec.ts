@@ -17,7 +17,7 @@ describe('user avatar component unit test', () => {
 
     test('should create component instance', () => {
         expect(wrapper.vm.$props.url).toBe('avatar_url');
-        expect(wrapper.vm.$props.size).toBe(70);
+        expect(wrapper.vm.$props.size).toBe(80);
         expect(wrapper.vm.$props.popoverPosition).toBe('bottom-start');
         expect(wrapper.vm.$props.popoverWidth).toBe(150);
         expect(wrapper.vm.$props.showPopover).toBeTruthy();

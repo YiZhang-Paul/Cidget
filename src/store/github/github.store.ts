@@ -42,17 +42,13 @@ const actions = {
 
         Vue.notify({
             group: 'notification',
-            duration: 12000,
+            duration: 10000,
             data: { type: 'commit', id: push.id, model: push }
         });
     },
     async addPullRequest(context: ActionContext<State, any>, payload: any): Promise<void> {
         const { commit, state } = context;
         const pullRequest = await pullRequestService.toPullRequest(payload);
-
-        if (pullRequest.action === 'review_request_removed') {
-            return;
-        }
         const existing = state.pullRequests.find(_ => _.id === pullRequest.id);
         const action = existing ? 'updatePullRequest' : 'addPullRequest';
         pullRequest.mergeable = existing ? existing.mergeable : pullRequest.mergeable;
@@ -60,14 +56,45 @@ const actions = {
 
         Vue.notify({
             group: 'notification',
-            duration: pullRequest.isActive ? -1 : 12000,
+            duration: pullRequest.isActive ? -1 : 10000,
+            data: { type: 'pull-request', id: pullRequest.id, model: pullRequest }
+        });
+    },
+    async addPullRequestReview(context: ActionContext<State, any>, payload: any): Promise<void> {
+        const { commit, state } = context;
+        const { pullRequestId, type, reviewer } = await pullRequestService.toReview(payload);
+        const pullRequest = state.pullRequests.find(_ => _.id === pullRequestId);
+
+        if (!pullRequest || type === 'commented') {
+            return;
+        }
+        const { requested, approved } = pullRequest.reviewers;
+        const isReviewer = requested.some(_ => _.name === reviewer.name);
+        const isApprover = approved.some(_ => _.name === reviewer.name);
+
+        if (!isReviewer || type === 'approved' && isApprover || type === 'change' && !isApprover) {
+            return;
+        }
+
+        if (type === 'approved') {
+            pullRequest.reviewers.approved.push(reviewer);
+        }
+        else {
+            pullRequest.reviewers.approved = approved.filter(_ => _.name !== reviewer.name);
+        }
+        commit('updatePullRequest', pullRequest);
+
+        Vue.notify({
+            group: 'notification',
+            duration: -1,
             data: { type: 'pull-request', id: pullRequest.id, model: pullRequest }
         });
     },
     async addPullRequestCheck(context: ActionContext<State, any>, payload: any): Promise<void> {
         const { commit, state } = context;
         const { repository, sha } = payload;
-        const { ref, status } = await commitService.getStatus(repository.name, sha);
+        const { name, owner } = repository;
+        const { ref, status } = await commitService.getStatus(name, sha, owner.login);
         const isMergeable = status === 'pending' ? null : status === 'success';
         const pullRequest = state.pullRequests.find(_ => _.headCommitSha === ref);
 

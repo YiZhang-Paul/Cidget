@@ -14,8 +14,6 @@ describe('github commit service unit test', () => {
     let repositoryProviderStub: any;
 
     beforeEach(() => {
-        Container.snapshot();
-
         httpStub = stub({
             async get(): Promise<any> { return null },
             async post(): Promise<any> { return null }
@@ -39,10 +37,6 @@ describe('github commit service unit test', () => {
         service = Container.get<GithubCommitService>(Types.GithubCommitService);
     });
 
-    afterEach(() => {
-        Container.restore();
-    });
-
     describe('getStatus', () => {
         beforeEach(() => {
             httpStub.get.resolves({ data: { sha: 'sha_sequence', state: 'pending' } });
@@ -51,14 +45,14 @@ describe('github commit service unit test', () => {
         test('should call correct endpoint', async () => {
             const api = 'https://api.github.com/repos/yizhang-paul/project_name/commits/ref_name/status';
 
-            await service.getStatus('project_name', 'ref_name');
+            await service.getStatus('project_name', 'ref_name', 'yizhang-paul');
 
             sinonExpect.calledOnce(httpStub.get);
             expect(httpStub.get.args[0][0]).toBe(api);
         });
 
         test('should return commit status', async () => {
-            const result = await service.getStatus('project_name', 'ref_name');
+            const result = await service.getStatus('project_name', 'ref_name', 'yizhang-paul');
 
             expect(result.ref).toBe('sha_sequence');
             expect(result.status).toBe('pending');

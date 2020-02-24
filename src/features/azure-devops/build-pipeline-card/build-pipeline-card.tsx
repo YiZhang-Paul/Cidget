@@ -6,13 +6,13 @@ import NotificationCard from '../../../shared/components/generic/notification-ca
 import WeblinkDisplay from '../../../shared/components/generic/weblink-display/weblink-display';
 import BranchBadge from '../../../shared/components/repository/branch-badge/branch-badge';
 import RepositoryBadge from '../../../shared/components/repository/repository-badge/repository-badge';
-import RelativeTimeDisplay from '../../../shared/components/generic/relative-time-display/relative-time-display';
 
 import './build-pipeline-card.scss';
 
 @Component
 export default class BuildPipelineCard extends tsx.Component<any> {
     @Prop() public build!: ICiBuild;
+    @Prop() public closeHandler!: () => void;
 
     private get status(): string {
         const status = this.build.result || `is ${this.build.status}`;
@@ -66,7 +66,10 @@ export default class BuildPipelineCard extends tsx.Component<any> {
         const elapsedTime = <div class={timeClass}> [{this.elapsedTime}]</div>;
 
         return (
-            <NotificationCard logoUrl={require('../../../../public/images/azure-devops-logo.png')}>
+            <NotificationCard time={this.timestamp}
+                closeHandler={this.closeHandler}
+                logoUrl={require('../../../../public/images/azure-devops-logo.png')}>
+
                 <div class="build-pipeline-message-container">
                     <div class="build-pipeline-message-wrapper">
                         <WeblinkDisplay class="build-name"
@@ -93,8 +96,6 @@ export default class BuildPipelineCard extends tsx.Component<any> {
                         repository={triggeredBy}
                         showPopover={false}>
                     </RepositoryBadge>
-
-                    <RelativeTimeDisplay class="time" time={this.timestamp} />
                 </div>
 
                 <div class="build-pipeline-card-actions" slot="actions">

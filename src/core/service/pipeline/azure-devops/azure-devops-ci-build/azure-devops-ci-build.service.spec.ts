@@ -11,8 +11,6 @@ describe('azure devops ci build service unit test', () => {
     let httpStub: any;
 
     beforeEach(() => {
-        Container.snapshot();
-
         httpStub = stub({
             async get(): Promise<any> { return null; },
             async post(): Promise<any> { return null; }
@@ -24,10 +22,6 @@ describe('azure devops ci build service unit test', () => {
 
         service = Container.get<AzureDevopsCiBuildService>(Types.AzureDevopsCiBuildService);
         httpStub.get.resolves({ data: '"sourceVersionMessage":"build_message","sourceBranch":"branch_name"' });
-    });
-
-    afterEach(() => {
-        Container.restore();
     });
 
     describe('toCiBuild', () => {

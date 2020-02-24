@@ -11,8 +11,6 @@ describe('azure devops cd release service unit test', () => {
     let httpStub: any;
 
     beforeEach(() => {
-        Container.snapshot();
-
         httpStub = stub({
             async get(): Promise<any> { return null; },
             async post(): Promise<any> { return null; }
@@ -23,10 +21,6 @@ describe('azure devops cd release service unit test', () => {
             .toConstantValue(httpStub);
 
         service = Container.get<AzureDevopsCdReleaseService>(Types.AzureDevopsCdReleaseService);
-    });
-
-    afterEach(() => {
-        Container.restore();
     });
 
     describe('toCdRelease', () => {

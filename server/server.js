@@ -1,10 +1,9 @@
-const config = require('config');
 const express = require('express')();
 const server = require('http').createServer(express);
 const socket = require('socket.io')(server);
 const bodyParser = require('body-parser');
-const { port } = config.get('cidget').server;
 
+const port = 8888;
 express.use(bodyParser.json({ limit: '50mb' }));
 express.use(bodyParser.urlencoded({ limit: '50mb', extended: false }));
 server.listen(port, () => console.log(`listening on port ${port}.`));
@@ -15,6 +14,11 @@ express.get('/', (_, res) => {
 });
 
 express.post('/outlook/mail', (req, res) => {
+    const { validationToken } = req.query;
+
+    if (validationToken) {
+        return res.status(200).send(validationToken);
+    }
     emit('outlook-mail', req, res);
 });
 
@@ -32,6 +36,10 @@ express.post('/github/push', (req, res) => {
 
 express.post('/github/pull_request', (req, res) => {
     emit('github-pull-request', req, res);
+});
+
+express.post('/github/pull_request/review', (req, res) => {
+    emit('github-pull-request-review', req, res);
 });
 
 express.post('/github/pull_request/check', (req, res) => {

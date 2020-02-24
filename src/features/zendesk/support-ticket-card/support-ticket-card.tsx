@@ -4,7 +4,6 @@ import * as tsx from 'vue-tsx-support';
 import ISupportTicket from '../../../core/interface/customer-support/support-ticket.interface';
 import WeblinkDisplay from '../../../shared/components/generic/weblink-display/weblink-display';
 import NotificationCard from '../../../shared/components/generic/notification-card/notification-card';
-import RelativeTimeDisplay from '../../../shared/components/generic/relative-time-display/relative-time-display';
 import ConversationPreviewBadge from '../../../shared/components/customer-support/conversation-preview-badge/conversation-preview-badge';
 
 import './support-ticket-card.scss';
@@ -12,14 +11,16 @@ import './support-ticket-card.scss';
 @Component
 export default class SupportTicketCard extends tsx.Component<any> {
     @Prop() public ticket!: ISupportTicket;
+    @Prop() public closeHandler!: () => void;
 
     private get statusText(): string {
         if (this.ticket.status === 'reopened') {
             return 'Reopened';
         }
         const group = this.ticket.assignedToUser ? 'YOU' : this.ticket.group;
+        const assignees = this.ticket.assignee.length;
 
-        return group || `${this.ticket.assignee.length} assignees`;
+        return group || `${assignees} assignee${assignees > 1 ? 's' : ''}`;
     }
 
     public render(): any {
@@ -28,7 +29,10 @@ export default class SupportTicketCard extends tsx.Component<any> {
         const statusTextClass = `status-text ${highlighted ? 'highlighted' : ''}`;
 
         return (
-            <NotificationCard logoUrl={require('../../../../public/images/zendesk-logo.png')}>
+            <NotificationCard time={this.ticket.createdOn}
+                closeHandler={this.closeHandler}
+                logoUrl={require('../../../../public/images/zendesk-logo.png')}>
+
                 <div class="ticket-message-container">
                     <WeblinkDisplay class="ticket-message"
                         text={`#${this.ticket.id} ${this.ticket.title}`}
@@ -46,8 +50,6 @@ export default class SupportTicketCard extends tsx.Component<any> {
                         conversation={this.ticket.content}
                         tooltip={this.ticket.htmlContent}>
                     </ConversationPreviewBadge>
-
-                    <RelativeTimeDisplay class="time" time={this.ticket.createdOn} />
                 </div>
 
                 <div class="support-ticket-card-actions" slot="actions">

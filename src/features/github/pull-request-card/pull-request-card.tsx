@@ -8,13 +8,13 @@ import WeblinkDisplay from '../../../shared/components/generic/weblink-display/w
 import ChangeStatsSummary from '../../../shared/components/generic/change-stats-summary/change-stats-summary';
 import BranchBadge from '../../../shared/components/repository/branch-badge/branch-badge';
 import RepositoryBadge from '../../../shared/components/repository/repository-badge/repository-badge';
-import RelativeTimeDisplay from '../../../shared/components/generic/relative-time-display/relative-time-display';
 
 import './pull-request-card.scss';
 
 @Component
 export default class PullRequestCard extends tsx.Component<any> {
     @Prop() public pullRequest!: IPullRequest<IGithubUser>;
+    @Prop() public closeHandler!: () => void;
 
     private get action(): string {
         const words = this.pullRequest.action.split(' ');
@@ -30,6 +30,12 @@ export default class PullRequestCard extends tsx.Component<any> {
         return `${this.pullRequest.repository.url}/tree/${this.pullRequest.branch.base}`;
     }
 
+    private get reviewerSummary(): string {
+        const { requested, approved } = this.pullRequest.reviewers;
+
+        return `[${approved.length}/${requested.length}]`;
+    }
+
     public render(): any {
         let statusClass = 'pending';
 
@@ -38,7 +44,10 @@ export default class PullRequestCard extends tsx.Component<any> {
         }
 
         return (
-            <NotificationCard logoUrl={require('../../../../public/images/github-logo.png')}>
+            <NotificationCard time={this.pullRequest.updatedOn}
+                closeHandler={this.closeHandler}
+                logoUrl={require('../../../../public/images/github-logo.png')}>
+
                 <div class="pull-request-message-container">
                     <div class="pull-request-message-wrapper">
                         <WeblinkDisplay class="pull-request-message"
@@ -49,6 +58,11 @@ export default class PullRequestCard extends tsx.Component<any> {
                     </div>
 
                     <div class="pull-request-action">{this.action}</div>
+
+                    <div class="reviewers-summary">
+                        <i class="fas fa-user-check reviewers-icon"></i>
+                        {this.reviewerSummary}
+                    </div>
 
                     <ChangeStatsSummary class="change-summary"
                         added={this.pullRequest.added}
@@ -63,7 +77,7 @@ export default class PullRequestCard extends tsx.Component<any> {
                         url={this.sourceBranchUrl}>
                     </BranchBadge>
 
-                    <div class="splitter">to</div>
+                    <div class="merge-icon"></div>
 
                     <BranchBadge class="to-branch-badge"
                         name={this.pullRequest.branch.base}
@@ -76,8 +90,6 @@ export default class PullRequestCard extends tsx.Component<any> {
                         repository={this.pullRequest.repository}
                         showPopover={false}>
                     </RepositoryBadge>
-
-                    <RelativeTimeDisplay class="time" time={this.pullRequest.updatedOn} />
                 </div>
 
                 <div class="pull-request-card-actions" slot="actions">

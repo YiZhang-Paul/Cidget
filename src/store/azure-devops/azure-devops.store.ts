@@ -43,7 +43,7 @@ const actions = {
 
         Vue.notify({
             group: 'notification',
-            duration: 12000,
+            duration: 10000,
             data: { type: 'ci-build', id: build.id, model: build }
         });
     },
@@ -63,7 +63,7 @@ const actions = {
 
         Vue.notify({
             group: 'notification',
-            duration: release.status === 'needs approval' ? -1 : 12000,
+            duration: release.status === 'needs approval' ? -1 : 10000,
             data: { type: 'cd-release', id: release.id, model: release }
         });
     },
@@ -72,7 +72,7 @@ const actions = {
             throw new Error('Invalid status for approval notification');
         }
         const { commit } = context;
-        const [group, duration, type, id] = ['notification', 12000, 'cd-release', release.id];
+        const [group, duration, type, id] = ['notification', 10000, 'cd-release', release.id];
         commit('addCdRelease', release);
         Vue.notify({ group, duration, data: { type, id, model: release } });
         autoNotifyAfterApproval = true;

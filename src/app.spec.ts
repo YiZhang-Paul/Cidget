@@ -1,6 +1,11 @@
+jest.mock('electron', () => ({
+    remote: { getCurrentWindow(): any { } }
+}));
+
 import VueNotification from 'vue-notification';
 import { createLocalVue, mount, Wrapper } from '@vue/test-utils';
 import { assert as sinonExpect, stub } from 'sinon';
+import { remote } from 'electron';
 
 import Store from './store';
 import App from './app';
@@ -10,18 +15,39 @@ vue.use(VueNotification);
 
 describe('app component unit test', () => {
     let wrapper: Wrapper<App>;
+    let moveTopStub: any;
+    let getCurrentWindowStub: any;
 
     beforeEach(() => {
+        moveTopStub = stub();
+        getCurrentWindowStub = stub(remote, 'getCurrentWindow');
+        getCurrentWindowStub.returns({ moveTop: moveTopStub });
         wrapper = mount(App, { localVue: vue, store: Store.store });
     });
 
     afterEach(() => {
+        getCurrentWindowStub.restore();
         wrapper.destroy();
         jest.useRealTimers();
     });
 
     test('should create component instance', () => {
         expect(wrapper.vm).toBeTruthy();
+    });
+
+    test('should display support ticket event notification', () => {
+        Store.store.state[Store.zendeskStoreName].tickets = [{ id: 'ticket_id' }];
+
+        vue.notify({
+            group: 'notification',
+            duration: -1,
+            data: { type: 'support-ticket', id: 'ticket_id' }
+        });
+
+        sinonExpect.calledOnce(moveTopStub);
+        expect(getList(wrapper).length).toBe(1);
+        expect(getList(wrapper)[0].data.type).toBe('support-ticket');
+        expect(getList(wrapper)[0].data.id).toBe('ticket_id');
     });
 
     test('should display build pipeline event notification', () => {
@@ -33,6 +59,7 @@ describe('app component unit test', () => {
             data: { type: 'ci-build', id: 'build_id' }
         });
 
+        sinonExpect.calledOnce(moveTopStub);
         expect(getList(wrapper).length).toBe(1);
         expect(getList(wrapper)[0].data.type).toBe('ci-build');
         expect(getList(wrapper)[0].data.id).toBe('build_id');
@@ -47,6 +74,7 @@ describe('app component unit test', () => {
             data: { type: 'cd-release', id: 'release_id' }
         });
 
+        sinonExpect.calledOnce(moveTopStub);
         expect(getList(wrapper).length).toBe(1);
         expect(getList(wrapper)[0].data.type).toBe('cd-release');
         expect(getList(wrapper)[0].data.id).toBe('release_id');
@@ -61,6 +89,7 @@ describe('app component unit test', () => {
             data: { type: 'commit', id: 'commit_id' }
         });
 
+        sinonExpect.calledOnce(moveTopStub);
         expect(getList(wrapper).length).toBe(1);
         expect(getList(wrapper)[0].data.type).toBe('commit');
         expect(getList(wrapper)[0].data.id).toBe('commit_id');
@@ -75,6 +104,7 @@ describe('app component unit test', () => {
             data: { type: 'pull-request', id: 'pull_request_id' }
         });
 
+        sinonExpect.calledOnce(moveTopStub);
         expect(getList(wrapper).length).toBe(1);
         expect(getList(wrapper)[0].data.type).toBe('pull-request');
         expect(getList(wrapper)[0].data.id).toBe('pull_request_id');
@@ -141,7 +171,6 @@ describe('app component unit test', () => {
         });
 
         jest.advanceTimersByTime(5000);
-        jest.useRealTimers();
         getElementsStub.restore();
 
         sinonExpect.callCount(classListStub.remove, 2 * elements.length);
@@ -150,6 +179,136 @@ describe('app component unit test', () => {
         expect(getList(wrapper)[0].id).toBe(notificationId);
         expect(getList(wrapper)[0].data.type).toBe('pull-request');
         expect(getList(wrapper)[0].data.id).toBe('pull_request_id');
+    });
+
+    test('should stop timer on mouse enter', () => {
+        vue.notify({
+            group: 'notification',
+            duration: 1000,
+            data: { type: 'pull-request', id: 'pull_request_id' }
+        });
+
+        expect(getList(wrapper).length).toBe(1);
+        expect(isNaN(getList(wrapper)[0].timer)).toBeFalsy();
+
+        wrapper.find('.notification-wrapper').trigger('mouseenter');
+
+        expect(getList(wrapper).length).toBe(1);
+        expect(getList(wrapper)[0].timer).toBeNull();
+    });
+
+    test('should not stop timer on mouse enter when no card found', () => {
+        vue.notify({
+            group: 'notification',
+            duration: 1000,
+            data: { type: 'pull-request', id: 'pull_request_id' }
+        });
+
+        expect(getList(wrapper).length).toBe(1);
+        expect(isNaN(getList(wrapper)[0].timer)).toBeFalsy();
+
+        wrapper.vm['stopTimer']('another_pull_request_id');
+
+        expect(getList(wrapper).length).toBe(1);
+        expect(isNaN(getList(wrapper)[0].timer)).toBeFalsy();
+    });
+
+    test('should not stop timer on mouse enter when timer is not set', () => {
+        vue.notify({
+            group: 'notification',
+            duration: -1,
+            data: { type: 'pull-request', id: 'pull_request_id' }
+        });
+
+        getList(wrapper)[0].timer = undefined;
+        wrapper.find('.notification-wrapper').trigger('mouseenter');
+
+        expect(getList(wrapper).length).toBe(1);
+        expect(getList(wrapper)[0].timer).toBeUndefined();
+    });
+
+    test('should not stop timer on mouse enter when timer is already cleared', () => {
+        vue.notify({
+            group: 'notification',
+            duration: 1000,
+            data: { type: 'pull-request', id: 'pull_request_id' }
+        });
+
+        getList(wrapper)[0].timer = null;
+        wrapper.find('.notification-wrapper').trigger('mouseenter');
+
+        expect(getList(wrapper).length).toBe(1);
+        expect(getList(wrapper)[0].timer).toBeNull();
+    });
+
+    test('should restore timer on mouse leave to extend card timer', () => {
+        jest.useFakeTimers();
+
+        vue.notify({
+            group: 'notification',
+            duration: 1000,
+            data: { type: 'pull-request', id: 'pull_request_id' }
+        });
+
+        jest.advanceTimersByTime(999);
+
+        expect(getList(wrapper).length).toBe(1);
+        expect(isNaN(getList(wrapper)[0].timer)).toBeFalsy();
+
+        wrapper.find('.notification-wrapper').trigger('mouseenter');
+        wrapper.find('.notification-wrapper').trigger('mouseleave');
+
+        jest.advanceTimersByTime(999);
+
+        expect(getList(wrapper).length).toBe(1);
+        expect(isNaN(getList(wrapper)[0].timer)).toBeFalsy();
+
+        jest.advanceTimersByTime(1);
+
+        expect(getList(wrapper).length).toBe(0);
+    });
+
+    test('should restore timer on mouse leave when timer is already cleared', () => {
+        vue.notify({
+            group: 'notification',
+            duration: 1000,
+            data: { type: 'pull-request', id: 'pull_request_id' }
+        });
+
+        getList(wrapper)[0].timer = null;
+        wrapper.find('.notification-wrapper').trigger('mouseleave');
+
+        expect(getList(wrapper).length).toBe(1);
+        expect(isNaN(getList(wrapper)[0].timer)).toBeFalsy();
+    });
+
+    test('should not restore timer on mouse leave when timer is not cleared', () => {
+        vue.notify({
+            group: 'notification',
+            duration: 1000,
+            data: { type: 'pull-request', id: 'pull_request_id' }
+        });
+
+        const timer = getList(wrapper)[0].timer;
+        wrapper.find('.notification-wrapper').trigger('mouseleave');
+
+        expect(getList(wrapper).length).toBe(1);
+        expect(getList(wrapper)[0].timer).toBe(timer);
+        expect(isNaN(getList(wrapper)[0].timer)).toBeFalsy();
+    });
+
+    test('should not restore timer on mouse leave when no card found', () => {
+        vue.notify({
+            group: 'notification',
+            duration: 1000,
+            data: { type: 'pull-request', id: 'pull_request_id' }
+        });
+
+        const timer = getList(wrapper)[0].timer;
+        wrapper.vm['restoreTimer']('another_pull_request_id');
+
+        expect(getList(wrapper).length).toBe(1);
+        expect(getList(wrapper)[0].timer).toBe(timer);
     });
 });
 

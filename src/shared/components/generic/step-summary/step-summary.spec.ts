@@ -28,7 +28,6 @@ describe('step summary component unit test', () => {
     });
 
     test('should display stage colors according to scale', () => {
-        jest.useFakeTimers();
         wrapper = shallowMount(StepSummary, { propsData: { steps } });
         wrapper.vm.$data.colorOn = true;
 
@@ -70,8 +69,8 @@ describe('step summary component unit test', () => {
     });
 
     test('should not blink active step icon when blink mode is off', () => {
-        jest.useFakeTimers();
         wrapper = shallowMount(StepSummary, { propsData: { steps, blinkMode: false } });
+        jest.useFakeTimers();
 
         jest.advanceTimersByTime(400);
 

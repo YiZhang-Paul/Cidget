@@ -19,4 +19,10 @@ describe('change stats summary component unit test', () => {
         expect(wrapper.vm.$props.removed).toBe(1);
         expect(wrapper.vm.$props.modified).toBe(3);
     });
+
+    test('should properly approximate values', () => {
+        expect(wrapper.vm['approximate'](400)).toBe('400');
+        expect(wrapper.vm['approximate'](2700)).toBe('2.7k');
+        expect(wrapper.vm['approximate'](4000)).toBe('4k');
+    });
 });

@@ -20,6 +20,10 @@ const mutations = {
 const actions = {
     addTicketFromMail(context: ActionContext<State, any>, ticket: ISupportTicket): void {
         const { commit, getters } = context;
+
+        if (getters.hasSameTicket(ticket)) {
+            return;
+        }
         commit(getters.hasTicket(ticket) ? 'updateTicket' : 'addTicket', ticket);
 
         Vue.notify({
@@ -33,6 +37,21 @@ const actions = {
 const getters = {
     getTickets(state: State): ISupportTicket[] {
         return state.tickets;
+    },
+    hasSameTicket(state: State): Function {
+        return (ticket: ISupportTicket): boolean => {
+            const existing = state.tickets.find(_ => _.id === ticket.id);
+
+            if (!existing) {
+                return false;
+            }
+            return existing.assignedToUser === ticket.assignedToUser
+                && existing.content === ticket.content
+                && existing.htmlContent === ticket.htmlContent
+                && existing.group === ticket.group
+                && existing.status === ticket.status
+                && existing.title === ticket.title;
+        };
     },
     hasTicket(state: State): Function {
         return (ticket: ISupportTicket): boolean => {

@@ -15,8 +15,6 @@ describe('github repository provider unit test', () => {
     let data: any;
 
     beforeEach(() => {
-        Container.snapshot();
-
         httpStub = stub({
             async get(): Promise<any> { return null; },
             async post(): Promise<any> { return null; }
@@ -90,10 +88,6 @@ describe('github repository provider unit test', () => {
         ];
 
         httpStub.get.resolves({ data });
-    });
-
-    afterEach(() => {
-        Container.restore();
     });
 
     describe('listRepositories', () => {

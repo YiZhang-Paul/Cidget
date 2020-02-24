@@ -6,7 +6,7 @@ import './user-avatar.scss';
 @Component
 export default class UserAvatar extends tsx.Component<any> {
     @Prop() public url!: string;
-    @Prop({ default: 70 }) public size!: number;
+    @Prop({ default: 80 }) public size!: number;
     @Prop({ default: 'bottom-start' }) public popoverPosition!: number;
     @Prop({ default: 150 }) public popoverWidth!: number;
     @Prop({ default: true }) public showPopover!: boolean;

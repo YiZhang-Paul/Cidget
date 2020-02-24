@@ -1,8 +1,12 @@
+jest.mock('electron', () => ({
+    shell: { async openExternal(_: string): Promise<void> { } }
+}));
+
 import { mount, Wrapper } from '@vue/test-utils';
 import { assert as sinonExpect, spy } from 'sinon';
+import { shell } from 'electron';
 
 import '../../../../element-ui-test.js';
-import { shell } from '../../../../mocks/third-party/electron';
 
 import RepositoryBadge from './repository-badge';
 

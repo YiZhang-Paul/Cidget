@@ -1,7 +1,10 @@
+jest.mock('electron', () => ({
+    shell: { async openExternal(_: string): Promise<void> { } }
+}));
+
 import { shallowMount, Wrapper } from '@vue/test-utils';
 import { assert as sinonExpect, spy } from 'sinon';
-
-import { shell } from '../../../mocks/third-party/electron';
+import { shell } from 'electron';
 
 import UserInfoCard from './user-info-card';
 

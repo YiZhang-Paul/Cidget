@@ -9,6 +9,7 @@ import IGithubUser from '../../core/interface/repository/github/github-user.inte
 import ICommit from '../../core/interface/repository/commit.interface';
 import ICommitStatus from '../../core/interface/repository/commit-status.interface';
 import IPullRequest from '../../core/interface/repository/pull-request.interface';
+import IPullRequestReview from '../../core/interface/repository/pull-request-review.interface';
 import GithubCommitService from '../../core/service/repository/github/github-commit/github-commit.service';
 import GithubPullRequestService from '../../core/service/repository/github/github-pull-request/github-pull-request.service';
 
@@ -24,10 +25,8 @@ describe('github store unit test', () => {
     let pullRequestServiceStub: any;
 
     beforeEach(() => {
-        Container.snapshot();
-
         commitServiceStub = stub({
-            async getStatus(_a: any, _b: any): Promise<ICommitStatus> {
+            async getStatus(_a: any, _b: any, _c: any): Promise<ICommitStatus> {
                 return ({} as ICommitStatus);
             },
             async toCommit(_: any): Promise<ICommit<IGithubUser>> {
@@ -36,6 +35,9 @@ describe('github store unit test', () => {
         } as GithubCommitService);
 
         pullRequestServiceStub = stub({
+            async toReview(_: any): Promise<IPullRequestReview<IGithubUser>> {
+                return ({} as IPullRequestReview<IGithubUser>);
+            },
             async toPullRequest(_: any): Promise<IPullRequest<IGithubUser>> {
                 return ({} as IPullRequest<IGithubUser>);
             }
@@ -54,7 +56,6 @@ describe('github store unit test', () => {
     });
 
     afterEach(() => {
-        Container.restore();
         notifySpy.restore();
     });
 
@@ -103,7 +104,7 @@ describe('github store unit test', () => {
             sinonExpect.calledOnce(notifySpy);
             expect(notifySpy.args[0][0].data.type).toBe('commit');
             expect(notifySpy.args[0][0].data.id).toBe('147');
-            expect(notifySpy.args[0][0].duration).toBe(12000);
+            expect(notifySpy.args[0][0].duration).toBe(10000);
         });
     });
 
@@ -169,17 +170,109 @@ describe('github store unit test', () => {
             await store.dispatch('addPullRequest', {});
 
             sinonExpect.calledOnce(notifySpy);
-            expect(notifySpy.args[0][0].duration).toBe(12000);
+            expect(notifySpy.args[0][0].duration).toBe(10000);
+        });
+    });
+
+    describe('addPullRequestReview', () => {
+        let pullRequest: any;
+        let review: any;
+
+        beforeEach(() => {
+            pullRequest = {
+                id: 'pull_request_id',
+                reviewers: {
+                    requested: [{ name: 'reviewer_name_1' }, { name: 'reviewer_name_2' }],
+                    approved: [{ name: 'reviewer_name_2' }]
+                }
+            };
+
+            review = {
+                pullRequestId: 'pull_request_id',
+                type: 'approved',
+                reviewer: {
+                    name: 'reviewer_name_1'
+                }
+            };
+
+            pullRequestServiceStub.toReview.resolves(review);
         });
 
-        test('should ignore review request removed event', async () => {
-            pullRequest.action = 'review_request_removed';
-            store.state.pullRequests = [];
+        test('should add review', async () => {
+            store.state.pullRequests = [pullRequest];
 
-            await store.dispatch('addPullRequest', {});
+            await store.dispatch('addPullRequestReview', {});
+
+            sinonExpect.calledOnce(notifySpy);
+            expect(notifySpy.args[0][0].group).toBe('notification');
+            expect(notifySpy.args[0][0].duration).toBe(-1);
+            expect(notifySpy.args[0][0].data.type).toBe('pull-request');
+            expect(notifySpy.args[0][0].data.id).toBe('pull_request_id');
+            expect(notifySpy.args[0][0].data.model).toStrictEqual(pullRequest);
+        });
+
+        test('should add approver when needed', async () => {
+            store.state.pullRequests = [pullRequest];
+
+            await store.dispatch('addPullRequestReview', {});
+
+            expect(store.getters.getPullRequests[0].reviewers.approved.length).toBe(2);
+            expect(store.getters.getPullRequests[0].reviewers.approved[1].name).toBe('reviewer_name_1');
+        });
+
+        test('should remove approver when needed', async () => {
+            review.type = 'change';
+            review.reviewer.name = 'reviewer_name_2';
+            store.state.pullRequests = [pullRequest];
+
+            await store.dispatch('addPullRequestReview', {});
+
+            expect(store.getters.getPullRequests[0].reviewers.approved.length).toBe(0);
+        });
+
+        test('should not add review when pull request does not exist', async () => {
+            review.pullRequestId = 'another_pull_request_id';
+            store.state.pullRequests = [pullRequest];
+
+            await store.dispatch('addPullRequestReview', {});
 
             sinonExpect.notCalled(notifySpy);
-            expect(store.state.pullRequests.length).toBe(0);
+        });
+
+        test('should not add review when review is an comment', async () => {
+            review.type = 'commented';
+            store.state.pullRequests = [pullRequest];
+
+            await store.dispatch('addPullRequestReview', {});
+
+            sinonExpect.notCalled(notifySpy);
+        });
+
+        test('should not add review when reviewer does not exist', async () => {
+            review.reviewer.name = 'another_reviewer_name';
+            store.state.pullRequests = [pullRequest];
+
+            await store.dispatch('addPullRequestReview', {});
+
+            sinonExpect.notCalled(notifySpy);
+        });
+
+        test('should not add review when reviewer already approved the pull request', async () => {
+            review.reviewer.name = 'reviewer_name_2';
+            store.state.pullRequests = [pullRequest];
+
+            await store.dispatch('addPullRequestReview', {});
+
+            sinonExpect.notCalled(notifySpy);
+        });
+
+        test('should not add review when reviewer requested changes and has not approved the pull request yet', async () => {
+            review.type = 'change';
+            store.state.pullRequests = [pullRequest];
+
+            await store.dispatch('addPullRequestReview', {});
+
+            sinonExpect.notCalled(notifySpy);
         });
     });
 
@@ -189,7 +282,14 @@ describe('github store unit test', () => {
         let status: any;
 
         beforeEach(() => {
-            payload = { repository: { name: 'cidget' } };
+            payload = {
+                repository: {
+                    name: 'cidget',
+                    owner: { login: 'user_name' }
+                },
+                sha: 'head_sha'
+            };
+
             pullRequest = { id: '147', mergeable: true, headCommitSha: 'head_sha', isActive: true };
             status = { ref: 'head_sha', status: 'pending' };
             store.state.pullRequests = [pullRequest];
@@ -199,6 +299,10 @@ describe('github store unit test', () => {
         test('should update pull request', async () => {
             await store.dispatch('addPullRequestCheck', payload);
 
+            sinonExpect.calledOnce(commitServiceStub.getStatus);
+            expect(commitServiceStub.getStatus.args[0][0]).toBe('cidget');
+            expect(commitServiceStub.getStatus.args[0][1]).toBe('head_sha');
+            expect(commitServiceStub.getStatus.args[0][2]).toBe('user_name');
             expect(pullRequest.mergeable).toBeNull();
         });
 
