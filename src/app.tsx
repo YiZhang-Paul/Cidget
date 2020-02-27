@@ -2,6 +2,7 @@ import { Component, Ref } from 'vue-property-decorator';
 import * as tsx from 'vue-tsx-support';
 import { remote } from 'electron';
 
+import NotificationType from './core/enum/notification-type.enum';
 import SupportTicketCard from './features/zendesk/support-ticket-card/support-ticket-card';
 import BuildPipelineCard from './features/azure-devops/build-pipeline-card/build-pipeline-card';
 import ReleasePipelineCard from './features/azure-devops/release-pipeline-card/release-pipeline-card';
@@ -63,15 +64,15 @@ export default class App extends tsx.Component<any> {
         const { type, model } = props.item.data;
 
         switch (type) {
-            case 'support-ticket':
+            case NotificationType.SupportTicket:
                 return <SupportTicketCard class={className} ticket={model} closeHandler={props.close} />;
-            case 'ci-build':
+            case NotificationType.CiBuild:
                 return <BuildPipelineCard class={className} build={model} closeHandler={props.close} />;
-            case 'cd-release':
+            case NotificationType.CdRelease:
                 return <ReleasePipelineCard class={className} release={model} closeHandler={props.close} />;
-            case 'commit':
+            case NotificationType.Commit:
                 return <CommitCard class={className} commit={model} closeHandler={props.close} />;
-            case 'pull-request':
+            case NotificationType.PullRequest:
                 return <PullRequestCard class={className} pullRequest={model} closeHandler={props.close} />;
         }
     }

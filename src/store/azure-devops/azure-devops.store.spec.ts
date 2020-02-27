@@ -5,6 +5,7 @@ import { assert as sinonExpect, stub, spy } from 'sinon';
 
 import Types from '../../core/ioc/types';
 import Container from '../../core/ioc/container';
+import NotificationType from '../../core/enum/notification-type.enum';
 import ICiBuild from '../../core/interface/pipeline/ci-build.interface';
 import ICdRelease from '../../core/interface/pipeline/cd-release.interface';
 import AzureDevopsCiBuildService from '../../core/service/pipeline/azure-devops/azure-devops-ci-build/azure-devops-ci-build.service';
@@ -85,7 +86,7 @@ describe('azure devops store unit test', () => {
             sinonExpect.calledOnce(notifySpy);
             expect(notifySpy.args[0][0].duration).toBe(10000);
             expect(notifySpy.args[0][0].data.id).toBe('147');
-            expect(notifySpy.args[0][0].data.type).toBe('ci-build');
+            expect(notifySpy.args[0][0].data.type).toBe(NotificationType.CiBuild);
         });
 
         test('should trigger notification when build is updated', async () => {
@@ -98,7 +99,7 @@ describe('azure devops store unit test', () => {
             sinonExpect.calledOnce(notifySpy);
             expect(notifySpy.args[0][0].duration).toBe(10000);
             expect(notifySpy.args[0][0].data.id).toBe('147');
-            expect(notifySpy.args[0][0].data.type).toBe('ci-build');
+            expect(notifySpy.args[0][0].data.type).toBe(NotificationType.CiBuild);
         });
     });
 
@@ -140,7 +141,7 @@ describe('azure devops store unit test', () => {
             sinonExpect.calledOnce(notifySpy);
             expect(notifySpy.args[0][0].duration).toBe(10000);
             expect(notifySpy.args[0][0].data.id).toBe('147');
-            expect(notifySpy.args[0][0].data.type).toBe('cd-release');
+            expect(notifySpy.args[0][0].data.type).toBe(NotificationType.CdRelease);
         });
 
         test('should trigger notification when release is updated', async () => {
@@ -153,7 +154,7 @@ describe('azure devops store unit test', () => {
             sinonExpect.calledOnce(notifySpy);
             expect(notifySpy.args[0][0].duration).toBe(10000);
             expect(notifySpy.args[0][0].data.id).toBe('147');
-            expect(notifySpy.args[0][0].data.type).toBe('cd-release');
+            expect(notifySpy.args[0][0].data.type).toBe(NotificationType.CdRelease);
         });
 
         test('should not trigger notification for succeeded status when last stage is not succeeded', async () => {
@@ -182,7 +183,7 @@ describe('azure devops store unit test', () => {
             sinonExpect.calledOnce(notifySpy);
             expect(notifySpy.args[0][0].duration).toBe(10000);
             expect(notifySpy.args[0][0].data.id).toBe('147');
-            expect(notifySpy.args[0][0].data.type).toBe('cd-release');
+            expect(notifySpy.args[0][0].data.type).toBe(NotificationType.CdRelease);
         });
 
         test('should trigger notification for succeeded status when stage information is not available', async () => {
@@ -194,7 +195,7 @@ describe('azure devops store unit test', () => {
             sinonExpect.calledOnce(notifySpy);
             expect(notifySpy.args[0][0].duration).toBe(10000);
             expect(notifySpy.args[0][0].data.id).toBe('147');
-            expect(notifySpy.args[0][0].data.type).toBe('cd-release');
+            expect(notifySpy.args[0][0].data.type).toBe(NotificationType.CdRelease);
         });
 
         test('should trigger notification for succeeded status when stage information is empty', async () => {
@@ -206,7 +207,7 @@ describe('azure devops store unit test', () => {
             sinonExpect.calledOnce(notifySpy);
             expect(notifySpy.args[0][0].duration).toBe(10000);
             expect(notifySpy.args[0][0].data.id).toBe('147');
-            expect(notifySpy.args[0][0].data.type).toBe('cd-release');
+            expect(notifySpy.args[0][0].data.type).toBe(NotificationType.CdRelease);
         });
 
         test('should trigger persistent notification when release needs approval', async () => {

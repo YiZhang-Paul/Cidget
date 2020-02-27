@@ -5,6 +5,7 @@ import { assert as sinonExpect, stub, spy } from 'sinon';
 
 import Types from '../../core/ioc/types';
 import Container from '../../core/ioc/container';
+import NotificationType from '../../core/enum/notification-type.enum';
 import IGithubUser from '../../core/interface/repository/github/github-user.interface';
 import ICommit from '../../core/interface/repository/commit.interface';
 import ICommitStatus from '../../core/interface/repository/commit-status.interface';
@@ -102,7 +103,7 @@ describe('github store unit test', () => {
             await store.dispatch('addCommit', {});
 
             sinonExpect.calledOnce(notifySpy);
-            expect(notifySpy.args[0][0].data.type).toBe('commit');
+            expect(notifySpy.args[0][0].data.type).toBe(NotificationType.Commit);
             expect(notifySpy.args[0][0].data.id).toBe('147');
             expect(notifySpy.args[0][0].duration).toBe(10000);
         });
@@ -146,7 +147,7 @@ describe('github store unit test', () => {
             sinonExpect.calledOnce(notifySpy);
             expect(notifySpy.args[0][0].duration).toBe(-1);
             expect(notifySpy.args[0][0].data.id).toBe('147');
-            expect(notifySpy.args[0][0].data.type).toBe('pull-request');
+            expect(notifySpy.args[0][0].data.type).toBe(NotificationType.PullRequest);
         });
 
         test('should trigger notification when pull request is updated', async () => {
@@ -159,7 +160,7 @@ describe('github store unit test', () => {
             sinonExpect.calledOnce(notifySpy);
             expect(notifySpy.args[0][0].duration).toBe(-1);
             expect(notifySpy.args[0][0].data.id).toBe('147');
-            expect(notifySpy.args[0][0].data.type).toBe('pull-request');
+            expect(notifySpy.args[0][0].data.type).toBe(NotificationType.PullRequest);
         });
 
         test('should trigger temporary notification when pull request is inactive', async () => {
@@ -206,7 +207,7 @@ describe('github store unit test', () => {
             sinonExpect.calledOnce(notifySpy);
             expect(notifySpy.args[0][0].group).toBe('notification');
             expect(notifySpy.args[0][0].duration).toBe(-1);
-            expect(notifySpy.args[0][0].data.type).toBe('pull-request');
+            expect(notifySpy.args[0][0].data.type).toBe(NotificationType.PullRequest);
             expect(notifySpy.args[0][0].data.id).toBe('pull_request_id');
             expect(notifySpy.args[0][0].data.model).toStrictEqual(pullRequest);
         });
@@ -312,7 +313,7 @@ describe('github store unit test', () => {
             sinonExpect.calledOnce(notifySpy);
             expect(notifySpy.args[0][0].duration).toBe(-1);
             expect(notifySpy.args[0][0].data.id).toBe('147');
-            expect(notifySpy.args[0][0].data.type).toBe('pull-request');
+            expect(notifySpy.args[0][0].data.type).toBe(NotificationType.PullRequest);
         });
 
         test('should not trigger notification when no pull request found', async () => {

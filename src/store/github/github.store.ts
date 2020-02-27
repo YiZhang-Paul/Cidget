@@ -8,6 +8,7 @@ import IPullRequest from '../../core/interface/repository/pull-request.interface
 import IGithubUser from '../../core/interface/repository/github/github-user.interface';
 import GithubCommitService from '../../core/service/repository/github/github-commit/github-commit.service';
 import GithubPullRequestService from '../../core/service/repository/github/github-pull-request/github-pull-request.service';
+import NotificationType from '@/core/enum/notification-type.enum';
 
 type State = {
     commits: ICommit<IGithubUser>[],
@@ -43,7 +44,7 @@ const actions = {
         Vue.notify({
             group: 'notification',
             duration: 10000,
-            data: { type: 'commit', id: push.id, model: push }
+            data: { type: NotificationType.Commit, id: push.id, model: push }
         });
     },
     async addPullRequest(context: ActionContext<State, any>, payload: any): Promise<void> {
@@ -57,7 +58,7 @@ const actions = {
         Vue.notify({
             group: 'notification',
             duration: pullRequest.isActive ? -1 : 10000,
-            data: { type: 'pull-request', id: pullRequest.id, model: pullRequest }
+            data: { type: NotificationType.PullRequest, id: pullRequest.id, model: pullRequest }
         });
     },
     async addPullRequestReview(context: ActionContext<State, any>, payload: any): Promise<void> {
@@ -87,7 +88,7 @@ const actions = {
         Vue.notify({
             group: 'notification',
             duration: -1,
-            data: { type: 'pull-request', id: pullRequest.id, model: pullRequest }
+            data: { type: NotificationType.PullRequest, id: pullRequest.id, model: pullRequest }
         });
     },
     async addPullRequestCheck(context: ActionContext<State, any>, payload: any): Promise<void> {
@@ -107,7 +108,7 @@ const actions = {
         Vue.notify({
             group: 'notification',
             duration: -1,
-            data: { type: 'pull-request', id: pullRequest.id, model: pullRequest }
+            data: { type: NotificationType.PullRequest, id: pullRequest.id, model: pullRequest }
         });
     }
 };
