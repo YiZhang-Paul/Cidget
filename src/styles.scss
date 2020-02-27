@@ -35,19 +35,8 @@ html, body {
 }
 
 .updated-card {
-    -webkit-animation-name: updated-notify;
-    -webkit-animation-duration: 2s;
     animation-name: updated-notify;
     animation-duration: 2s;
-}
-
-@-webkit-keyframes updated-notify {
-    from {
-        background-color: rgb(132, 138, 143);
-    }
-    to {
-        background-color: var(--main-background-color);
-    }
 }
 
 @keyframes updated-notify {

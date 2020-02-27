@@ -1,6 +1,6 @@
 declare module '*.css' {
     const exported: any;
-    export default exported
+    export default exported;
 }
 
 declare module '*.scss' {
@@ -10,5 +10,5 @@ declare module '*.scss' {
 
 declare module '*.png' {
     const exported: any;
-    export default exported
+    export default exported;
 }

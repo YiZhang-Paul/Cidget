@@ -6,7 +6,7 @@ import { mount, Wrapper } from '@vue/test-utils';
 import { assert as sinonExpect, spy } from 'sinon';
 import { shell } from 'electron';
 
-import '../../../../element-ui-test.js';
+import '../../../../startups/element-ui-test.js';
 
 import RepositoryBadge from './repository-badge';
 

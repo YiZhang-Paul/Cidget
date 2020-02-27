@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import VueNotification from 'vue-notification';
 
-import './socket';
-import './outlook-auth';
-import './element-ui-non-test.js';
+import './startups/socket';
+import './startups/outlook-auth';
+import './startups/element-ui-prod.js';
 import './styles.scss';
 import App from './app';
 import Store from './store';
