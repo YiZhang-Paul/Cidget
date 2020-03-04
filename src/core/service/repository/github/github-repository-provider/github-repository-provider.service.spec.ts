@@ -3,15 +3,12 @@ import { assert as sinonExpect, stub } from 'sinon';
 import Types from '../../../../ioc/types';
 import Container from '../../../../ioc/container';
 import IHttpClient from '../../../../interface/generic/http-client.interface';
-import IAbbreviationResolver from '../../../../interface/generic/abbreviation-resolver.interface';
 
 import GithubRepositoryProvider from './github-repository-provider.service';
 
 describe('github repository provider unit test', () => {
     let provider: GithubRepositoryProvider;
     let httpStub: any;
-    let languageResolverStub: any;
-    let licenseResolverStub: any;
     let data: any;
 
     beforeEach(() => {
@@ -20,30 +17,10 @@ describe('github repository provider unit test', () => {
             async post(): Promise<any> { return null; }
         } as IHttpClient);
 
-        languageResolverStub = stub({
-            resolve(): string { return ''; }
-        } as IAbbreviationResolver);
-
-        licenseResolverStub = stub({
-            resolve(): string { return ''; }
-        } as IAbbreviationResolver);
-
         Container
             .rebind<IHttpClient>(Types.IHttpClient)
             .toConstantValue(httpStub);
 
-        Container
-            .rebind<IAbbreviationResolver>(Types.IAbbreviationResolver)
-            .toConstantValue(languageResolverStub)
-            .whenTargetNamed('language');
-
-        Container
-            .bind<IAbbreviationResolver>(Types.IAbbreviationResolver)
-            .toConstantValue(licenseResolverStub)
-            .whenTargetNamed('license');
-
-        languageResolverStub.resolve.returns('TS');
-        licenseResolverStub.resolve.returns('MIT');
         provider = Container.get<GithubRepositoryProvider>(Types.GithubRepositoryProvider);
     });
 
@@ -110,10 +87,8 @@ describe('github repository provider unit test', () => {
             expect(result[0].defaultBranch).toBe('development');
             expect(result[0].isPrivate).toBeFalsy();
             expect(result[0].hooksUrl).toBe('hooks_url_1');
-            expect(result[0].language.name).toBe('TypeScript');
-            expect(result[0].language.abbr).toBe('TS');
-            expect(result[0].license?.name).toBe('MIT License');
-            expect(result[0].license?.abbr).toBe('MIT');
+            expect(result[0].language).toBe('TypeScript');
+            expect(result[0].license).toBe('MIT License');
             expect(result[0].owner.name).toBe('login_name_1');
             expect(result[0].owner.avatar).toBe('avatar_url_1');
             expect(result[0].url).toBe('html_url_1');
@@ -124,10 +99,8 @@ describe('github repository provider unit test', () => {
             expect(result[1].defaultBranch).toBe('development');
             expect(result[1].isPrivate).toBeTruthy();
             expect(result[1].hooksUrl).toBe('hooks_url_2');
-            expect(result[1].language.name).toBe('TypeScript');
-            expect(result[1].language.abbr).toBe('TS');
-            expect(result[1].license?.name).toBe('MIT License');
-            expect(result[1].license?.abbr).toBe('MIT');
+            expect(result[1].language).toBe('TypeScript');
+            expect(result[1].license).toBe('MIT License');
             expect(result[1].owner.name).toBe('login_name_2');
             expect(result[1].owner.avatar).toBe('avatar_url_2');
             expect(result[1].url).toBe('html_url_2');
@@ -153,10 +126,8 @@ describe('github repository provider unit test', () => {
             expect(result?.defaultBranch).toBe('development');
             expect(result?.isPrivate).toBeTruthy();
             expect(result?.hooksUrl).toBe('hooks_url_2');
-            expect(result?.language.name).toBe('TypeScript');
-            expect(result?.language.abbr).toBe('TS');
-            expect(result?.license?.name).toBe('MIT License');
-            expect(result?.license?.abbr).toBe('MIT');
+            expect(result?.language).toBe('TypeScript');
+            expect(result?.license).toBe('MIT License');
             expect(result?.owner.name).toBe('login_name_2');
             expect(result?.owner.avatar).toBe('avatar_url_2');
             expect(result?.url).toBe('html_url_2');
@@ -170,12 +141,10 @@ describe('github repository provider unit test', () => {
     describe('toRepository', () => {
         test('should properly set default value for missing fields', () => {
             data[1].license = null;
-            licenseResolverStub.resolve.returns('N/A');
 
             const result = provider.toRepository(data[1]);
 
-            expect(result?.license?.name).toBe('');
-            expect(result?.license?.abbr).toBe('N/A');
+            expect(result?.license).toBe('');
         });
     });
 });

@@ -3,10 +3,7 @@ import { Container } from 'inversify';
 
 import IHttpClient from '../interface/generic/http-client.interface';
 import IRepositoryProvider from '../interface/source-control/repository-provider.interface';
-import IAbbreviationResolver from '../interface/generic/abbreviation-resolver.interface';
 import HttpClient from '../service/io/http-client/http-client';
-import LanguageNameResolver from '../service/resolver/language-name-resolver/language-name-resolver';
-import LicenseNameResolver from '../service/resolver/license-name-resolver/license-name-resolver';
 import OutlookApiProvider from '../service/mail/outlook/outlook-api-provider';
 import OutlookWebhookProvider from '../service/webhook/outlook/outlook-webhook-provider';
 import ZendeskTicketByMailProvider from '../service/customer-support/zendesk/zendesk-ticket-by-mail-provider.service';
@@ -31,18 +28,6 @@ container
     .inSingletonScope();
 
 container
-    .bind<IAbbreviationResolver>(Types.IAbbreviationResolver)
-    .to(LanguageNameResolver)
-    .inSingletonScope()
-    .whenTargetNamed('language')
-
-container
-    .bind<IAbbreviationResolver>(Types.IAbbreviationResolver)
-    .to(LicenseNameResolver)
-    .inSingletonScope()
-    .whenTargetNamed('license')
-
-container
     .bind<IRepositoryProvider<any>>(Types.IRepositoryProvider)
     .to(GithubRepositoryProvider)
     .inSingletonScope()
@@ -61,16 +46,6 @@ container
 container
     .bind<ZendeskTicketByMailProvider>(Types.ZendeskTicketByMailProvider)
     .to(ZendeskTicketByMailProvider)
-    .inSingletonScope();
-
-container
-    .bind<LanguageNameResolver>(Types.LanguageNameResolver)
-    .to(LanguageNameResolver)
-    .inSingletonScope();
-
-container
-    .bind<LicenseNameResolver>(Types.LicenseNameResolver)
-    .to(LicenseNameResolver)
     .inSingletonScope();
 
 container
@@ -122,15 +97,5 @@ container
     .bind<AppSettings>(Types.AppSettings)
     .to(AppSettings)
     .inSingletonScope();
-
-container
-    .bind<string>(Types.ResolverType)
-    .toConstantValue('language')
-    .whenTargetNamed('language');
-
-container
-    .bind<string>(Types.ResolverType)
-    .toConstantValue('license')
-    .whenTargetNamed('license');
 
 export default container;

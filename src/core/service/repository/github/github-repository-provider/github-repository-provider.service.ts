@@ -1,11 +1,10 @@
-import { injectable, inject, named } from 'inversify';
+import { injectable, inject } from 'inversify';
 
 import Types from '../../../../ioc/types';
 import IUser from '../../../../interface/generic/user.interface';
 import IHttpClient from '../../../../interface/generic/http-client.interface';
 import IRepository from '../../../../interface/source-control/repository.interface';
 import IRepositoryProvider from '../../../../interface/source-control/repository-provider.interface';
-import IAbbreviationResolver from '../../../../interface/generic/abbreviation-resolver.interface';
 import AppSettings from '../../../io/app-settings/app-settings';
 
 @injectable()
@@ -13,21 +12,15 @@ export default class GithubRepositoryProvider implements IRepositoryProvider<any
     private _url: string;
     private _token: string;
     private _httpClient: IHttpClient;
-    private _languageResolver: IAbbreviationResolver;
-    private _licenseResolver: IAbbreviationResolver;
 
     constructor(
         @inject(Types.AppSettings) settings: AppSettings,
-        @inject(Types.IHttpClient) httpClient: IHttpClient,
-        @inject(Types.IAbbreviationResolver) @named('language') languageResolver: IAbbreviationResolver,
-        @inject(Types.IAbbreviationResolver) @named('license') licenseResolver: IAbbreviationResolver
+        @inject(Types.IHttpClient) httpClient: IHttpClient
     ) {
         const { url, token } = settings.get('repository.github');
         this._url = url;
         this._token = token;
         this._httpClient = httpClient;
-        this._languageResolver = languageResolver;
-        this._licenseResolver = licenseResolver;
     }
 
     private get headers(): { [key: string]: string } {
@@ -57,14 +50,8 @@ export default class GithubRepositoryProvider implements IRepositoryProvider<any
             createdOn: new Date(isNaN(createdAt) ? createdAt : createdAt * 1000),
             defaultBranch: data.default_branch,
             hooksUrl: data.hooks_url,
-            language: {
-                name: data.language,
-                abbr: this._languageResolver.resolve(data.language)
-            },
-            license: {
-                name: data.license?.name ?? '',
-                abbr: this._licenseResolver.resolve(data.license?.name)
-            },
+            language: data.language,
+            license: data.license?.name ?? '',
             owner: ({ name: data.owner.login, avatar: data.owner.avatar_url }) as IUser,
             isPrivate: data.private,
             url: data.html_url
