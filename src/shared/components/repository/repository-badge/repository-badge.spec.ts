@@ -16,8 +16,7 @@ describe('repository badge component unit test', () => {
 
     beforeEach(() => {
         const propsData = { repository: { id: 'repository_id', url: 'repository_url' } };
-        const stubs = { RepositoryInfoCard: '<div></div>' };
-        wrapper = mount(RepositoryBadge, { propsData, stubs });
+        wrapper = mount(RepositoryBadge, { propsData });
         shellSpy = spy(shell, 'openExternal');
     });
 
@@ -28,9 +27,6 @@ describe('repository badge component unit test', () => {
 
     test('should create component instance', () => {
         expect(wrapper.vm.$props.repository.id).toBe('repository_id');
-        expect(wrapper.vm.$props.showPopover).toBeTruthy();
-        expect(wrapper.vm.$props.popoverWidth).toBe(100);
-        expect(wrapper.vm.$props.popoverPosition).toBe('bottom');
     });
 
     test('should open external links', () => {

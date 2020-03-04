@@ -1,20 +1,12 @@
 .repository-badge-container {
+    max-width: inherit;
 
-    .repository-name {
-        max-width: inherit;
+    .url {
+        color: var(--main-font-color);
+        transition: color 0.3s ease;
+    }
 
-        .repository-icon {
-            color: rgb(16, 108, 230);
-            margin-right: 1.5px;
-        }
-
-        .url {
-            color: var(--main-font-color);
-            transition: color 0.3s ease;
-        }
-
-        &:hover .url {
-            color: rgb(16, 108, 230);
-        }
+    &:hover .url {
+        color: rgb(16, 108, 230);
     }
 }
