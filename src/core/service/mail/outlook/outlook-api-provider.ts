@@ -5,9 +5,9 @@ import * as graph from '@microsoft/microsoft-graph-client';
 import { GraphRequest } from '@microsoft/microsoft-graph-client';
 
 import Types from '../../../ioc/types';
-import IUser from '../../../interface/general/user.interface';
-import IEmail from '../../../interface/general/email.interface';
-import IOAuthProvider from '../../../interface/general/oauth-provider.interface';
+import IUser from '../../../interface/generic/user.interface';
+import IEmail from '../../../interface/generic/email.interface';
+import IOAuthProvider from '../../../interface/generic/oauth-provider.interface';
 import { logger } from '../../io/logger/logger';
 import AppSettings from '../../io/app-settings/app-settings';
 

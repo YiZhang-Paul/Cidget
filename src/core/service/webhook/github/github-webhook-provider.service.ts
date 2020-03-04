@@ -1,7 +1,7 @@
 import { injectable, inject } from 'inversify';
 
 import Types from '../../../ioc/types';
-import IHttpClient from '../../../interface/general/http-client.interface';
+import IHttpClient from '../../../interface/generic/http-client.interface';
 import IWebhook from '../../../interface/webhook/webhook.interface';
 import IWebhookQuery from '../../../interface/webhook/webhook-query.interface';
 import IWebhookProvider from '../../../interface/webhook/webhook-provider.interface';

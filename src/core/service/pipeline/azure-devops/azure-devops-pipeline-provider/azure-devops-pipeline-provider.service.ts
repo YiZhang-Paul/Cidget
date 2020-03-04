@@ -1,7 +1,7 @@
 import { injectable, inject } from 'inversify';
 
 import Types from '../../../../ioc/types';
-import IUser from '../../../../interface/general/user.interface';
+import IUser from '../../../../interface/generic/user.interface';
 import IRepository from '../../../../interface/devops/ci/repository.interface';
 import IBuildPipeline from '../../../../interface/devops/ci/build-pipeline.interface';
 import IReleasePipeline from '../../../../interface/devops/cd/release-pipeline.interface';

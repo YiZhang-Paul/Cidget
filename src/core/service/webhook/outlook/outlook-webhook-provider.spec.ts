@@ -3,7 +3,7 @@ import { assert as sinonExpect, stub } from 'sinon';
 
 import Types from '../../../ioc/types';
 import Container from '../../../ioc/container';
-import IEmail from '../../../interface/general/email.interface';
+import IEmail from '../../../interface/generic/email.interface';
 import AppSettings from '../../io/app-settings/app-settings';
 import OutlookApiProvider from '../../mail/outlook/outlook-api-provider';
 

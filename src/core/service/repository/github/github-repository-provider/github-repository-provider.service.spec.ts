@@ -2,8 +2,8 @@ import { assert as sinonExpect, stub } from 'sinon';
 
 import Types from '../../../../ioc/types';
 import Container from '../../../../ioc/container';
-import IHttpClient from '../../../../interface/general/http-client.interface';
-import IAbbreviationResolver from '../../../../interface/general/abbreviation-resolver.interface';
+import IHttpClient from '../../../../interface/generic/http-client.interface';
+import IAbbreviationResolver from '../../../../interface/generic/abbreviation-resolver.interface';
 
 import GithubRepositoryProvider from './github-repository-provider.service';
 

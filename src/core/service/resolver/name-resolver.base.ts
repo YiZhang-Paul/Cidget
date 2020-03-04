@@ -1,6 +1,6 @@
 import { injectable } from 'inversify';
 
-import IAbbreviationResolver from '../../interface/general/abbreviation-resolver.interface';
+import IAbbreviationResolver from '../../interface/generic/abbreviation-resolver.interface';
 import AppSettings from '../io/app-settings/app-settings';
 
 @injectable()

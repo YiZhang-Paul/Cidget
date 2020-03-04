@@ -4,7 +4,7 @@ import Types from '../../../../ioc/types';
 import ICommit from '../../../../interface/source-control/code-commit/commit.interface';
 import ICommitStatus from '../../../../interface/source-control/code-commit/commit-status.interface';
 import IGithubUser from '../../../../interface/source-control/github/github-user.interface';
-import IHttpClient from '../../../../interface/general/http-client.interface';
+import IHttpClient from '../../../../interface/generic/http-client.interface';
 import IRepositoryProvider from '../../../../interface/source-control/repository-provider.interface';
 import AppSettings from '../../../io/app-settings/app-settings';
 

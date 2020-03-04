@@ -2,7 +2,7 @@ import { injectable, inject } from 'inversify';
 
 import Types from '../../../../ioc/types';
 import ICiBuild from '../../../../interface/devops/ci/ci-build.interface';
-import IHttpClient from '../../../../interface/general/http-client.interface';
+import IHttpClient from '../../../../interface/generic/http-client.interface';
 
 @injectable()
 export default class AzureDevopsCiBuildService {

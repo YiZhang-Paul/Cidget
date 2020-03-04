@@ -4,7 +4,7 @@ import Types from '../../../../ioc/types';
 import IGithubUser from '../../../../interface/source-control/github/github-user.interface';
 import IPullRequest from '../../../../interface/source-control/pull-request/pull-request.interface';
 import IPullRequestReview from '../../../../interface/source-control/pull-request/pull-request-review.interface';
-import IHttpClient from '../../../../interface/general/http-client.interface';
+import IHttpClient from '../../../../interface/generic/http-client.interface';
 import IRepositoryProvider from '../../../../interface/source-control/repository-provider.interface';
 import AppSettings from '../../../io/app-settings/app-settings';
 

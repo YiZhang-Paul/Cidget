@@ -1,7 +1,7 @@
 import * as axios from 'axios';
 import { injectable } from 'inversify';
 
-import IHttpClient from '../../../interface/general/http-client.interface';
+import IHttpClient from '../../../interface/generic/http-client.interface';
 
 @injectable()
 export default class HttpClient implements IHttpClient {

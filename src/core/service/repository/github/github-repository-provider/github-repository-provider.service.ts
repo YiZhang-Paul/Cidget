@@ -1,11 +1,11 @@
 import { injectable, inject, named } from 'inversify';
 
 import Types from '../../../../ioc/types';
-import IUser from '../../../../interface/general/user.interface';
-import IHttpClient from '../../../../interface/general/http-client.interface';
+import IUser from '../../../../interface/generic/user.interface';
+import IHttpClient from '../../../../interface/generic/http-client.interface';
 import IRepository from '../../../../interface/source-control/repository.interface';
 import IRepositoryProvider from '../../../../interface/source-control/repository-provider.interface';
-import IAbbreviationResolver from '../../../../interface/general/abbreviation-resolver.interface';
+import IAbbreviationResolver from '../../../../interface/generic/abbreviation-resolver.interface';
 import AppSettings from '../../../io/app-settings/app-settings';
 
 @injectable()

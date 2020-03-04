@@ -1,7 +1,7 @@
 import Types from '../../../ioc/types';
 import Container from '../../../ioc/container';
-import IUser from '../../../interface/general/user.interface';
-import IEmail from '../../../interface/general/email.interface';
+import IUser from '../../../interface/generic/user.interface';
+import IEmail from '../../../interface/generic/email.interface';
 
 import ZendeskTicketByMailProvider from './zendesk-ticket-by-mail-provider.service';
 

@@ -1,4 +1,4 @@
-import IUser from '../../general/user.interface';
+import IUser from '../../generic/user.interface';
 import IRepository from '../repository.interface';
 
 export default interface IPullRequest<TUser = IUser, TRepository = IRepository> {

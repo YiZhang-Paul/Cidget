@@ -1,6 +1,6 @@
 import { injectable } from 'inversify';
 
-import IEmail from '../../../interface/general/email.interface';
+import IEmail from '../../../interface/generic/email.interface';
 import ISupportTicket from '../../../interface/customer-support/support-ticket.interface';
 import ISupportTicketProvider from '../../../interface/customer-support/support-ticket-provider.interface';
 
