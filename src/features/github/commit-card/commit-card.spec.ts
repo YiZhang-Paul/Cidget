@@ -29,7 +29,6 @@ describe('commit card card component unit test', () => {
 
         const stubs = {
             UserAvatar: '<div></div>',
-            UserInfoCard: '<div></div>',
             WeblinkDisplay: '<div></div>',
             ChangeStatsSummary: '<div></div>',
             BranchBadge: '<div></div>',
