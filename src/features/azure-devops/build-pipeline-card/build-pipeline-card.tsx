@@ -4,8 +4,8 @@ import * as tsx from 'vue-tsx-support';
 import ICiBuild from '../../../core/interface/devops/ci/ci-build.interface';
 import NotificationCard from '../../../shared/components/generic/notification-card/notification-card';
 import WeblinkDisplay from '../../../shared/components/generic/weblink-display/weblink-display';
-import BranchBadge from '../../../shared/components/repository/branch-badge/branch-badge';
-import RepositoryBadge from '../../../shared/components/repository/repository-badge/repository-badge';
+import BranchBadge from '../../../shared/components/source-control/branch-badge/branch-badge';
+import RepositoryBadge from '../../../shared/components/source-control/repository-badge/repository-badge';
 
 import './build-pipeline-card.scss';
 

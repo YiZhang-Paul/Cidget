@@ -6,8 +6,8 @@ import IPullRequest from '../../../core/interface/source-control/pull-request/pu
 import NotificationCard from '../../../shared/components/generic/notification-card/notification-card';
 import WeblinkDisplay from '../../../shared/components/generic/weblink-display/weblink-display';
 import ChangeStatsSummary from '../../../shared/components/generic/change-stats-summary/change-stats-summary';
-import BranchBadge from '../../../shared/components/repository/branch-badge/branch-badge';
-import RepositoryBadge from '../../../shared/components/repository/repository-badge/repository-badge';
+import BranchBadge from '../../../shared/components/source-control/branch-badge/branch-badge';
+import RepositoryBadge from '../../../shared/components/source-control/repository-badge/repository-badge';
 
 import './pull-request-card.scss';
 
