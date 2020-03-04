@@ -2,7 +2,7 @@ import { Component, Prop } from 'vue-property-decorator';
 import * as tsx from 'vue-tsx-support';
 import { shell } from 'electron';
 
-import IGithubUser from '../../../core/interface/repository/github/github-user.interface';
+import IGithubUser from '../../../core/interface/source-control/github/github-user.interface';
 
 import './user-info-card.scss';
 

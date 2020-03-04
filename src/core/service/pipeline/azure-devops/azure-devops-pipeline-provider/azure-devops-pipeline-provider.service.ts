@@ -2,11 +2,11 @@ import { injectable, inject } from 'inversify';
 
 import Types from '../../../../ioc/types';
 import IUser from '../../../../interface/general/user.interface';
-import IRepository from '../../../../interface/pipeline/repository.interface';
-import IBuildPipeline from '../../../../interface/pipeline/build-pipeline.interface';
-import IReleasePipeline from '../../../../interface/pipeline/release-pipeline.interface';
-import IPipelineProvider from '../../../../interface/pipeline/pipeline-provider.interface';
-import IAzureDevopsQueryContext from '../../../../interface/pipeline/azure-devops/azure-devops-query-context.interface';
+import IRepository from '../../../../interface/devops/ci/repository.interface';
+import IBuildPipeline from '../../../../interface/devops/ci/build-pipeline.interface';
+import IReleasePipeline from '../../../../interface/devops/cd/release-pipeline.interface';
+import IPipelineProvider from '../../../../interface/devops/pipeline-provider.interface';
+import IAzureDevopsQueryContext from '../../../../interface/devops/azure-devops/azure-devops-query-context.interface';
 import AzureDevopsApiProvider from '../azure-devops-api-provider/azure-devops-api-provider.service';
 
 @injectable()

@@ -1,11 +1,11 @@
 import { injectable, inject, named } from 'inversify';
 
 import Types from '../../../../ioc/types';
-import IGithubUser from '../../../../interface/repository/github/github-user.interface';
-import IPullRequest from '../../../../interface/repository/pull-request.interface';
-import IPullRequestReview from '../../../../interface/repository/pull-request-review.interface';
+import IGithubUser from '../../../../interface/source-control/github/github-user.interface';
+import IPullRequest from '../../../../interface/source-control/pull-request/pull-request.interface';
+import IPullRequestReview from '../../../../interface/source-control/pull-request/pull-request-review.interface';
 import IHttpClient from '../../../../interface/general/http-client.interface';
-import IRepositoryProvider from '../../../../interface/repository/repository-provider.interface';
+import IRepositoryProvider from '../../../../interface/source-control/repository-provider.interface';
 import AppSettings from '../../../io/app-settings/app-settings';
 
 @injectable()

@@ -3,8 +3,8 @@ import { injectable, inject, named } from 'inversify';
 import Types from '../../../../ioc/types';
 import IUser from '../../../../interface/general/user.interface';
 import IHttpClient from '../../../../interface/general/http-client.interface';
-import IRepository from '../../../../interface/repository/repository.interface';
-import IRepositoryProvider from '../../../../interface/repository/repository-provider.interface';
+import IRepository from '../../../../interface/source-control/repository.interface';
+import IRepositoryProvider from '../../../../interface/source-control/repository-provider.interface';
 import IAbbreviationResolver from '../../../../interface/general/abbreviation-resolver.interface';
 import AppSettings from '../../../io/app-settings/app-settings';
 

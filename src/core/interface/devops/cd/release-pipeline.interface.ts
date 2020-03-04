@@ -1,4 +1,4 @@
-import IUser from '../../interface/general/user.interface';
+import IUser from '../../general/user.interface';
 
 export default interface IReleasePipeline {
     name: string;

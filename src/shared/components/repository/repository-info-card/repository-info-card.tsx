@@ -1,7 +1,7 @@
 import { Component, Prop } from 'vue-property-decorator';
 import * as tsx from 'vue-tsx-support';
 
-import IRepository from '../../../../core/interface/repository/repository.interface';
+import IRepository from '../../../../core/interface/source-control/repository.interface';
 
 import './repository-info-card.scss';
 

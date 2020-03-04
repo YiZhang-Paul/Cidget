@@ -1,4 +1,4 @@
-import IUser from '../general/user.interface';
+import IUser from '../../general/user.interface';
 
 export default interface IRepository {
     name: string;

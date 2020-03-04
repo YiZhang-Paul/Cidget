@@ -1,7 +1,7 @@
 import { injectable, inject } from 'inversify';
 
 import Types from '../../../../ioc/types';
-import ICiBuild from '../../../../interface/pipeline/ci-build.interface';
+import ICiBuild from '../../../../interface/devops/ci/ci-build.interface';
 import IHttpClient from '../../../../interface/general/http-client.interface';
 
 @injectable()

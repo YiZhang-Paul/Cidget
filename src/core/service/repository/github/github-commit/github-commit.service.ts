@@ -1,11 +1,11 @@
 import { injectable, inject, named } from 'inversify';
 
 import Types from '../../../../ioc/types';
-import ICommit from '../../../../interface/repository/commit.interface';
-import ICommitStatus from '../../../../interface/repository/commit-status.interface';
-import IGithubUser from '../../../../interface/repository/github/github-user.interface';
+import ICommit from '../../../../interface/source-control/code-commit/commit.interface';
+import ICommitStatus from '../../../../interface/source-control/code-commit/commit-status.interface';
+import IGithubUser from '../../../../interface/source-control/github/github-user.interface';
 import IHttpClient from '../../../../interface/general/http-client.interface';
-import IRepositoryProvider from '../../../../interface/repository/repository-provider.interface';
+import IRepositoryProvider from '../../../../interface/source-control/repository-provider.interface';
 import AppSettings from '../../../io/app-settings/app-settings';
 
 @injectable()

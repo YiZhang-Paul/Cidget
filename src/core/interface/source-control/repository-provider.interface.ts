@@ -1,4 +1,4 @@
-import IRepository from '../repository/repository.interface';
+import IRepository from './repository.interface';
 
 export default interface IRepositoryProvider<TContext> {
     listRepositories(): Promise<IRepository[]>;

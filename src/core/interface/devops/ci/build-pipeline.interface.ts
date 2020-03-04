@@ -1,5 +1,6 @@
-import IUser from '../../interface/general/user.interface';
 import IRepository from './repository.interface';
+
+import IUser from '../../general/user.interface';
 
 export default interface IBuildPipeline {
     name: string;

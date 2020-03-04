@@ -2,8 +2,8 @@ import { Component, Prop } from 'vue-property-decorator';
 import * as tsx from 'vue-tsx-support';
 import { shell } from 'electron';
 
-import ICommit from '../../../core/interface/repository/commit.interface';
-import IGithubUser from '../../../core/interface/repository/github/github-user.interface';
+import ICommit from '../../../core/interface/source-control/code-commit/commit.interface';
+import IGithubUser from '../../../core/interface/source-control/github/github-user.interface';
 import NotificationCard from '../../../shared/components/generic/notification-card/notification-card';
 import WeblinkDisplay from '../../../shared/components/generic/weblink-display/weblink-display';
 import ChangeStatsSummary from '../../../shared/components/generic/change-stats-summary/change-stats-summary';

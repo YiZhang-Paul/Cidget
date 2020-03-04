@@ -1,5 +1,5 @@
-import IBuildPipeline from './build-pipeline.interface';
-import IReleasePipeline from './release-pipeline.interface';
+import IBuildPipeline from './ci/build-pipeline.interface';
+import IReleasePipeline from './cd/release-pipeline.interface';
 
 export default interface IPipelineProvider<TContext> {
     fetchBuildDefinition(context: TContext): Promise<IBuildPipeline | null>;

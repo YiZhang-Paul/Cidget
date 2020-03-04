@@ -3,8 +3,8 @@ import { assert as sinonExpect, stub } from 'sinon';
 import Types from '../../../../ioc/types';
 import Container from '../../../../ioc/container';
 import IHttpClient from '../../../../interface/general/http-client.interface';
-import IRepository from '../../../../interface/repository/repository.interface';
-import IRepositoryProvider from '../../../../interface/repository/repository-provider.interface';
+import IRepository from '../../../../interface/source-control/repository.interface';
+import IRepositoryProvider from '../../../../interface/source-control/repository-provider.interface';
 
 import GithubPullRequestService from './github-pull-request.service';
 

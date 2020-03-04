@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { Container } from 'inversify';
 
 import IHttpClient from '../interface/general/http-client.interface';
-import IRepositoryProvider from '../interface/repository/repository-provider.interface';
+import IRepositoryProvider from '../interface/source-control/repository-provider.interface';
 import IAbbreviationResolver from '../interface/general/abbreviation-resolver.interface';
 import HttpClient from '../service/io/http-client/http-client';
 import LanguageNameResolver from '../service/resolver/language-name-resolver/language-name-resolver';
