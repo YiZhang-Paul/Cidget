@@ -5,14 +5,14 @@ import ISupportTicket from '../../../interface/customer-support/support-ticket.i
 import ISupportTicketProvider from '../../../interface/customer-support/support-ticket-provider.interface';
 
 @injectable()
-export default class ZendeskTicketByMailProvider implements ISupportTicketProvider<IEmail> {
+export default class ZendeskTicketEmailProvider implements ISupportTicketProvider<IEmail> {
 
-    public isZendeskEmail(data: IEmail): boolean {
-        return /zendesk\.com\/agent\/tickets\/\d+/i.test(data.body);
+    public isZendeskEmail(email: IEmail): boolean {
+        return /zendesk\.com\/agent\/tickets\/\d+/i.test(email.body);
     }
 
-    public toTicket(data: IEmail): ISupportTicket {
-        const { body, subject, from, to } = data;
+    public toTicket(email: IEmail): ISupportTicket {
+        const { body, subject, from, to } = email;
         const url = this.getUrl(body);
         from.name = from.name.replace(/\s?\(.*$/i, '');
 
@@ -21,7 +21,7 @@ export default class ZendeskTicketByMailProvider implements ISupportTicketProvid
             title: subject.replace(/^.*assignment:?\s?/i, ''),
             content: this.getContent(body),
             htmlContent: this.getHtmlContent(body),
-            createdOn: data.created,
+            createdOn: email.created,
             url,
             status: /has been reopened/i.test(body) ? 'reopened' : 'opened',
             requester: from,

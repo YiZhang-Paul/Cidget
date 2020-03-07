@@ -6,7 +6,7 @@ import IRepositoryProvider from '../interface/source-control/repository-provider
 import HttpClient from '../service/io/http-client/http-client';
 import OutlookApiProvider from '../service/mail/outlook/outlook-api-provider';
 import OutlookWebhookProvider from '../service/webhook/outlook/outlook-webhook-provider';
-import ZendeskTicketByMailProvider from '../service/customer-support/zendesk/zendesk-ticket-by-mail-provider.service';
+import ZendeskTicketEmailProvider from '../service/customer-support/zendesk/zendesk-ticket-email-provider.service';
 import GithubRepositoryProvider from '../service/repository/github/github-repository-provider/github-repository-provider.service';
 import GithubWebhookProviderService from '../service/webhook/github/github-webhook-provider.service';
 import GithubCommitService from '../service/repository/github/github-commit/github-commit.service';
@@ -14,8 +14,8 @@ import GithubPullRequestService from '../service/repository/github/github-pull-r
 import AzureDevopsWebhookProviderService from '../service/webhook/azure-devops/azure-devops-webhook-provider.service';
 import AzureDevopsCiBuildService from '../service/pipeline/azure-devops/azure-devops-ci-build/azure-devops-ci-build.service';
 import AzureDevopsCdReleaseService from '../service/pipeline/azure-devops/azure-devops-cd-release/azure-devops-cd-release.service';
-import AzureDevopsApiProvider from '../service/pipeline/azure-devops/azure-devops-api-provider/azure-devops-api-provider.service';
-import AzureDevopsPipelineProvider from '../service/pipeline/azure-devops/azure-devops-pipeline-provider/azure-devops-pipeline-provider.service';
+import AzureDevopsApiProvider from '../service/devops/azure-devops/azure-devops-api-provider/azure-devops-api-provider.service';
+import AzureDevopsPipelineProvider from '../service/devops/azure-devops/azure-devops-pipeline-provider/azure-devops-pipeline-provider.service';
 import AppSettings from '../service/io/app-settings/app-settings';
 
 import Types from './types';
@@ -44,8 +44,8 @@ container
     .inSingletonScope();
 
 container
-    .bind<ZendeskTicketByMailProvider>(Types.ZendeskTicketByMailProvider)
-    .to(ZendeskTicketByMailProvider)
+    .bind<ZendeskTicketEmailProvider>(Types.ZendeskTicketEmailProvider)
+    .to(ZendeskTicketEmailProvider)
     .inSingletonScope();
 
 container

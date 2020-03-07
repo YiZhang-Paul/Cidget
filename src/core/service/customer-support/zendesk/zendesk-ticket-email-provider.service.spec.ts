@@ -3,13 +3,13 @@ import Container from '../../../ioc/container';
 import IUser from '../../../interface/generic/user.interface';
 import IEmail from '../../../interface/generic/email.interface';
 
-import ZendeskTicketByMailProvider from './zendesk-ticket-by-mail-provider.service';
+import ZendeskTicketEmailProvider from './zendesk-ticket-email-provider.service';
 
 describe('zendesk ticket by mail provider unit test', () => {
-    let service: ZendeskTicketByMailProvider;
+    let service: ZendeskTicketEmailProvider;
 
     beforeEach(() => {
-        service = Container.get<ZendeskTicketByMailProvider>(Types.ZendeskTicketByMailProvider);
+        service = Container.get<ZendeskTicketEmailProvider>(Types.ZendeskTicketEmailProvider);
     });
 
     describe('isZendeskEmail', () => {

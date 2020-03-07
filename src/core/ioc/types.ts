@@ -3,7 +3,7 @@ export default {
     IRepositoryProvider: Symbol.for('IRepositoryProvider'),
     OutlookApiProvider: Symbol.for('OutlookApiProvider'),
     OutlookWebhookProvider: Symbol.for('OutlookWebhookProvider'),
-    ZendeskTicketByMailProvider: Symbol.for('ZendeskTicketByMailProvider'),
+    ZendeskTicketEmailProvider: Symbol.for('ZendeskTicketEmailProvider'),
     GithubWebhookProviderService: Symbol.for('GithubWebhookProviderService'),
     GithubCommitService: Symbol.for('GithubCommitService'),
     GithubPullRequestService: Symbol.for('GithubPullRequestService'),

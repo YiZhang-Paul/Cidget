@@ -1,14 +1,4 @@
 export default (): any => ({
-    abbreviations: {
-        language: {
-            TS: ["typescript", "tscript", "tsx"],
-            JS: ["javascript", "jscript", "jsx"],
-            "C#": ["csharp", "c sharp"]
-        },
-        license: {
-            MIT: ["the mit license", "mit license"]
-        }
-    },
     "cidget.server": {
         host: "test_cidget_server",
         port: 111111
