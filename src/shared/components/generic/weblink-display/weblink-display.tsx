@@ -13,12 +13,7 @@ export default class WeblinkDisplay extends tsx.Component<any> {
     @Prop({ default: false }) public useHtmlTooltip!: boolean;
     @Prop({ default: false }) public noTooltip!: boolean;
     @Prop({ default: false }) public borderless!: boolean;
-    @Prop({ default: false }) public isDarkMode!: boolean;
     @Ref('container') public container!: HTMLElement;
-
-    private get colorMode(): string {
-        return this.isDarkMode ? 'dark' : 'light';
-    }
 
     public data(): any {
         return ({ showTooltip: false });
@@ -49,7 +44,7 @@ export default class WeblinkDisplay extends tsx.Component<any> {
             <el-tooltip class="tooltips"
                 disabled={!this.$data.showTooltip}
                 placement={this.tooltipPosition}
-                effect={this.colorMode}>
+                effect="light">
 
                 {tooltip}
                 <div class={className} ref="container">
