@@ -111,12 +111,13 @@ describe('azure devops ci build service unit test', () => {
             expect(result.message).toBe('payload_message_text');
         });
 
-        test('should not include trigger repository information when repository provider is not supported', async () => {
+        test('should not include source control url information when repository provider is not supported', async () => {
             payload.resource.run.resources.repositories.self.repository.type = 'subversion';
 
             const result = await service.toCiBuild(payload);
 
-            expect(result.triggeredBy).toBeNull();
+            expect(result.triggeredBy.url).toBe('');
+            expect(result.triggeredBy.branch.url).toBe('');
         });
     });
 });

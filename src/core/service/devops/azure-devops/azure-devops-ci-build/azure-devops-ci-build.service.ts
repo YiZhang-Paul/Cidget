@@ -56,11 +56,13 @@ export default class AzureDevopsCiBuildService {
     private getRepository(data: any): any {
         const { repository: source, refName } = data;
         const branch = refName.split('/').slice(-1)[0];
+        const isPullRequest = refName.startsWith('refs/pull');
 
         const repository: any = {
+            url: '',
             type: source.type.toLowerCase(),
             name: source.fullName.split('/').slice(-1)[0],
-            branch: { isPullRequest: refName.startsWith('refs/pull'), name: branch }
+            branch: { isPullRequest, name: branch, url: '' }
         };
 
         if (source.type.toLowerCase() === 'github') {
