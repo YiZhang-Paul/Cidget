@@ -26,11 +26,7 @@ export default class AzureDevopsCiBuildService {
             url: run._links.web.href,
             status: run.state,
             result: run.result ?? null,
-            pipeline: {
-                id: run.pipeline.id,
-                name: run.pipeline.name,
-                url: run._links['pipeline.web'].href
-            },
+            pipeline: this.getPipeline(run),
             triggeredBy: this.getRepository(run.resources.repositories.self)
         }) as ICiBuild;
     }
@@ -49,24 +45,30 @@ export default class AzureDevopsCiBuildService {
         }
     }
 
+    private getPipeline(run: any): any {
+        return ({
+            id: run.pipeline.id,
+            name: run.pipeline.name,
+            url: run._links['pipeline.web'].href
+        });
+    }
+
     private getRepository(data: any): any {
-        const { repository, refName } = data;
+        const { repository: source, refName } = data;
+        const branch = refName.split('/').slice(-1)[0];
 
-        if (repository.type.toLowerCase() === 'github') {
-            const url = `https://github.com/${repository.fullName}`;
-            const branch = refName.split('/').slice(-1)[0];
+        const repository: any = {
+            type: source.type.toLowerCase(),
+            name: source.fullName.split('/').slice(-1)[0],
+            branch: { isPullRequest: refName.startsWith('refs/pull'), name: branch }
+        };
 
-            return ({
-                type: repository.type.toLowerCase(),
-                name: repository.fullName.split('/').slice(-1)[0],
-                url,
-                branch: {
-                    isPullRequest: refName.startsWith('refs/pull'),
-                    name: branch,
-                    url: `${url}/tree/${branch}`
-                }
-            });
+        if (source.type.toLowerCase() === 'github') {
+            const url = `https://github.com/${source.fullName}`;
+            repository.url = url;
+            repository.branch.url = `${url}/tree/${branch}`;
         }
-        return null;
+
+        return repository;
     }
 }
