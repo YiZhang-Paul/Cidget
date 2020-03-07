@@ -1,4 +1,7 @@
 import { injectable, inject } from 'inversify';
+import { BuildRepository } from 'azure-devops-node-api/interfaces/BuildInterfaces';
+import { IdentityRef } from 'azure-devops-node-api/interfaces/common/VSSInterfaces';
+import { TeamProjectReference } from 'azure-devops-node-api/interfaces/CoreInterfaces';
 
 import Types from '../../../../ioc/types';
 import IUser from '../../../../interface/generic/user.interface';
@@ -25,34 +28,13 @@ export default class AzureDevopsPipelineProvider implements IPipelineProvider<IA
             return null;
         }
 
-        const owner: IUser = {
-            name: definition.authoredBy?.displayName ?? '',
-            avatar: definition.authoredBy?.imageUrl ?? '',
-            email: definition.authoredBy?.uniqueName ?? ''
-        };
-
-        const organization: IUser = {
-            name: definition.repository?.properties?.orgName ?? '',
-            avatar: definition.repository?.properties?.ownerAvatarUrl ?? ''
-        };
-
-        const repository: IRepository = {
-            name: definition.repository?.name ?? '',
-            type: definition.repository?.type ?? 'unknown',
-            defaultBranch: definition.repository?.defaultBranch ?? '',
-            organization
-        };
-
         return ({
             name: definition.name,
             id: definition.id,
-            project: {
-                id: definition.project?.id ?? '',
-                name: definition.project?.name ?? ''
-            },
-            owner,
+            project: this.getProject(definition.project),
+            owner: this.getOwner(definition.authoredBy),
             createdOn: definition.createdDate,
-            repository
+            repository: this.getRepository(definition.repository)
         }) as IBuildPipeline;
     }
 
@@ -64,19 +46,42 @@ export default class AzureDevopsPipelineProvider implements IPipelineProvider<IA
             return null;
         }
 
-        const owner: IUser = {
-            name: definition.createdBy?.displayName ?? '',
-            avatar: definition.createdBy?.imageUrl ?? '',
-            email: definition.createdBy?.uniqueName ?? ''
-        };
+        const definitionReference = definition.artifacts?.[0].definitionReference;
 
         return ({
             name: definition.name,
             id: definition.id,
-            project: definition.artifacts?.[0].definitionReference?.project.name ?? '',
-            triggeredBy: definition.artifacts?.[0].definitionReference?.definition.name ?? '',
-            owner,
+            project: definitionReference?.project.name ?? '',
+            triggeredBy: definitionReference?.definition.name ?? '',
+            owner: this.getOwner(definition.createdBy),
             createdOn: definition.createdOn
         }) as IReleasePipeline;
+    }
+
+    private getProject(project?: TeamProjectReference): { id: string; name: string } {
+        return ({
+            id: project?.id ?? '',
+            name: project?.name ?? ''
+        });
+    }
+
+    private getOwner(user?: IdentityRef): IUser {
+        return ({
+            name: user?.displayName ?? '',
+            avatar: user?.imageUrl ?? '',
+            email: user?.uniqueName ?? ''
+        }) as IUser;
+    }
+
+    private getRepository(repository?: BuildRepository): IRepository {
+        return ({
+            name: repository?.name ?? '',
+            type: repository?.type ?? 'unknown',
+            defaultBranch: repository?.defaultBranch ?? '',
+            organization: {
+                name: repository?.properties?.orgName ?? '',
+                avatar: repository?.properties?.ownerAvatarUrl ?? ''
+            }
+        }) as IRepository;
     }
 }
