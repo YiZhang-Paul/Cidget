@@ -16,7 +16,6 @@ export default class AzureDevopsCdReleaseService {
         const { resource } = payload;
         const release = resource.release || resource.deployment.release;
         const definition = (resource.release || resource.deployment).releaseDefinition;
-        const artifact = release.artifacts[0]?.definitionReference;
         const status = (resource.environment || resource.approval || resource.release).status;
 
         return ({
@@ -27,18 +26,26 @@ export default class AzureDevopsCdReleaseService {
             url: resource.url,
             commits: resource.data?.commits?.length ?? null,
             project: resource.project.name,
-            pipeline: {
-                id: definition.id,
-                name: definition.name,
-                url: definition._links.web.href
-            },
+            pipeline: this.getPipeline(definition),
             activeStage: resource.stageName ?? '',
             stages: await this.getStages(release.url),
-            triggeredBy: {
-                name: artifact?.definition.name ?? '',
-                url: artifact?.artifactSourceVersionUrl?.id ?? ''
-            }
+            triggeredBy: this.getTriggerBuild(release)
         }) as ICdRelease;
+    }
+
+    private getStatus(status: string): string {
+        if (status !== 'pending' && status !== 'queued') {
+            return status;
+        }
+        return status === 'pending' ? 'needs approval' : 'in progress';
+    }
+
+    private getPipeline(definition: any): any {
+        return ({
+            id: definition.id,
+            name: definition.name,
+            url: definition._links.web.href
+        });
     }
 
     private async getStages(url: string): Promise<{ name: string; status: string }[]> {
@@ -48,10 +55,12 @@ export default class AzureDevopsCdReleaseService {
         return stages.map((_: any) => ({ name: _.name, status: _.status }));
     }
 
-    private getStatus(status: string): string {
-        if (status !== 'pending' && status !== 'queued') {
-            return status;
-        }
-        return status === 'pending' ? 'needs approval' : 'in progress';
+    private getTriggerBuild(release: any): any {
+        const artifact = release.artifacts[0]?.definitionReference;
+
+        return ({
+            name: artifact?.definition.name ?? '',
+            url: artifact?.artifactSourceVersionUrl?.id ?? ''
+        });
     }
 }
