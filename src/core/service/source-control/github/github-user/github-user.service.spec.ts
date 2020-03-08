@@ -56,6 +56,9 @@ describe('github user service unit test', () => {
             const result = await service.getUser(data, true);
 
             sinonExpect.callCount(httpStub.get, 3);
+            expect(httpStub.get.args[0][0]).toBe('user_url/repos');
+            expect(httpStub.get.args[1][0]).toBe('user_url/followers');
+            expect(httpStub.get.args[2][0]).toBe('user_url/gists');
             expect(result.repositoryCount).toBe(3);
             expect(result.followerCount).toBe(1);
             expect(result.gistCount).toBe(2);

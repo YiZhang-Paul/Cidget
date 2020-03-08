@@ -5,6 +5,8 @@ import Container from '../../../../ioc/container';
 import IHttpClient from '../../../../interface/generic/http-client.interface';
 import IRepository from '../../../../interface/source-control/repository.interface';
 import IRepositoryProvider from '../../../../interface/source-control/repository-provider.interface';
+import IGithubUser from '../../../../interface/source-control/github/github-user.interface';
+import GithubUserService from '../github-user/github-user.service';
 
 import GithubCommitService from './github-commit.service';
 
@@ -12,6 +14,7 @@ describe('github commit service unit test', () => {
     let service: GithubCommitService;
     let httpStub: any;
     let repositoryProviderStub: any;
+    let userServiceStub: any;
 
     beforeEach(() => {
         httpStub = stub({
@@ -25,6 +28,10 @@ describe('github commit service unit test', () => {
             toRepository(): IRepository { return {} as IRepository; }
         } as IRepositoryProvider<any>);
 
+        userServiceStub = stub({
+            async getUser(_: any): Promise<IGithubUser> { return {} as IGithubUser; }
+        } as GithubUserService);
+
         Container
             .rebind<IHttpClient>(Types.IHttpClient)
             .toConstantValue(httpStub);
@@ -33,6 +40,10 @@ describe('github commit service unit test', () => {
             .rebind<IRepositoryProvider<any>>(Types.IRepositoryProvider)
             .toConstantValue(repositoryProviderStub)
             .whenTargetNamed('github');
+
+        Container
+            .rebind<GithubUserService>(Types.GithubUserService)
+            .toConstantValue(userServiceStub);
 
         service = Container.get<GithubCommitService>(Types.GithubCommitService);
     });
@@ -60,10 +71,8 @@ describe('github commit service unit test', () => {
     });
 
     describe('toCommit', () => {
-        let payload: any;
-
-        beforeEach(() => {
-            payload = {
+        test('should convert payload into commit', async () => {
+            const payload = {
                 ref: 'heads/ref/yizhang',
                 compare: 'compare_url',
                 sender: {
@@ -85,28 +94,11 @@ describe('github commit service unit test', () => {
                     modified: []
                 }
             };
-        });
-
-        test('should convert payload into commit', async () => {
-            httpStub.get.onCall(0).resolves({ data: [{}, {}, {}] });
-            httpStub.get.onCall(1).resolves({ data: [{}] });
-            httpStub.get.onCall(2).resolves({ data: [{}, {}] });
 
             const result = await service.toCommit(payload);
 
-            sinonExpect.calledThrice(httpStub.get);
-            expect(httpStub.get.args[0][0]).toBe('sender_url/repos');
-            expect(httpStub.get.args[1][0]).toBe('sender_url/followers');
-            expect(httpStub.get.args[2][0]).toBe('sender_url/gists');
+            sinonExpect.calledOnce(userServiceStub.getUser);
             expect(result.id).toBe('head_commit_id');
-            expect(result.initiator.name).toBe('committer_name');
-            expect(result.initiator.avatar).toBe('sender_avatar_url');
-            expect(result.initiator.email).toBe('committer_email');
-            expect(result.initiator.profileUrl).toBe('https://sender_html_url');
-            expect(result.initiator.repositoryCount).toBe(3);
-            expect(result.initiator.followerCount).toBe(1);
-            expect(result.initiator.gistCount).toBe(2);
-            expect(result.initiator.gistUrl).toBe('https://gist.sender_html_url');
             expect(result.branch).toBe('yizhang');
             expect(result.message).toBe('commit_message');
             expect(result.time.toISOString()).toBe('2020-01-03T06:45:41.370Z');
@@ -115,18 +107,6 @@ describe('github commit service unit test', () => {
             expect(result.added?.length).toBe(1);
             expect(result.removed?.length).toBe(2);
             expect(result.modified?.length).toBe(0);
-        });
-
-        test('should properly set default values for missing fields', async () => {
-            httpStub.get.onCall(0).resolves({ data: null });
-            httpStub.get.onCall(1).resolves({ data: null });
-            httpStub.get.onCall(2).resolves({ data: null });
-
-            const result = await service.toCommit(payload);
-
-            expect(result.initiator.repositoryCount).toBe(0);
-            expect(result.initiator.followerCount).toBe(0);
-            expect(result.initiator.gistCount).toBe(0);
         });
     });
 });

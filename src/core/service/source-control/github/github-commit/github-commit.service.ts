@@ -6,6 +6,7 @@ import ICommitStatus from '../../../../interface/source-control/code-commit/comm
 import IGithubUser from '../../../../interface/source-control/github/github-user.interface';
 import IHttpClient from '../../../../interface/generic/http-client.interface';
 import IRepositoryProvider from '../../../../interface/source-control/repository-provider.interface';
+import GithubUserService from '../github-user/github-user.service';
 import AppSettings from '../../../io/app-settings/app-settings';
 
 @injectable()
@@ -14,51 +15,37 @@ export default class GithubCommitService {
     private _token: string;
     private _httpClient: IHttpClient;
     private _repositoryProvider: IRepositoryProvider<any>;
+    private _userService: GithubUserService;
 
     constructor(
         @inject(Types.AppSettings) settings: AppSettings,
         @inject(Types.IHttpClient) httpClient: IHttpClient,
-        @inject(Types.IRepositoryProvider) @named('github') repositoryProvider: IRepositoryProvider<any>
+        @inject(Types.IRepositoryProvider) @named('github') repositoryProvider: IRepositoryProvider<any>,
+        @inject(Types.GithubUserService) userService: GithubUserService
     ) {
         const { url, token } = settings.get('repository.github');
         this._url = url;
         this._token = token;
         this._httpClient = httpClient;
         this._repositoryProvider = repositoryProvider;
-    }
-
-    private get headers(): { [key: string]: string } {
-        return ({ Authorization: `token ${this._token}` });
+        this._userService = userService;
     }
 
     public async getStatus(name: string, ref: string, owner: string): Promise<ICommitStatus> {
         const endpoint = `${this._url}/repos/${owner}/${name}/commits/${ref}/status`;
-        const { data } = await this._httpClient.get(endpoint, { headers: this.headers });
+        const headers = { Authorization: `token ${this._token}` };
+        const { data } = await this._httpClient.get(endpoint, { headers });
         const { sha, state } = data;
 
         return ({ ref: sha, status: state }) as ICommitStatus;
     }
 
     public async toCommit(payload: any): Promise<ICommit<IGithubUser>> {
-        const { ref, sender, repository, compare, head_commit } = payload;
-        const repositories = await this._httpClient.get(`${sender.url}/repos`);
-        const followers = await this._httpClient.get(`${sender.url}/followers`);
-        const gists = await this._httpClient.get(`${sender.url}/gists`);
-
-        const initiator = ({
-            name: head_commit.committer.username,
-            avatar: sender.avatar_url,
-            email: head_commit.committer.email,
-            profileUrl: sender.html_url,
-            repositoryCount: (repositories.data || []).length,
-            followerCount: (followers.data || []).length,
-            gistCount: (gists.data || []).length,
-            gistUrl: sender.html_url.replace(/^(https:\/\/)/, '$1gist.')
-        }) as IGithubUser;
+        const { ref, repository, compare, head_commit } = payload;
 
         return ({
             id: head_commit.id,
-            initiator,
+            initiator: await this._userService.getUser(head_commit.committer, true),
             repository: this._repositoryProvider.toRepository(repository),
             branch: ref.split('/').slice(-1)[0],
             message: head_commit.message,

@@ -41,7 +41,7 @@ export default class GithubRepositoryProvider implements IRepositoryProvider<any
     }
 
     public toRepository(data: any): IRepository {
-        const createdAt = data.created_at;
+        const { owner, created_at: createdAt } = data;
 
         return ({
             id: data.id,
@@ -52,7 +52,7 @@ export default class GithubRepositoryProvider implements IRepositoryProvider<any
             hooksUrl: data.hooks_url,
             language: data.language,
             license: data.license?.name ?? '',
-            owner: ({ name: data.owner.login, avatar: data.owner.avatar_url }) as IUser,
+            owner: ({ name: owner.login, avatar: owner.avatar_url }) as IUser,
             isPrivate: data.private,
             url: data.html_url
         }) as IRepository;

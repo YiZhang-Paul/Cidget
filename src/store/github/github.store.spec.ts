@@ -11,8 +11,8 @@ import ICommit from '../../core/interface/source-control/code-commit/commit.inte
 import ICommitStatus from '../../core/interface/source-control/code-commit/commit-status.interface';
 import IPullRequest from '../../core/interface/source-control/pull-request/pull-request.interface';
 import IPullRequestReview from '../../core/interface/source-control/pull-request/pull-request-review.interface';
-import GithubCommitService from '../../core/service/repository/github/github-commit/github-commit.service';
 import GithubPullRequestService from '../../core/service/repository/github/github-pull-request/github-pull-request.service';
+import GithubCommitService from '../../core/service/source-control/github/github-commit/github-commit.service';
 
 import { createStore } from './github.store';
 
