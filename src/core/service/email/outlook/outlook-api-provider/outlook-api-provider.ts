@@ -4,12 +4,10 @@ import { remote, BrowserWindow } from 'electron';
 import * as graph from '@microsoft/microsoft-graph-client';
 import { GraphRequest } from '@microsoft/microsoft-graph-client';
 
-import Types from '../../../ioc/types';
-import IUser from '../../../interface/generic/user.interface';
-import IEmail from '../../../interface/generic/email.interface';
-import IOAuthProvider from '../../../interface/generic/oauth-provider.interface';
-import { logger } from '../../io/logger/logger';
-import AppSettings from '../../io/app-settings/app-settings';
+import Types from '../../../../ioc/types';
+import IOAuthProvider from '../../../../interface/generic/oauth-provider.interface';
+import { logger } from '../../../io/logger/logger';
+import AppSettings from '../../../io/app-settings/app-settings';
 
 @injectable()
 export default class OutlookApiProvider implements IOAuthProvider {
@@ -56,18 +54,22 @@ export default class OutlookApiProvider implements IOAuthProvider {
 
     private authorizeToken(token: any): void {
         try {
-            if (token.created) {
-                const timestamp = new Date(token.created).getTime();
-                const elapsed = (Date.now() - timestamp) / 1000;
-                token.expires_in = Math.max(token.expires_in - elapsed, 0);
-                token.ext_expires_in = Math.max(token.ext_expires_in - elapsed, 0);
-            }
+            this.setExpireTime(token);
             this._token = this._oauth2.accessToken.create(token);
             const accessToken = this._token.token.access_token;
             this._client = graph.Client.init({ authProvider: _ => _(null, accessToken) });
         }
         catch {
             this.promptAuthorization();
+        }
+    }
+
+    private setExpireTime(token: any): void {
+        if (token.created) {
+            const timestamp = new Date(token.created).getTime();
+            const elapsed = (Date.now() - timestamp) / 1000;
+            token.expires_in = Math.max(token.expires_in - elapsed, 0);
+            token.ext_expires_in = Math.max(token.ext_expires_in - elapsed, 0);
         }
     }
 
@@ -98,26 +100,5 @@ export default class OutlookApiProvider implements IOAuthProvider {
 
             return null;
         }
-    }
-
-    public toMail(data: any): IEmail {
-        const { subject, body, createdDateTime, from, toRecipients } = data;
-
-        return ({
-            subject,
-            body: body.content,
-            created: new Date(createdDateTime),
-            from: this.getUser(from),
-            to: toRecipients.map(this.getUser.bind(this))
-        }) as IEmail;
-    }
-
-    private getUser(data: any): IUser {
-        const { emailAddress } = data;
-
-        return ({
-            name: emailAddress.name,
-            email: emailAddress.address
-        });
     }
 }

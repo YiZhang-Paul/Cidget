@@ -2,6 +2,7 @@ export default {
     IHttpClient: Symbol.for('IHttpClient'),
     IRepositoryProvider: Symbol.for('IRepositoryProvider'),
     OutlookApiProvider: Symbol.for('OutlookApiProvider'),
+    OutlookEmailService: Symbol.for('OutlookEmailService'),
     OutlookWebhookProvider: Symbol.for('OutlookWebhookProvider'),
     ZendeskTicketEmailProvider: Symbol.for('ZendeskTicketEmailProvider'),
     GithubUserService: Symbol.for('GithubUserService'),

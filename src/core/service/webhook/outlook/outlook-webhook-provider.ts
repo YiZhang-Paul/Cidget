@@ -5,7 +5,7 @@ import IWebhook from '../../../interface/webhook/webhook.interface';
 import IWebhookQuery from '../../../interface/webhook/webhook-query.interface';
 import IWebhookProvider from '../../../interface/webhook/webhook-provider.interface';
 import IOutlookWebhookContext from '../../../interface/webhook/outlook/outlook-webhook-context.interface';
-import OutlookApiProvider from '../../mail/outlook/outlook-api-provider';
+import OutlookApiProvider from '../../email/outlook/outlook-api-provider/outlook-api-provider';
 import AppSettings from '../../io/app-settings/app-settings';
 
 @injectable()

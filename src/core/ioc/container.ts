@@ -4,7 +4,8 @@ import { Container } from 'inversify';
 import IHttpClient from '../interface/generic/http-client.interface';
 import IRepositoryProvider from '../interface/source-control/repository-provider.interface';
 import HttpClient from '../service/io/http-client/http-client';
-import OutlookApiProvider from '../service/mail/outlook/outlook-api-provider';
+import OutlookApiProvider from '../service/email/outlook/outlook-api-provider/outlook-api-provider';
+import OutlookEmailService from '../service/email/outlook/outlook-email/outlook-email.service';
 import OutlookWebhookProvider from '../service/webhook/outlook/outlook-webhook-provider';
 import ZendeskTicketEmailProvider from '../service/customer-support/zendesk/zendesk-ticket-email-provider.service';
 import GithubUserService from '../service/source-control/github/github-user/github-user.service';
@@ -37,6 +38,11 @@ container
 container
     .bind<OutlookApiProvider>(Types.OutlookApiProvider)
     .to(OutlookApiProvider)
+    .inSingletonScope();
+
+container
+    .bind<OutlookEmailService>(Types.OutlookEmailService)
+    .to(OutlookEmailService)
     .inSingletonScope();
 
 container

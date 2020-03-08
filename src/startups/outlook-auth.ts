@@ -3,7 +3,7 @@ import express from 'express';
 import Types from '../core/ioc/types';
 import Container from '../core/ioc/container';
 import { logger } from '../core/service/io/logger/logger';
-import OutlookApiProvider from '../core/service/mail/outlook/outlook-api-provider';
+import OutlookApiProvider from '../core/service/email/outlook/outlook-api-provider/outlook-api-provider';
 import OutlookWebhookProvider from '../core/service/webhook/outlook/outlook-webhook-provider';
 import AppSettings from '../core/service/io/app-settings/app-settings';
 

@@ -5,7 +5,7 @@ import Types from '../../../ioc/types';
 import Container from '../../../ioc/container';
 import IEmail from '../../../interface/generic/email.interface';
 import AppSettings from '../../io/app-settings/app-settings';
-import OutlookApiProvider from '../../mail/outlook/outlook-api-provider';
+import OutlookApiProvider from '../../email/outlook/outlook-api-provider/outlook-api-provider';
 
 import OutlookWebhookProvider from './outlook-webhook-provider';
 
