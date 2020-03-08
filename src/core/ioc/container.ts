@@ -7,7 +7,8 @@ import HttpClient from '../service/io/http-client/http-client';
 import OutlookApiProvider from '../service/mail/outlook/outlook-api-provider';
 import OutlookWebhookProvider from '../service/webhook/outlook/outlook-webhook-provider';
 import ZendeskTicketEmailProvider from '../service/customer-support/zendesk/zendesk-ticket-email-provider.service';
-import GithubRepositoryProvider from '../service/repository/github/github-repository-provider/github-repository-provider.service';
+import GithubUserService from '../service/source-control/github/github-user/github-user.service';
+import GithubRepositoryProvider from '../service/source-control/github/github-repository-provider/github-repository-provider.service';
 import GithubWebhookProviderService from '../service/webhook/github/github-webhook-provider.service';
 import GithubCommitService from '../service/repository/github/github-commit/github-commit.service';
 import GithubPullRequestService from '../service/repository/github/github-pull-request/github-pull-request.service';
@@ -46,6 +47,11 @@ container
 container
     .bind<ZendeskTicketEmailProvider>(Types.ZendeskTicketEmailProvider)
     .to(ZendeskTicketEmailProvider)
+    .inSingletonScope();
+
+container
+    .bind<GithubUserService>(Types.GithubUserService)
+    .to(GithubUserService)
     .inSingletonScope();
 
 container

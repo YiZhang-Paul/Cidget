@@ -4,6 +4,7 @@ export default {
     OutlookApiProvider: Symbol.for('OutlookApiProvider'),
     OutlookWebhookProvider: Symbol.for('OutlookWebhookProvider'),
     ZendeskTicketEmailProvider: Symbol.for('ZendeskTicketEmailProvider'),
+    GithubUserService: Symbol.for('GithubUserService'),
     GithubWebhookProviderService: Symbol.for('GithubWebhookProviderService'),
     GithubCommitService: Symbol.for('GithubCommitService'),
     GithubPullRequestService: Symbol.for('GithubPullRequestService'),
