@@ -3,6 +3,7 @@ import { assert as sinonExpect, stub } from 'sinon';
 import Types from '../../../../ioc/types';
 import Container from '../../../../ioc/container';
 import IHttpClient from '../../../../interface/generic/http-client.interface';
+import IGithubUser from '../../../../interface/source-control/github/github-user.interface';
 
 import GithubUserService from './github-user.service';
 
@@ -75,6 +76,35 @@ describe('github user service unit test', () => {
             expect(result.repositoryCount).toBe(0);
             expect(result.followerCount).toBe(0);
             expect(result.gistCount).toBe(0);
+        });
+    });
+
+    describe('getUniqueUsers', () => {
+        test('should return unique users', () => {
+            const user1 = {
+                name: 'user_1',
+                avatar: 'user_1_avatar_url',
+                profileUrl: 'https://user_1_html_url'
+            } as IGithubUser;
+
+            const user2 = {
+                name: 'user_2',
+                avatar: 'user_2_avatar_url',
+                profileUrl: 'https://user_2_html_url'
+            } as IGithubUser;
+
+            const user3 = {
+                name: 'user_3',
+                avatar: 'user_3_avatar_url',
+                profileUrl: 'https://user_3_html_url'
+            } as IGithubUser;
+
+            const result = service.getUniqueUsers([user1, user2, user3, user1, user3, user2]);
+
+            expect(result.length).toBe(3);
+            expect(result[0].name).toBe('user_1');
+            expect(result[1].name).toBe('user_2');
+            expect(result[2].name).toBe('user_3');
         });
     });
 });

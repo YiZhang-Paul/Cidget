@@ -7,8 +7,8 @@ import NotificationType from '../../core/enum/notification-type.enum';
 import ICommit from '../../core/interface/source-control/code-commit/commit.interface';
 import IPullRequest from '../../core/interface/source-control/pull-request/pull-request.interface';
 import IGithubUser from '../../core/interface/source-control/github/github-user.interface';
-import GithubPullRequestService from '../../core/service/repository/github/github-pull-request/github-pull-request.service';
 import GithubCommitService from '../../core/service/source-control/github/github-commit/github-commit.service';
+import GithubPullRequestService from '../../core/service/source-control/github/github-pull-request/github-pull-request.service';
 
 type State = {
     commits: ICommit<IGithubUser>[],

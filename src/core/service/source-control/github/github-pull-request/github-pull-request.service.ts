@@ -6,6 +6,7 @@ import IPullRequest from '../../../../interface/source-control/pull-request/pull
 import IPullRequestReview from '../../../../interface/source-control/pull-request/pull-request-review.interface';
 import IHttpClient from '../../../../interface/generic/http-client.interface';
 import IRepositoryProvider from '../../../../interface/source-control/repository-provider.interface';
+import GithubUserService from '../github-user/github-user.service';
 import AppSettings from '../../../io/app-settings/app-settings';
 
 @injectable()
@@ -13,19 +14,18 @@ export default class GithubPullRequestService {
     private _token: string;
     private _httpClient: IHttpClient;
     private _repositoryProvider: IRepositoryProvider<any>;
+    private _userService: GithubUserService;
 
     constructor(
         @inject(Types.AppSettings) settings: AppSettings,
         @inject(Types.IHttpClient) httpClient: IHttpClient,
-        @inject(Types.IRepositoryProvider) @named('github') repositoryProvider: IRepositoryProvider<any>
+        @inject(Types.IRepositoryProvider) @named('github') repositoryProvider: IRepositoryProvider<any>,
+        @inject(Types.GithubUserService) userService: GithubUserService
     ) {
         this._token = settings.get('repository.github').token;
         this._httpClient = httpClient;
         this._repositoryProvider = repositoryProvider;
-    }
-
-    private get headers(): { [key: string]: string } {
-        return ({ Authorization: `token ${this._token}` });
+        this._userService = userService;
     }
 
     public async toReview(payload: any): Promise<IPullRequestReview<IGithubUser>> {
@@ -33,7 +33,7 @@ export default class GithubPullRequestService {
 
         return ({
             pullRequestId: String(payload.pull_request.id),
-            reviewer: await this.getUser(user),
+            reviewer: await this._userService.getUser(user),
             type: state === 'changes_requested' ? 'change' : state
         }) as IPullRequestReview<IGithubUser>;
     }
@@ -45,12 +45,9 @@ export default class GithubPullRequestService {
         return ({
             id: String(pull_request.id),
             action: this.getAction(payload),
-            initiator: await this.getUser(user, true),
+            initiator: await this._userService.getUser(user, true),
             repository: this._repositoryProvider.toRepository(repository),
-            branch: {
-                source: pull_request.head.ref,
-                base: pull_request.base.ref
-            },
+            branch: { source: pull_request.head.ref, base: pull_request.base.ref },
             number: pull_request.number,
             message: pull_request.title,
             status: pull_request.state,
@@ -58,7 +55,7 @@ export default class GithubPullRequestService {
             diffUrl: pull_request.diff_url,
             pullRequestUrl: pull_request.html_url,
             headCommitSha: pull_request.head.sha,
-            reviewers: await this.getAllReviewers(pull_request),
+            reviewers: await this.getReviewers(pull_request),
             createdOn: new Date(pull_request.created_at),
             updatedOn: new Date(pull_request.updated_at),
             mergeable: this.isMergeable(pull_request.mergeable_state),
@@ -68,48 +65,6 @@ export default class GithubPullRequestService {
             removed: pull_request.deletions,
             modified: pull_request.changed_files
         }) as IPullRequest<IGithubUser>;
-    }
-
-    private async getAllReviewers(data: any): Promise<{ requested: IGithubUser[], approved: IGithubUser[] }> {
-        const { requested_reviewers } = data;
-        const [approved, rejected] = await this.getSubmittedReviewers(data);
-        const reviewers: IGithubUser[] = await Promise.all(requested_reviewers.map((_: any) => this.getUser(_)));
-        const requested = this.removeDuplicateUsers([...reviewers, ...approved, ...rejected]);
-        const approverNames = new Set<string>(approved.map(_ => _.name));
-
-        return { requested, approved: requested.filter(_ => approverNames.has(_.name)) };
-    }
-
-    private async getSubmittedReviewers(data: any): Promise<IGithubUser[][]> {
-        const { data: reviews } = await this._httpClient.get(`${data.url}/reviews`, { headers: this.headers });
-        const rejecters: IGithubUser[] = [];
-        const approvers: IGithubUser[] = [];
-        const names = new Set<string>();
-
-        for (const { user, state } of reviews.sort((a: any, b: any) => b.id - a.id)) {
-            const type = state.toLowerCase();
-
-            if ((type === 'approved' || type === 'changes_requested') && !names.has(user.login)) {
-                names.add(user.login);
-                (type === 'approved' ? approvers : rejecters).push(await this.getUser(user));
-            }
-        }
-
-        return [approvers, rejecters];
-    }
-
-    private removeDuplicateUsers(users: IGithubUser[]): IGithubUser[] {
-        const uniqueUsers: IGithubUser[] = [];
-        const names = new Set<string>();
-
-        for (const user of users) {
-            if (!names.has(user.name)) {
-                names.add(user.name);
-                uniqueUsers.push(user);
-            }
-        }
-
-        return uniqueUsers;
     }
 
     private getAction(payload: any): string {
@@ -125,26 +80,37 @@ export default class GithubPullRequestService {
         return action === 'synchronize' ? 'updated' : action;
     }
 
-    private async getUser(data: any, includeDetails = false): Promise<IGithubUser> {
-        const { login, avatar_url, html_url, url } = data;
+    private async getReviewers(data: any): Promise<{ requested: IGithubUser[], approved: IGithubUser[] }> {
+        const [approved, rejected] = await this.getApproversAndRejecters(data);
+        const requested = data.requested_reviewers.map((_: any) => this._userService.getUser(_));
 
-        const user = ({
-            name: login,
-            avatar: avatar_url,
-            profileUrl: html_url,
-            gistUrl: html_url.replace(/^(https:\/\/)/, '$1gist.')
-        }) as IGithubUser;
+        const reviewers = this._userService.getUniqueUsers([
+            ...await Promise.all(requested) as IGithubUser[],
+            ...approved,
+            ...rejected
+        ]);
 
-        if (includeDetails) {
-            const repositories = await this._httpClient.get(`${url}/repos`);
-            const followers = await this._httpClient.get(`${url}/followers`);
-            const gists = await this._httpClient.get(`${url}/gists`);
-            user.repositoryCount = (repositories.data || []).length;
-            user.followerCount = (followers.data || []).length;
-            user.gistCount = (gists.data || []).length;
+        return { requested: reviewers, approved };
+    }
+
+    private async getApproversAndRejecters(data: any): Promise<IGithubUser[][]> {
+        const headers = { Authorization: `token ${this._token}` };
+        const reviews = await this._httpClient.get(`${data.url}/reviews`, { headers });
+        const rejecters: IGithubUser[] = [];
+        const approvers: IGithubUser[] = [];
+        const names = new Set<string>();
+
+        for (const { user, state } of reviews.data.sort((a: any, b: any) => b.id - a.id)) {
+            const type = state.toLowerCase();
+
+            if ((type === 'approved' || type === 'changes_requested') && !names.has(user.login)) {
+                names.add(user.login);
+                const reviewer = await this._userService.getUser(user);
+                (type === 'approved' ? approvers : rejecters).push(reviewer);
+            }
         }
 
-        return user;
+        return [approvers, rejecters];
     }
 
     private isMergeable(state: string): boolean | null {

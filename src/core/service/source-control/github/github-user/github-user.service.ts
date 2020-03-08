@@ -36,4 +36,18 @@ export default class GithubUserService {
 
         return user;
     }
+
+    public getUniqueUsers(users: IGithubUser[]): IGithubUser[] {
+        const uniqueUsers: IGithubUser[] = [];
+        const names = new Set<string>();
+
+        for (const user of users) {
+            if (!names.has(user.name)) {
+                names.add(user.name);
+                uniqueUsers.push(user);
+            }
+        }
+
+        return uniqueUsers;
+    }
 }

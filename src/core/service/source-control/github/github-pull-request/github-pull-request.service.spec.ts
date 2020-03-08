@@ -5,6 +5,8 @@ import Container from '../../../../ioc/container';
 import IHttpClient from '../../../../interface/generic/http-client.interface';
 import IRepository from '../../../../interface/source-control/repository.interface';
 import IRepositoryProvider from '../../../../interface/source-control/repository-provider.interface';
+import IGithubUser from '../../../../interface/source-control/github/github-user.interface';
+import GithubUserService from '../github-user/github-user.service';
 
 import GithubPullRequestService from './github-pull-request.service';
 
@@ -12,6 +14,7 @@ describe('github pull request service unit test', () => {
     let service: GithubPullRequestService;
     let httpStub: any;
     let repositoryProviderStub: any;
+    let userServiceStub: any;
 
     beforeEach(() => {
         httpStub = stub({
@@ -25,6 +28,11 @@ describe('github pull request service unit test', () => {
             toRepository(): IRepository { return {} as IRepository; }
         } as IRepositoryProvider<any>);
 
+        userServiceStub = stub({
+            async getUser(_: any): Promise<IGithubUser> { return {} as IGithubUser; },
+            getUniqueUsers(_: IGithubUser[]): IGithubUser[] { return []; }
+        } as GithubUserService);
+
         Container
             .rebind<IHttpClient>(Types.IHttpClient)
             .toConstantValue(httpStub);
@@ -33,6 +41,10 @@ describe('github pull request service unit test', () => {
             .rebind<IRepositoryProvider<any>>(Types.IRepositoryProvider)
             .toConstantValue(repositoryProviderStub)
             .whenTargetNamed('github');
+
+        Container
+            .rebind<GithubUserService>(Types.GithubUserService)
+            .toConstantValue(userServiceStub);
 
         service = Container.get<GithubPullRequestService>(Types.GithubPullRequestService);
     });
@@ -60,8 +72,8 @@ describe('github pull request service unit test', () => {
         test('should convert payload into review', async () => {
             const result = await service.toReview(payload);
 
+            sinonExpect.calledOnce(userServiceStub.getUser);
             expect(result.pullRequestId).toBe('pull_request_id');
-            expect(result.reviewer.name).toBe('user_login_name');
             expect(result.type).toBe('approved');
         });
 
@@ -139,28 +151,25 @@ describe('github pull request service unit test', () => {
                 { id: 4, user: reviewer2, state: 'Commented' }
             ];
 
-            httpStub.get.onCall(0).resolves({ data: new Array(3).fill({}) });
-            httpStub.get.onCall(1).resolves({ data: new Array(1).fill({}) });
-            httpStub.get.onCall(2).resolves({ data: new Array(2).fill({}) });
-            httpStub.get.onCall(3).resolves({ data: reviews });
+            httpStub.get.resolves({ data: reviews });
+            userServiceStub.getUser.onCall(0).resolves({ name: 'user_login_name' } as IGithubUser);
+            userServiceStub.getUser.onCall(1).resolves({ name: 'reviewer_1' } as IGithubUser);
+            userServiceStub.getUser.onCall(2).resolves({ name: 'reviewer_2' } as IGithubUser);
+            userServiceStub.getUser.onCall(3).resolves({ name: 'reviewer_1' } as IGithubUser);
+            userServiceStub.getUser.onCall(4).resolves({ name: 'reviewer_3' } as IGithubUser);
+
+            userServiceStub.getUniqueUsers.returns([
+                { name: 'reviewer_1' },
+                { name: 'reviewer_3' },
+                { name: 'reviewer_2' }
+            ]);
         });
 
         test('should convert payload into pull request', async () => {
             const result = await service.toPullRequest(payload);
 
-            sinonExpect.callCount(httpStub.get, 4);
-            expect(httpStub.get.args[0][0]).toBe('user_url/repos');
-            expect(httpStub.get.args[1][0]).toBe('user_url/followers');
-            expect(httpStub.get.args[2][0]).toBe('user_url/gists');
             expect(result.id).toBe('pull_request_id');
             expect(result.action).toBe('opened');
-            expect(result.initiator.name).toBe('user_login_name');
-            expect(result.initiator.avatar).toBe('user_avatar_url');
-            expect(result.initiator.profileUrl).toBe('https://user_html_url');
-            expect(result.initiator.repositoryCount).toBe(3);
-            expect(result.initiator.followerCount).toBe(1);
-            expect(result.initiator.gistCount).toBe(2);
-            expect(result.initiator.gistUrl).toBe('https://gist.user_html_url');
             expect(result.branch.source).toBe('yizhang');
             expect(result.branch.base).toBe('development');
             expect(result.number).toBe(4);
@@ -222,18 +231,6 @@ describe('github pull request service unit test', () => {
             const result = await service.toPullRequest(payload);
 
             expect(result.action).toBe('needs review');
-        });
-
-        test('should properly set default values for missing fields', async () => {
-            httpStub.get.onCall(0).resolves({ data: null });
-            httpStub.get.onCall(1).resolves({ data: null });
-            httpStub.get.onCall(2).resolves({ data: null });
-
-            const result = await service.toPullRequest(payload);
-
-            expect(result.initiator.repositoryCount).toBe(0);
-            expect(result.initiator.followerCount).toBe(0);
-            expect(result.initiator.gistCount).toBe(0);
         });
     });
 });
