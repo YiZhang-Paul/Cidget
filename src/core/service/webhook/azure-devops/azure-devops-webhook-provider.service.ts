@@ -54,31 +54,35 @@ export default class AzureDevopsWebhookProviderService implements IWebhookProvid
     }
 
     public async addWebhook(context: IAzureDevopsWebhookContext): Promise<IWebhook> {
-        const { project: name, callback, publisherId, eventType, isRelease } = context;
+        const { project: name, callback, isRelease } = context;
         const existingHook = await this.getWebhook({ name, callback });
 
         if (existingHook) {
             return existingHook;
         }
+        const body = await this.getWebhookRequestBody(context);
+        const endpoint = isRelease ? this._releaseEndpoint : this._buildEndpoint;
+        const { data } = await this._httpClient.post(endpoint, body, { headers: this.headers });
+
+        return this.toWebhook(data);
+    }
+
+    private async getWebhookRequestBody(context: IAzureDevopsWebhookContext): Promise<any> {
+        const { project: name, callback, publisherId, eventType, isRelease } = context;
         const project = await this.getProject(name);
 
         if (!project) {
             throw new Error(`project with name ${name} does not exist.`);
         }
 
-        const body = {
+        return ({
             publisherId,
             eventType,
             consumerId: 'webHooks',
             consumerActionId: 'httpRequest',
             publisherInputs: { projectId: project.id },
             consumerInputs: { url: callback }
-        };
-
-        const endpoint = isRelease ? this._releaseEndpoint : this._buildEndpoint;
-        const { data } = await this._httpClient.post(endpoint, body, { headers: this.headers });
-
-        return this.toWebhook(data);
+        });
     }
 
     private async getProject(idOrName: string): Promise<{ id: string; name: string } | null> {
