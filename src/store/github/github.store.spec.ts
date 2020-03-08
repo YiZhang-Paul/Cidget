@@ -231,6 +231,17 @@ describe('github store unit test', () => {
             expect(store.getters.getPullRequests[0].reviewers.approved.length).toBe(0);
         });
 
+        test('should add reviewer when reviewer is not one of requested reviewers', async () => {
+            review.reviewer.name = 'another_reviewer_name';
+            store.state.pullRequests = [pullRequest];
+
+            await store.dispatch('addPullRequestReview', {});
+
+            expect(store.getters.getPullRequests[0].reviewers.approved.length).toBe(2);
+            expect(store.getters.getPullRequests[0].reviewers.requested.length).toBe(3);
+            expect(store.getters.getPullRequests[0].reviewers.approved[1].name).toBe('another_reviewer_name');
+        });
+
         test('should not add review when pull request does not exist', async () => {
             review.pullRequestId = 'another_pull_request_id';
             store.state.pullRequests = [pullRequest];
@@ -242,15 +253,6 @@ describe('github store unit test', () => {
 
         test('should not add review when review is an comment', async () => {
             review.type = 'commented';
-            store.state.pullRequests = [pullRequest];
-
-            await store.dispatch('addPullRequestReview', {});
-
-            sinonExpect.notCalled(notifySpy);
-        });
-
-        test('should not add review when reviewer does not exist', async () => {
-            review.reviewer.name = 'another_reviewer_name';
             store.state.pullRequests = [pullRequest];
 
             await store.dispatch('addPullRequestReview', {});

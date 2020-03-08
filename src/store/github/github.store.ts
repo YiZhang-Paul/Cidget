@@ -70,11 +70,14 @@ const actions = {
             return;
         }
         const { requested, approved } = pullRequest.reviewers;
-        const isReviewer = requested.some(_ => _.name === reviewer.name);
         const isApprover = approved.some(_ => _.name === reviewer.name);
 
-        if (!isReviewer || type === 'approved' && isApprover || type === 'change' && !isApprover) {
+        if (type === 'approved' && isApprover || type === 'change' && !isApprover) {
             return;
+        }
+
+        if (requested.every(_ => _.name !== reviewer.name)) {
+            requested.push(reviewer);
         }
 
         if (type === 'approved') {
