@@ -75,10 +75,6 @@ export default class CommitCard extends tsx.Component<any> {
                     <div class="open-pull-request">
                         <div class="open-pull-request-icon" onClick={this.toPullRequestCreation}></div>
                     </div>
-
-                    <div class="open-options">
-                        <i class="fas fa-ellipsis-h"></i>
-                    </div>
                 </div>
             </NotificationCard>
         );

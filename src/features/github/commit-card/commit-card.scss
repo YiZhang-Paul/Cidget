@@ -36,12 +36,9 @@
 }
 
 .commit-card-actions {
-    position: absolute;
-    bottom: 8px;
-    right: 4.5px;
     display: flex;
 
-    .open-pull-request, .open-options {
+    .open-pull-request {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -67,10 +64,5 @@
         background-position: center;
         background-size: 17px 17px;
         filter: invert(39%) sepia(9%) saturate(1519%) hue-rotate(178deg) brightness(90%) contrast(86%);
-    }
-
-    .open-options {
-        font-size: 0.85em;
-        color: var(--main-font-color);
     }
 }
