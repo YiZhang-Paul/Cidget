@@ -19,8 +19,7 @@ describe('outlook webhook provider service unit test', () => {
         apiProviderStub = stub({
             promptAuthorization(): void { },
             async authorize(_: string): Promise<void> { },
-            async startGraphRequest(_: string): Promise<GraphRequest | null> { return null; },
-            toMail(_: any): IEmail { return ({} as IEmail); }
+            async startGraphRequest(_: string): Promise<GraphRequest | null> { return null; }
         } as OutlookApiProvider);
 
         Container

@@ -8,6 +8,7 @@ import Types from '../../../../ioc/types';
 import IOAuthProvider from '../../../../interface/generic/oauth-provider.interface';
 import { logger } from '../../../io/logger/logger';
 import AppSettings from '../../../io/app-settings/app-settings';
+import TimeUtility from '../../../../utility/time-utility/time-utility';
 
 @injectable()
 export default class OutlookApiProvider implements IOAuthProvider {
@@ -66,8 +67,8 @@ export default class OutlookApiProvider implements IOAuthProvider {
 
     private setExpireTime(token: any): void {
         if (token.created) {
-            const timestamp = new Date(token.created).getTime();
-            const elapsed = (Date.now() - timestamp) / 1000;
+            const timestamp = new Date(token.created);
+            const elapsed = TimeUtility.elapsedMilliseconds(timestamp) / 1000;
             token.expires_in = Math.max(token.expires_in - elapsed, 0);
             token.ext_expires_in = Math.max(token.ext_expires_in - elapsed, 0);
         }

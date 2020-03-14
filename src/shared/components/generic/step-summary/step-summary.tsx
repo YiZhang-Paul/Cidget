@@ -10,7 +10,7 @@ export default class StepSummary extends tsx.Component<any> {
 
     private get stepGrids(): any {
         return this.steps.map(_ => {
-            const noColor = this.blinkMode && _.isActive && !this.$data.colorOn;
+            const noColor = _.isActive && this.blinkMode && !this.$data.colorOn;
             const color = noColor ? 'no-color' : this.getColor(_.scale);
 
             return (
