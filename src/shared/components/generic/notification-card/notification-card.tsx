@@ -29,6 +29,10 @@ export default class NotificationCard extends tsx.Component<any> {
                 <div class="close-icon" onClick={this.closeHandler}>
                     <i class="fas fa-times"></i>
                 </div>
+
+                <div class="option-icon">
+                    <i class="fas fa-ellipsis-h"></i>
+                </div>
             </div>
         );
     }

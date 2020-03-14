@@ -96,29 +96,3 @@
         max-width: 240px;
     }
 }
-
-.build-pipeline-card-actions {
-    position: absolute;
-    bottom: 8px;
-    right: 9px;
-    display: flex;
-
-    .open-options {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 1px;
-        width: 20px;
-        height: 20px;
-        font-size: 0.85em;
-        color: var(--main-font-color);
-        border: 1px solid var(--border-color);
-        border-radius: 50%;
-        box-shadow: -3px -3px 7px var(--light-shadow-color), 3px 3px 5px var(--dark-shadow-color);
-        cursor: pointer;
-
-        &:hover {
-            box-shadow: inset -3px -3px 7px var(--light-shadow-color), inset 3px 3px 5px var(--dark-shadow-color);
-        }
-    }
-}

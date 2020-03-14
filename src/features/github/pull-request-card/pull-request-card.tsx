@@ -91,12 +91,6 @@ export default class PullRequestCard extends tsx.Component<any> {
                         showPopover={false}>
                     </RepositoryBadge>
                 </div>
-
-                <div class="pull-request-card-actions" slot="actions">
-                    <div class="open-options">
-                        <i class="fas fa-ellipsis-h"></i>
-                    </div>
-                </div>
             </NotificationCard>
         );
     }

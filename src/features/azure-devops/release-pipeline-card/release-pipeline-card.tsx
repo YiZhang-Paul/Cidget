@@ -82,12 +82,6 @@ export default class ReleasePipelineCard extends tsx.Component<any> {
                         url={this.release.triggeredBy.url}>
                     </WeblinkDisplay>
                 </div>
-
-                <div class="release-pipeline-card-actions" slot="actions">
-                    <div class="open-options">
-                        <i class="fas fa-ellipsis-h"></i>
-                    </div>
-                </div>
             </NotificationCard>
         );
     }

@@ -51,12 +51,6 @@ export default class SupportTicketCard extends tsx.Component<any> {
                         tooltip={this.ticket.htmlContent}>
                     </ConversationPreviewBadge>
                 </div>
-
-                <div class="support-ticket-card-actions" slot="actions">
-                    <div class="open-options">
-                        <i class="fas fa-ellipsis-h"></i>
-                    </div>
-                </div>
             </NotificationCard>
         );
     }
