@@ -41,11 +41,11 @@ export default class GithubCommitService {
     }
 
     public async toCommit(payload: any): Promise<ICommit<IGithubUser>> {
-        const { ref, repository, compare, head_commit } = payload;
+        const { ref, repository, compare, sender, head_commit } = payload;
 
         return ({
             id: head_commit.id,
-            initiator: await this._userService.getUser(head_commit.committer, true),
+            initiator: await this._userService.getUser(sender, true),
             repository: this._repositoryProvider.toRepository(repository),
             branch: ref.split('/').slice(-1)[0],
             message: head_commit.message,
