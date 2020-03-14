@@ -48,16 +48,22 @@ const actions = {
             data: { type: NotificationType.CiBuild, id: build.id, model: build }
         });
     },
-    async addCdRelease(context: ActionContext<State, any>, payload: any): Promise<any> {
-        const { commit, getters, dispatch } = context;
+    async manageCdRelease(context: ActionContext<State, any>, payload: any): Promise<any> {
+        const { dispatch } = context;
         const release = await releaseService.toCdRelease(payload);
-        const lastStageStatus = release.stages?.slice(-1)[0]?.status ?? 'succeeded';
-        const isApproval = release.status === 'approved';
-        const shouldSkipSuccess = release.status === 'succeeded' && lastStageStatus !== 'succeeded';
+        const finalStatus = release.stages?.slice(-1)[0]?.status ?? 'succeeded';
 
-        if (isApproval || shouldSkipSuccess) {
-            return isApproval ? dispatch('notifyApproval', release) : null;
+        if (release.status === 'succeeded' && finalStatus !== 'succeeded') {
+            return;
         }
+        dispatch('addCdRelease', release);
+
+        if (release.status === 'approved') {
+            dispatch('notifyApproval', release);
+        }
+    },
+    addCdRelease(context: ActionContext<State, any>, release: ICdRelease): any {
+        const { commit, getters } = context;
         const action = getters.hasCdRelease(release) ? 'updateCdRelease' : 'addCdRelease';
         commit(action, release);
         autoNotifyAfterApproval = false;
@@ -69,14 +75,6 @@ const actions = {
         });
     },
     notifyApproval(context: ActionContext<State, any>, release: ICdRelease): void {
-        if (release.status !== 'approved') {
-            throw new Error('Invalid status for approval notification');
-        }
-        const { commit } = context;
-        const [group, duration] = ['notification', 10000];
-        const [type, id] = [NotificationType.CdRelease, release.id];
-        commit('addCdRelease', release);
-        Vue.notify({ group, duration, data: { type, id, model: release } });
         autoNotifyAfterApproval = true;
 
         setTimeout(() => {
@@ -84,9 +82,7 @@ const actions = {
                 return;
             }
             const clone = Object.assign({}, release, { status: 'in progress' });
-            commit('updateCdRelease', clone);
-            Vue.notify({ group, duration, data: { type, id, model: clone } });
-            autoNotifyAfterApproval = false;
+            context.dispatch('addCdRelease', clone);
         }, 3000);
     }
 };

@@ -103,7 +103,7 @@ describe('azure devops store unit test', () => {
         });
     });
 
-    describe('addCdRelease', () => {
+    describe('manageCdRelease', () => {
         let release: any;
 
         beforeEach(() => {
@@ -114,7 +114,7 @@ describe('azure devops store unit test', () => {
         test('should add release when it is not already included', async () => {
             store.state.cdReleases = [];
 
-            await store.dispatch('addCdRelease', {});
+            await store.dispatch('manageCdRelease', {});
 
             expect(store.getters.getCdReleases.length).toBe(1);
             expect(store.getters.getCdReleases[0].id).toBe('147');
@@ -126,7 +126,7 @@ describe('azure devops store unit test', () => {
             store.state.cdReleases = [release];
             releaseServiceStub.toCdRelease.resolves(updated);
 
-            await store.dispatch('addCdRelease', {});
+            await store.dispatch('manageCdRelease', {});
 
             expect(store.getters.getCdReleases.length).toBe(1);
             expect(store.getters.getCdReleases[0].id).toBe('147');
@@ -136,7 +136,7 @@ describe('azure devops store unit test', () => {
         test('should trigger notification when release is added', async () => {
             store.state.cdReleases = [];
 
-            await store.dispatch('addCdRelease', {});
+            await store.dispatch('manageCdRelease', {});
 
             sinonExpect.calledOnce(notifySpy);
             expect(notifySpy.args[0][0].duration).toBe(10000);
@@ -149,7 +149,7 @@ describe('azure devops store unit test', () => {
             store.state.cdReleases = [release];
             releaseServiceStub.toCdRelease.resolves(updated);
 
-            await store.dispatch('addCdRelease', {});
+            await store.dispatch('manageCdRelease', {});
 
             sinonExpect.calledOnce(notifySpy);
             expect(notifySpy.args[0][0].duration).toBe(10000);
@@ -165,7 +165,7 @@ describe('azure devops store unit test', () => {
                 { name: 'stage_2', status: 'inProgress' }
             ];
 
-            await store.dispatch('addCdRelease', {});
+            await store.dispatch('manageCdRelease', {});
 
             sinonExpect.notCalled(notifySpy);
         });
@@ -178,7 +178,7 @@ describe('azure devops store unit test', () => {
                 { name: 'stage_2', status: 'succeeded' }
             ];
 
-            await store.dispatch('addCdRelease', {});
+            await store.dispatch('manageCdRelease', {});
 
             sinonExpect.calledOnce(notifySpy);
             expect(notifySpy.args[0][0].duration).toBe(10000);
@@ -190,7 +190,7 @@ describe('azure devops store unit test', () => {
             release.status = 'succeeded';
             release.stages = null;
 
-            await store.dispatch('addCdRelease', {});
+            await store.dispatch('manageCdRelease', {});
 
             sinonExpect.calledOnce(notifySpy);
             expect(notifySpy.args[0][0].duration).toBe(10000);
@@ -202,7 +202,7 @@ describe('azure devops store unit test', () => {
             release.status = 'succeeded';
             release.stages = [];
 
-            await store.dispatch('addCdRelease', {});
+            await store.dispatch('manageCdRelease', {});
 
             sinonExpect.calledOnce(notifySpy);
             expect(notifySpy.args[0][0].duration).toBe(10000);
@@ -214,7 +214,7 @@ describe('azure devops store unit test', () => {
             release.status = 'needs approval';
             store.state.cdReleases = [];
 
-            await store.dispatch('addCdRelease', {});
+            await store.dispatch('manageCdRelease', {});
 
             sinonExpect.calledOnce(notifySpy);
             expect(notifySpy.args[0][0].duration).toBe(-1);
@@ -224,7 +224,7 @@ describe('azure devops store unit test', () => {
             jest.useFakeTimers();
             store.state.cdReleases = [];
 
-            await store.dispatch('addCdRelease', { resource: { approval: {} } });
+            await store.dispatch('manageCdRelease', { resource: { approval: {} } });
 
             sinonExpect.calledOnce(notifySpy);
             expect(store.state.cdReleases.length).toBe(1);
@@ -239,36 +239,20 @@ describe('azure devops store unit test', () => {
     });
 
     describe('notifyApproval', () => {
-        let release: any;
-
-        beforeEach(() => {
-            release = { id: '147', status: 'approved' };
-        });
-
         test('should not add auto notification when another event happens during delay', async () => {
+            const release = { id: '147', status: 'approved' };
+
             jest.useFakeTimers();
             releaseServiceStub.toCdRelease.resolves(Object.assign({ id: '147', status: 'rejected' }));
             store.state.cdReleases = [];
 
             store.dispatch('notifyApproval', release);
-            await store.dispatch('addCdRelease', {});
+            await store.dispatch('manageCdRelease', {});
             jest.advanceTimersByTime(4000);
 
-            sinonExpect.calledTwice(notifySpy);
+            sinonExpect.calledOnce(notifySpy);
             expect(store.state.cdReleases.length).toBe(1);
             expect(store.state.cdReleases[0].status).toBe('rejected');
-        });
-
-        test('should throw error when status is invalid', () => {
-            release.status = 'rejected';
-
-            try {
-                store.dispatch('notifyApproval', release);
-            }
-            catch {
-                return;
-            }
-            throw new Error('should not reach this line.');
         });
     });
 });

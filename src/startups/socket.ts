@@ -40,7 +40,7 @@ socket.on('azure-devops-build', (payload: any) => {
 });
 
 socket.on('azure-devops-release', (payload: any) => {
-    const action = `${Store.azureDevopsStoreName}/addCdRelease`;
+    const action = `${Store.azureDevopsStoreName}/manageCdRelease`;
     Store.store.dispatch(action, payload);
 });
 
