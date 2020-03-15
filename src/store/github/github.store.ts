@@ -73,7 +73,7 @@ const actions = {
 
         Vue.notify({
             group: 'notification',
-            duration: -1,
+            duration: 10000,
             data: { type: NotificationType.PullRequest, id: pullRequest.id, model: pullRequest }
         });
     },
