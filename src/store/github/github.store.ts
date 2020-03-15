@@ -66,25 +66,8 @@ const actions = {
         const { pullRequestId, type, reviewer } = await pullRequestService.toReview(payload);
         const pullRequest = state.pullRequests.find(_ => _.id === pullRequestId);
 
-        if (!pullRequest || type === 'commented') {
+        if (!pullRequest || !setReviewer(pullRequest, type, reviewer)) {
             return;
-        }
-        const { requested, approved } = pullRequest.reviewers;
-        const isApprover = approved.some(_ => _.name === reviewer.name);
-
-        if (type === 'approved' && isApprover || type === 'change' && !isApprover) {
-            return;
-        }
-
-        if (requested.every(_ => _.name !== reviewer.name)) {
-            requested.push(reviewer);
-        }
-
-        if (type === 'approved') {
-            pullRequest.reviewers.approved.push(reviewer);
-        }
-        else {
-            pullRequest.reviewers.approved = approved.filter(_ => _.name !== reviewer.name);
         }
         commit('updatePullRequest', pullRequest);
 
@@ -129,6 +112,29 @@ const getters = {
         return state.pullRequests;
     }
 };
+
+function setReviewer(pullRequest: IPullRequest<IGithubUser>, type: string, reviewer: IGithubUser): boolean {
+    const { requested, approved } = pullRequest.reviewers;
+    const isApprover = approved.some(_ => _.name === reviewer.name);
+    const shouldInclude = type === 'approved' && !isApprover;
+    const shouldExclude = type === 'change' && isApprover;
+
+    if (!shouldInclude && !shouldExclude) {
+        return false;
+    }
+
+    if (type === 'approved') {
+        pullRequest.reviewers.approved.push(reviewer);
+    }
+    else {
+        pullRequest.reviewers.approved = approved.filter(_ => _.name !== reviewer.name);
+    }
+
+    if (requested.every(_ => _.name !== reviewer.name)) {
+        requested.push(reviewer);
+    }
+    return true;
+}
 
 export const createStore = () => {
     commitService = Container.get<GithubCommitService>(Types.GithubCommitService);
