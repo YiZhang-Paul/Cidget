@@ -47,3 +47,17 @@
         font-size: 0.88em;
     }
 }
+
+.zendesk-data {
+    max-height: 25vh;
+    overflow-y: auto;
+    word-break: break-word;
+
+    > p {
+        display: none;
+    }
+
+    td {
+        padding: 5px 5px 0 5px !important;
+    }
+}

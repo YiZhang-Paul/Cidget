@@ -19,7 +19,7 @@ export default class ZendeskTicketEmailProvider implements ISupportTicketProvide
         return ({
             id: url.split('/').slice(-1)[0],
             title: subject.replace(/^.*assignment:?\s?/i, ''),
-            content: this.getContent(body),
+            content: this.getHtmlContent(body).replace(/<[^<]*>/ig, ''),
             htmlContent: this.getHtmlContent(body),
             createdOn: email.created,
             url,
@@ -43,11 +43,12 @@ export default class ZendeskTicketEmailProvider implements ISupportTicketProvide
         return (match || [''])[0];
     }
 
-    private getContent(data: string): string {
-        return this.getHtmlContent(data).replace(/<[^<]*>/ig, '');
-    }
-
     private getHtmlContent(data: string): string {
-        return (data.match(/<div class="zd-comment".*?div>/ig) || [''])[0];
+        const [open, close] = ['<table class="MsoNormalTable"', '</table>'];
+        const start = data.indexOf(open);
+        const lastOpenTagIndex = data.lastIndexOf(open);
+        const end = data.lastIndexOf(close, lastOpenTagIndex) + close.length;
+
+        return start > end ? '' : data.slice(start, end);
     }
 }
