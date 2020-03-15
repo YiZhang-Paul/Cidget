@@ -206,7 +206,7 @@ describe('github store unit test', () => {
 
             sinonExpect.calledOnce(notifySpy);
             expect(notifySpy.args[0][0].group).toBe('notification');
-            expect(notifySpy.args[0][0].duration).toBe(-1);
+            expect(notifySpy.args[0][0].duration).toBe(10000);
             expect(notifySpy.args[0][0].data.type).toBe(NotificationType.PullRequest);
             expect(notifySpy.args[0][0].data.id).toBe('pull_request_id');
             expect(notifySpy.args[0][0].data.model).toStrictEqual(pullRequest);
