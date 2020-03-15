@@ -8,6 +8,7 @@ import IHttpClient from '../../../../interface/generic/http-client.interface';
 import IRepositoryProvider from '../../../../interface/source-control/repository-provider.interface';
 import GithubUserService from '../github-user/github-user.service';
 import AppSettings from '../../../io/app-settings/app-settings';
+import PullRequestAction from '../../../../enum/pull-request-action.enum';
 
 @injectable()
 export default class GithubPullRequestService {
@@ -71,13 +72,13 @@ export default class GithubPullRequestService {
         const { action, pull_request } = payload;
 
         if (pull_request.merged) {
-            return 'merged';
+            return PullRequestAction.Merged;
         }
 
         if (/^review_request/.test(action)) {
-            return 'needs review';
+            return PullRequestAction.ReviewRequested;
         }
-        return action === 'synchronize' ? 'updated' : action;
+        return action === 'synchronize' ? PullRequestAction.Updated : action;
     }
 
     private async getReviewers(data: any): Promise<{ requested: IGithubUser[], approved: IGithubUser[] }> {

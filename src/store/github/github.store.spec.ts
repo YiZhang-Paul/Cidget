@@ -145,7 +145,7 @@ describe('github store unit test', () => {
             await store.dispatch('addPullRequest', {});
 
             sinonExpect.calledOnce(notifySpy);
-            expect(notifySpy.args[0][0].duration).toBe(-1);
+            expect(notifySpy.args[0][0].duration).toBe(10000);
             expect(notifySpy.args[0][0].data.id).toBe('147');
             expect(notifySpy.args[0][0].data.type).toBe(NotificationType.PullRequest);
         });
@@ -158,7 +158,7 @@ describe('github store unit test', () => {
             await store.dispatch('addPullRequest', {});
 
             sinonExpect.calledOnce(notifySpy);
-            expect(notifySpy.args[0][0].duration).toBe(-1);
+            expect(notifySpy.args[0][0].duration).toBe(10000);
             expect(notifySpy.args[0][0].data.id).toBe('147');
             expect(notifySpy.args[0][0].data.type).toBe(NotificationType.PullRequest);
         });

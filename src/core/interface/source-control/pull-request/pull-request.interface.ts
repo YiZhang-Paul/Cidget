@@ -1,9 +1,10 @@
 import IUser from '../../generic/user.interface';
 import IRepository from '../repository.interface';
+import PullRequestAction from '../../../enum/pull-request-action.enum';
 
 export default interface IPullRequest<TUser = IUser, TRepository = IRepository> {
     id: string;
-    action: string;
+    action: PullRequestAction;
     initiator: TUser;
     repository: TRepository;
     branch: { source: string, base: string };

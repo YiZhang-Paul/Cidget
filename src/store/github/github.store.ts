@@ -9,6 +9,7 @@ import IPullRequest from '../../core/interface/source-control/pull-request/pull-
 import IGithubUser from '../../core/interface/source-control/github/github-user.interface';
 import GithubCommitService from '../../core/service/source-control/github/github-commit/github-commit.service';
 import GithubPullRequestService from '../../core/service/source-control/github/github-pull-request/github-pull-request.service';
+import PullRequestAction from '../../core/enum/pull-request-action.enum';
 
 type State = {
     commits: ICommit<IGithubUser>[],
@@ -69,7 +70,7 @@ const actions = {
         if (!pullRequest || !setReviewer(pullRequest, type, reviewer)) {
             return;
         }
-        pullRequest.action = type === 'approved' ? 'approved' : 'rejected';
+        pullRequest.action = type === 'approved' ? PullRequestAction.Approved : PullRequestAction.Rejected;
         commit('updatePullRequest', pullRequest);
 
         Vue.notify({
