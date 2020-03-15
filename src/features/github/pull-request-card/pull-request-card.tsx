@@ -37,6 +37,7 @@ export default class PullRequestCard extends tsx.Component<any> {
     }
 
     public render(): any {
+        const actionClass = this.action === 'Rejected' ? 'rejected' : '';
         let statusClass = 'pending';
 
         if (this.pullRequest.mergeable !== null) {
@@ -57,7 +58,7 @@ export default class PullRequestCard extends tsx.Component<any> {
                         <div class={`check-status ${statusClass}`}></div>
                     </div>
 
-                    <div class="pull-request-action">{this.action}</div>
+                    <div class={`pull-request-action ${actionClass}`}>{this.action}</div>
 
                     <div class="reviewers-summary">
                         <i class="fas fa-user-check reviewers-icon"></i>

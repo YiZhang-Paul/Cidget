@@ -69,6 +69,7 @@ const actions = {
         if (!pullRequest || !setReviewer(pullRequest, type, reviewer)) {
             return;
         }
+        pullRequest.action = type === 'approved' ? 'approved' : 'rejected';
         commit('updatePullRequest', pullRequest);
 
         Vue.notify({
