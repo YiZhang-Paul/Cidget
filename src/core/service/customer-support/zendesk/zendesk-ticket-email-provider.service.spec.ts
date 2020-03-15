@@ -33,9 +33,31 @@ describe('zendesk ticket by mail provider unit test', () => {
             email = {
                 subject: 'new assignment: Can I remove this item from my cart',
                 body: `
-                    <div>this ticket has been assigned to group "group_name", of which you are a member</div>
-                    <div><p>link to ticket: https://zendesk.com/agent/tickets/451258</p></div>
-                    <div class="zd-comment">Hello, I need some help</div>
+                    <p>&nbsp;</p>
+                    <table class="MsoNormalTable">
+                        <tbody>
+                            <tr>
+                                <td><p>this ticket has been assigned to group "group_name", of which you are a member</p></td>
+                                <td><p>link to ticket: https://zendesk.com/agent/tickets/451258</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="MsoNormalTable">
+                        <tbody>
+                            <tr>
+                                <td><p>Hello, I need some help</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="MsoNormalTable">
+                        <tbody>
+                            <tr>
+                                <td><p>submitted from www.xxx.com</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
                 `,
                 created: new Date(2019, 10, 5),
                 from: { name: 'requester_name' },
@@ -44,11 +66,29 @@ describe('zendesk ticket by mail provider unit test', () => {
         });
 
         test('should convert zendesk email into zendesk ticket', () => {
+            const message = `
+                <table class="MsoNormalTable">
+                <tbody>
+                    <tr>
+                        <td><p>this ticket has been assigned to group "group_name", of which you are a member</p></td>
+                        <td><p>link to ticket: https://zendesk.com/agent/tickets/451258</p></td>
+                    </tr>
+                </tbody>
+                </table>
+                <table class="MsoNormalTable">
+                    <tbody>
+                        <tr>
+                            <td><p>Hello, I need some help</p></td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+
             const ticket = service.toTicket(email);
 
             expect(ticket.id).toBe('451258');
             expect(ticket.title).toBe('Can I remove this item from my cart');
-            expect(ticket.htmlContent).toBe('<div class="zd-comment">Hello, I need some help</div>');
+            expect(removeWhiteSpace(ticket.htmlContent)).toBe(removeWhiteSpace(message));
             expect(ticket.createdOn.getTime()).toBe(new Date(2019, 10, 5).getTime());
             expect(ticket.url).toBe('https://zendesk.com/agent/tickets/451258');
             expect(ticket.status).toBe('opened');
@@ -69,13 +109,15 @@ describe('zendesk ticket by mail provider unit test', () => {
         test('should properly set default value for missing fields', () => {
             email.body = email.body.replace('assigned to group "group_name"', 'has been reopened');
             email.body = email.body.replace('https://zendesk.com/agent/tickets/451258', 'www.google.ca');
-            email.body = email.body.replace('div class="zd-comment"', 'div');
 
             const ticket = service.toTicket(email);
 
             expect(ticket.url).toBe('');
             expect(ticket.group).toBe('');
-            expect(ticket.htmlContent).toBe('');
         });
     });
 });
+
+function removeWhiteSpace(text: string): string {
+    return text.replace(/>\s*</g, '><').trim();
+}
