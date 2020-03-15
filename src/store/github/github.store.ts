@@ -57,7 +57,7 @@ const actions = {
 
         Vue.notify({
             group: 'notification',
-            duration: pullRequest.isActive ? -1 : 10000,
+            duration: pullRequest.action === 'needs review' ? -1 : 10000,
             data: { type: NotificationType.PullRequest, id: pullRequest.id, model: pullRequest }
         });
     },
