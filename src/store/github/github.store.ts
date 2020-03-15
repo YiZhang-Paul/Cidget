@@ -90,12 +90,19 @@ const actions = {
         if (!pullRequest || !pullRequest.isActive || pullRequest.mergeable === isMergeable) {
             return;
         }
+
+        if (isMergeable === null) {
+            pullRequest.action = PullRequestAction.CheckRunning;
+        }
+        else {
+            pullRequest.action = isMergeable ? PullRequestAction.CheckPassed : PullRequestAction.CheckFailed;
+        }
         pullRequest.mergeable = isMergeable;
         commit('updatePullRequest', pullRequest);
 
         Vue.notify({
             group: 'notification',
-            duration: -1,
+            duration: 10000,
             data: { type: NotificationType.PullRequest, id: pullRequest.id, model: pullRequest }
         });
     }

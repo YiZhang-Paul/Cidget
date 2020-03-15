@@ -306,14 +306,32 @@ describe('github store unit test', () => {
             expect(commitServiceStub.getStatus.args[0][0]).toBe('cidget');
             expect(commitServiceStub.getStatus.args[0][1]).toBe('head_sha');
             expect(commitServiceStub.getStatus.args[0][2]).toBe('user_name');
+            expect(pullRequest.action).toBe('check running');
             expect(pullRequest.mergeable).toBeNull();
+        });
+
+        test('should update pull request action when check passed', async () => {
+            pullRequest.mergeable = false;
+            status.status = 'success';
+
+            await store.dispatch('addPullRequestCheck', payload);
+
+            expect(pullRequest.action).toBe('check passed');
+        });
+
+        test('should update pull request action when check failed', async () => {
+            status.status = 'failure';
+
+            await store.dispatch('addPullRequestCheck', payload);
+
+            expect(pullRequest.action).toBe('check failed');
         });
 
         test('should trigger notification', async () => {
             await store.dispatch('addPullRequestCheck', payload);
 
             sinonExpect.calledOnce(notifySpy);
-            expect(notifySpy.args[0][0].duration).toBe(-1);
+            expect(notifySpy.args[0][0].duration).toBe(10000);
             expect(notifySpy.args[0][0].data.id).toBe('147');
             expect(notifySpy.args[0][0].data.type).toBe(NotificationType.PullRequest);
         });
