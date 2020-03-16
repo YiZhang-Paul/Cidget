@@ -9,6 +9,7 @@ import OutlookEmailService from '../core/service/email/outlook/outlook-email/out
 import ZendeskTicketEmailProvider from '../core/service/customer-support/zendesk/zendesk-ticket-email-provider.service';
 import AppSettings from '../core/service/io/app-settings/app-settings';
 
+const log = require('electron-log');
 const outlookApiProvider = Container.get<OutlookApiProvider>(Types.OutlookApiProvider);
 const outlookEmailService = Container.get<OutlookEmailService>(Types.OutlookEmailService);
 const zendeskService = Container.get<ZendeskTicketEmailProvider>(Types.ZendeskTicketEmailProvider);
@@ -30,6 +31,7 @@ socket.on('outlook-mail', async (payload: any) => {
         }
     }
     catch (error) {
+        log.error(error);
         logger.log(error);
     }
 });

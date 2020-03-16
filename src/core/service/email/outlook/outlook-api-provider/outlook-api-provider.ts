@@ -10,6 +10,8 @@ import { logger } from '../../../io/logger/logger';
 import AppSettings from '../../../io/app-settings/app-settings';
 import TimeUtility from '../../../../utility/time-utility/time-utility';
 
+const log = require('electron-log');
+
 @injectable()
 export default class OutlookApiProvider implements IOAuthProvider {
     private _tokenPath = 'mail.outlook.token';
@@ -97,6 +99,7 @@ export default class OutlookApiProvider implements IOAuthProvider {
             return this._client.api(url);
         }
         catch (error) {
+            log.error(error);
             logger.log(error);
 
             return null;
