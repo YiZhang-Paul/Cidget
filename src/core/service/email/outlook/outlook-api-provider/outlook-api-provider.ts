@@ -41,6 +41,7 @@ export default class OutlookApiProvider implements IOAuthProvider {
 
     public promptAuthorization(): void {
         const url = this._oauth2.authorizationCode.authorizeURL(this.authorizeContext);
+        this._window?.close();
         this._window = new remote.BrowserWindow({ width: 800, height: 600 });
         this._window.loadURL(url);
     }
@@ -50,21 +51,22 @@ export default class OutlookApiProvider implements IOAuthProvider {
         const token = await this._oauth2.authorizationCode.getToken(context);
         token.created = new Date().toISOString();
         // FIXME: potential loop
-        this.authorizeToken(token);
-        this._settings.set(this._tokenPath, token);
-        this._window?.close();
+        try {
+            this.authorizeToken(token);
+            this._window?.close();
+        }
+        catch (error) {
+            log.error(error);
+            this.promptAuthorization();
+        }
     }
 
     private authorizeToken(token: any): void {
-        try {
-            this.setExpireTime(token);
-            this._token = this._oauth2.accessToken.create(token);
-            const accessToken = this._token.token.access_token;
-            this._client = graph.Client.init({ authProvider: _ => _(null, accessToken) });
-        }
-        catch {
-            this.promptAuthorization();
-        }
+        this.setExpireTime(token);
+        this._token = this._oauth2.accessToken.create(token);
+        const accessToken = this._token.token.access_token;
+        this._client = graph.Client.init({ authProvider: _ => _(null, accessToken) });
+        this._settings.set(this._tokenPath, token);
     }
 
     private setExpireTime(token: any): void {
@@ -73,22 +75,6 @@ export default class OutlookApiProvider implements IOAuthProvider {
             const elapsed = TimeUtility.elapsedMilliseconds(timestamp) / 1000;
             token.expires_in = Math.max(token.expires_in - elapsed, 0);
             token.ext_expires_in = Math.max(token.ext_expires_in - elapsed, 0);
-        }
-    }
-
-    private async refreshToken(): Promise<void> {
-        if (!this._token.expired()) {
-            return;
-        }
-
-        try {
-            const token = await this._token.refresh();
-            token.created = new Date().toISOString();
-            this.authorizeToken(token);
-            this._settings.set(this._tokenPath, token);
-        }
-        catch {
-            this.promptAuthorization();
         }
     }
 
@@ -101,8 +87,18 @@ export default class OutlookApiProvider implements IOAuthProvider {
         catch (error) {
             log.error(error);
             logger.log(error);
+            this.promptAuthorization();
 
             return null;
         }
+    }
+
+    private async refreshToken(): Promise<void> {
+        if (!this._token.expired()) {
+            return;
+        }
+        const token = await this._token.refresh();
+        token.created = new Date().toISOString();
+        this.authorizeToken(token);
     }
 }
