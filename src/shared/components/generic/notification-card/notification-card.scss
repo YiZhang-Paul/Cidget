@@ -48,14 +48,24 @@ $container-height: 110px;
         left: calc(-#{$avatar-width} / 2);
     }
     25% {
-        width: calc(#{$avatar-width} + 18px);
-        height: calc(#{$avatar-width} + 18px);
-        left: calc(-#{$avatar-width} / 2 - 9px);
+        width: $avatar-width;
+        height: $avatar-width;
+        left: calc(-#{$avatar-width} / 2);
+    }
+    50% {
+        width: calc(#{$avatar-width} + 10px);
+        height: calc(#{$avatar-width} + 10px);
+        left: calc(-#{$avatar-width} / 2 - 5px);
+    }
+    70% {
+        width: calc(#{$avatar-width} + 10px);
+        height: calc(#{$avatar-width} + 10px);
+        left: calc(-#{$avatar-width} / 2 - 5px);
     }
     85% {
-        width: calc(#{$avatar-width} + 18px);
-        height: calc(#{$avatar-width} + 18px);
-        left: calc(-#{$avatar-width} / 2 - 9px);
+        width: calc(#{$avatar-width} - 14px);
+        height: calc(#{$avatar-width} - 14px);
+        left: calc(-#{$avatar-width} / 2 + 7px);
     }
     to {
         width: calc(#{$avatar-width});
