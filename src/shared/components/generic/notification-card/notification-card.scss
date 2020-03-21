@@ -1,21 +1,113 @@
-.notification-card-container {
-    $avatar-width: 80px;
-    $container-width: 600px;
-    $container-height: 110px;
+$avatar-width: 80px;
+$container-width: 600px;
+$container-height: 110px;
 
+@keyframes avatar-expand {
+    from {
+        width: 30px;
+        height: 30px;
+        left: -15px;
+        opacity: 0;
+    }
+    20% {
+        opacity: 1;
+    }
+    55% {
+        width: calc(#{$avatar-width} + 10px);
+        height: calc(#{$avatar-width} + 10px);
+        left: calc(-#{$avatar-width} / 2 - 5px);
+    }
+    65% {
+        width: calc(#{$avatar-width} - 6px);
+        height: calc(#{$avatar-width} - 6px);
+        left: calc(-#{$avatar-width} / 2 + 3px);
+    }
+    80% {
+        width: calc(#{$avatar-width} + 6px);
+        height: calc(#{$avatar-width} + 6px);
+        left: calc(-#{$avatar-width} / 2 - 3px);
+    }
+    to {
+        width: $avatar-width;
+        height: $avatar-width;
+    }
+}
+
+@keyframes body-expand {
+    from {
+        width: 0;
+        box-shadow: none;
+    }
+    70% {
+        width: 0;
+    }
+    to {
+        width: $container-width;
+    }
+}
+
+@keyframes content-load {
+    from {
+        opacity: 0;
+    }
+    76% {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes button-load {
+    from {
+        width: 0;
+        height: 0;
+        top: 18px;
+        right: 19px;
+        color: rgba(228, 70, 97, 0.9);
+        opacity: 0;
+    }
+    75% {
+        width: 0;
+        height: 0;
+        top: 18px;
+        right: 19px;
+        opacity: 0;
+    }
+    87% {
+        width: 22px;
+        height: 22px;
+        top: 7px;
+        right: 8px;
+        opacity: 1;
+    }
+    97% {
+        color: rgba(228, 70, 97, 0.9);
+    }
+    to {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+.notification-card-container {
     position: relative;
-    width: $container-width;
     height: $container-height;
     display: flex;
     align-items: center;
     justify-content: space-between;
     border-radius: 6px;
     background-color: var(--main-background-color);
+    box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.35);
     cursor: default;
+    animation-name: body-expand;
+    animation-duration: 1s;
 
     .service-provider-avatar {
         position: absolute;
         left: calc(-#{$avatar-width} / 2);
+        animation-name: avatar-expand;
+        animation-duration: 0.8s;
     }
 
     .content {
@@ -25,6 +117,8 @@
         margin-top: 10px;
         margin-left: calc(#{$avatar-width} / 2 + 8px);
         border: 1px solid transparent;
+        animation-name: content-load;
+        animation-duration: 1.5s;
 
         & > div {
             $margin: 4px;
@@ -40,6 +134,33 @@
 
         & > div:last-child {
             bottom: 3px;
+        }
+    }
+
+    .close-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 8px;
+        right: 9px;
+        width: 20px;
+        height: 20px;
+        padding: 1px;
+        font-size: 0.85em;
+        background-color: rgba(228, 70, 97, 0.9);
+        border: 1px solid var(--border-color);
+        border-radius: 50%;
+        box-shadow: -3px -3px 7px var(--light-shadow-color), 3px 3px 5px var(--dark-shadow-color);
+        color: rgb(245, 245, 245);
+        transition: color 0.4s ease;
+        cursor: pointer;
+        animation-name: button-load;
+        animation-duration: 1.7s;
+
+        &:hover {
+            color: rgb(215, 215, 215);
+            box-shadow: inset -3px -3px 7px rgba(206, 35, 63, 0.9), inset 3px 3px 5px rgba(172, 28, 52, 0.9);
         }
     }
 
@@ -72,31 +193,8 @@
         position: absolute;
         top: 8px;
         right: 45px;
-    }
-
-    .close-icon {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: absolute;
-        top: 8px;
-        right: 9px;
-        width: 20px;
-        height: 20px;
-        padding: 1px;
-        font-size: 0.85em;
-        background-color: rgba(228, 70, 97, 0.9);
-        border: 1px solid var(--border-color);
-        border-radius: 50%;
-        box-shadow: -3px -3px 7px var(--light-shadow-color), 3px 3px 5px var(--dark-shadow-color);
-        color: rgb(245, 245, 245);
-        transition: color 0.4s ease;
-        cursor: pointer;
-
-        &:hover {
-            color: rgb(215, 215, 215);
-            box-shadow: inset -3px -3px 7px rgba(206, 35, 63, 0.9), inset 3px 3px 5px rgba(172, 28, 52, 0.9);
-        }
+        animation-name: content-load;
+        animation-duration: 1.5s;
     }
 
     .option-icon {
