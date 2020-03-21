@@ -27,11 +27,13 @@ export default class App extends tsx.Component<any> {
             const instance: any = this.$refs[identifier];
             const notificationCard = instance.$children[0];
 
-            if (notificationCard) {
-                const delay = notificationCard.$data.closing ? 0 : 1000;
-                notificationCard.$data.closing = true;
-                setTimeout(() => original(item), delay);
+            if (!notificationCard || notificationCard.$data.closing) {
+                original(item);
+
+                return;
             }
+            notificationCard.$data.closing = true;
+            setTimeout(() => original(item), 1000);
         };
     }
 
