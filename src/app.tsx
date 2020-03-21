@@ -13,9 +13,32 @@ import PullRequestCard from './features/github/pull-request-card/pull-request-ca
 export default class App extends tsx.Component<any> {
     @Ref('cards') private _cards: any;
 
+    public mounted(): void {
+        const original = this._cards.destroy;
+
+        this._cards.destroy = (item: any) => {
+            const identifier = this.getIdentifier(item.data);
+
+            if (!this.$refs[identifier]) {
+                original(item);
+
+                return;
+            }
+            const instance: any = this.$refs[identifier];
+            const notificationCard = instance.$children[0];
+
+            if (notificationCard) {
+                const delay = notificationCard.$data.closing ? 0 : 1000;
+                notificationCard.$data.closing = true;
+                setTimeout(() => original(item), delay);
+            }
+        };
+    }
+
     private getNotificationCard(props: any): any {
-        const { type, id } = props.item.data;
-        const identifier = `${type}_card_${id}`;
+        const { data } = props.item;
+        const { id } = data;
+        const identifier = this.getIdentifier(data);
         remote.getCurrentWindow().moveTop();
 
         if (this.updateCard(id)) {
@@ -32,6 +55,10 @@ export default class App extends tsx.Component<any> {
                 {this.getEventCard(props, identifier)}
             </div>
         );
+    }
+
+    private getIdentifier(data: any): string {
+        return `${data.type}_card_${data.id}`;
     }
 
     private stopTimer(id: string): void {
@@ -65,15 +92,15 @@ export default class App extends tsx.Component<any> {
 
         switch (type) {
             case NotificationType.SupportTicket:
-                return <SupportTicketCard class={className} ticket={model} closeHandler={props.close} />;
+                return <SupportTicketCard ref={className} class={className} ticket={model} closeHandler={props.close} />;
             case NotificationType.CiBuild:
-                return <BuildPipelineCard class={className} build={model} closeHandler={props.close} />;
+                return <BuildPipelineCard ref={className} class={className} build={model} closeHandler={props.close} />;
             case NotificationType.CdRelease:
-                return <ReleasePipelineCard class={className} release={model} closeHandler={props.close} />;
+                return <ReleasePipelineCard ref={className} class={className} release={model} closeHandler={props.close} />;
             case NotificationType.Commit:
-                return <CommitCard class={className} commit={model} closeHandler={props.close} />;
+                return <CommitCard ref={className} class={className} commit={model} closeHandler={props.close} />;
             case NotificationType.PullRequest:
-                return <PullRequestCard class={className} pullRequest={model} closeHandler={props.close} />;
+                return <PullRequestCard ref={className} class={className} pullRequest={model} closeHandler={props.close} />;
         }
     }
 

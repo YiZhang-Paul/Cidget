@@ -19,7 +19,7 @@ export default class NotificationCard extends tsx.Component<any> {
 
     private getClass(name: string): string {
         const type = this.$data.closing ? '-exit' : '-enter';
-        console.log(`${name} ${name + type}`);
+
         return `${name} ${name + type}`;
     }
 
