@@ -6,12 +6,19 @@ import TimeUtility from '../../../../core/utility/time-utility/time-utility';
 
 import './relative-time-display.scss';
 
+const log = require('electron-log');
+
 @Component
 export default class RelativeTimeDisplay extends tsx.Component<any> {
     @Prop({ default: () => new Date() }) public time!: Date;
 
     private get relative(): string {
-        return TimeUtility.relativeTimeString(this.time, this.$data.now);
+        const time = TimeUtility.relativeTimeString(this.time, this.$data.now);
+
+        if (time.startsWith('-')) {
+            log.error(`Negative relative time, start: ${this.time}, end: ${this.$data.now}`);
+        }
+        return time;
     }
 
     private get absolute(): string {
