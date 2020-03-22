@@ -29,10 +29,10 @@
         }
 
         .pending {
-            background-color: rgb(248, 198, 35);
-            box-shadow: 0 0 3px 0 rgba(252, 191, 23, 0.65);
-            border-top: 1px solid rgb(253, 210, 70);
-            border-bottom: 1px solid rgb(221, 185, 67);
+            background-color: rgb(59, 181, 252);
+            box-shadow: 0 0 3px 0 rgba(78, 185, 247, 0.65);
+            border-top: 1px solid rgb(127, 177, 206);
+            border-bottom: 1px solid rgb(60, 159, 216);
         }
 
         .mergeable {
@@ -69,7 +69,7 @@
 
         .reviewers-icon {
             margin-right: 2px;
-            color: rgba(72, 158, 207, 0.9);
+            color: var(--main-icon-color);
         }
     }
 
@@ -92,7 +92,7 @@
         background-position: center;
         background-size: 25px 25px;
         transform: rotate(90deg);
-        filter: invert(51%) sepia(11%) saturate(7310%) hue-rotate(174deg) brightness(79%) contrast(79%);
+        filter: invert(49%) sepia(20%) saturate(694%) hue-rotate(173deg) brightness(91%) contrast(92%);
     }
 
     .to-branch-badge {
@@ -102,7 +102,7 @@
     .right-arrow {
         margin-top: 4px;
         margin-left: 6px;
-        color: rgba(72, 158, 207, 0.9);
+        color: var(--main-icon-color);
     }
 
     .repository-name {
