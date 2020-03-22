@@ -52,7 +52,7 @@ export default class PullRequestCard extends tsx.Component<any> {
                 <div class="pull-request-message-container">
                     <div class="pull-request-message-wrapper">
                         <WeblinkDisplay class="pull-request-message"
-                            text={`PR#${this.pullRequest.number} ${this.pullRequest.message}`}
+                            text={`PR #${this.pullRequest.number}`}
                             url={this.pullRequest.pullRequestUrl}>
                         </WeblinkDisplay>
                         <div class={`check-status ${statusClass}`}></div>
