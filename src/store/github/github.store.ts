@@ -65,7 +65,7 @@ const actions = {
     async addPullRequestReview(context: ActionContext<State, any>, payload: any): Promise<void> {
         const { commit, state } = context;
         const { pullRequestId, type, reviewer } = await pullRequestService.toReview(payload);
-        const pullRequest = state.pullRequests.find(_ => _.id === pullRequestId);
+        const pullRequest = shallowClone(state.pullRequests.find(_ => _.id === pullRequestId));
 
         if (!pullRequest || !setReviewer(pullRequest, type, reviewer)) {
             return;
@@ -85,7 +85,7 @@ const actions = {
         const { name, owner } = repository;
         const { ref, status } = await commitService.getStatus(name, sha, owner.login);
         const isMergeable = status === 'pending' ? null : status === 'success';
-        const pullRequest = state.pullRequests.find(_ => _.headCommitSha === ref);
+        const pullRequest = shallowClone(state.pullRequests.find(_ => _.headCommitSha === ref));
 
         if (!pullRequest || !pullRequest.isActive || pullRequest.mergeable === isMergeable) {
             return;
@@ -143,6 +143,10 @@ function setReviewer(pullRequest: IPullRequest<IGithubUser>, type: string, revie
         requested.push(reviewer);
     }
     return true;
+}
+
+function shallowClone(data: any): any {
+    return Object.assign({}, data);
 }
 
 export const createStore = () => {

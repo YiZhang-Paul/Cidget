@@ -39,20 +39,6 @@ html, body {
     padding: 4px;
 }
 
-.updated-card {
-    animation-name: updated-notify;
-    animation-duration: 2s;
-}
-
-@keyframes updated-notify {
-    from {
-        background-color: rgb(132, 138, 143);
-    }
-    to {
-        background-color: var(--main-background-color);
-    }
-}
-
 .el-tooltip__popper, .zd-comment, .zd-comment p {
     max-width: 65vw;
     margin: 8px 0 !important;

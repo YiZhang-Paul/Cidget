@@ -15,7 +15,7 @@ export default class App extends tsx.Component<any> {
 
     public mounted(): void {
         const original = this._cards.destroy;
-
+        // monkey patch destroy() to play exit animation on card exit
         this._cards.destroy = (item: any) => {
             const identifier = this.getIdentifier(item.data);
 
@@ -26,10 +26,16 @@ export default class App extends tsx.Component<any> {
             }
             const instance: any = this.$refs[identifier];
             const notificationCard = instance.$children[0];
+            const list = this._cards.$data.list;
+            const isDuplicate = list.filter((_: any) => _.data.id === item.data.id).length === 2;
 
-            if (!notificationCard || notificationCard.$data.closing) {
+            if (!notificationCard || notificationCard.$data.closing && !isDuplicate) {
                 original(item);
 
+                return;
+            }
+
+            if (notificationCard.$data.closing && isDuplicate) {
                 return;
             }
             notificationCard.$data.closing = true;
@@ -42,12 +48,7 @@ export default class App extends tsx.Component<any> {
         const { id } = data;
         const identifier = this.getIdentifier(data);
         remote.getCurrentWindow().moveTop();
-
-        if (this.updateCard(id)) {
-            this.applyEffect(identifier);
-
-            return null;
-        }
+        this.removeDuplicate(id);
 
         return (
             <div class="notification-wrapper"
@@ -61,6 +62,14 @@ export default class App extends tsx.Component<any> {
 
     private getIdentifier(data: any): string {
         return `${data.type}_card_${data.id}`;
+    }
+
+    private removeDuplicate(id: string): void {
+        const cards = this._cards.$data.list.filter((_: any) => _.data.id === id);
+
+        if (cards.length === 2) {
+            this._cards.destroy(cards[1]);
+        }
     }
 
     private stopTimer(id: string): void {
@@ -104,33 +113,6 @@ export default class App extends tsx.Component<any> {
             case NotificationType.PullRequest:
                 return <PullRequestCard ref={className} class={className} pullRequest={model} closeHandler={props.close} />;
         }
-    }
-
-    private updateCard(id: string): boolean {
-        const cards = this._cards.$data.list.filter((_: any) => _.data.id === id);
-
-        if (cards.length !== 2) {
-            return false;
-        }
-        const [current, previous] = cards;
-        // destroy out of date card
-        this._cards.destroyById(previous.id);
-        // move up to date card to start of the list and reuse previous id for animation
-        const index = this._cards.$data.list.findIndex((_: any) => _.data.id === id);
-        this._cards.$data.list.splice(index, 1);
-        this._cards.$data.list.unshift(current);
-        current.id = previous.id;
-
-        return true;
-    }
-
-    private applyEffect(id: string, effectClass = 'updated-card'): void {
-        const elements = document.getElementsByClassName(id);
-
-        Array.prototype.forEach.call(elements, _ => {
-            _.classList.remove(effectClass);
-            setTimeout(() => _.classList.add(effectClass));
-        });
     }
 
     public render(): any {
