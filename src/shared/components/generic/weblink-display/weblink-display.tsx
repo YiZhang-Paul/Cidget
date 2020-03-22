@@ -10,6 +10,7 @@ export default class WeblinkDisplay extends tsx.Component<any> {
     @Prop() public tooltip!: string;
     @Prop() public url!: string;
     @Prop({ default: 'top-start' }) public tooltipPosition!: string;
+    @Prop({ default: 1500 }) public delay!: number;
     @Prop({ default: false }) public useHtmlTooltip!: boolean;
     @Prop({ default: false }) public noTooltip!: boolean;
     @Prop({ default: false }) public borderless!: boolean;
@@ -21,8 +22,10 @@ export default class WeblinkDisplay extends tsx.Component<any> {
 
     public mounted(): void {
         if (!this.noTooltip) {
-            const overflow = this.container.offsetWidth < this.container.scrollWidth;
-            this.$data.showTooltip = this.tooltip || overflow;
+            setTimeout(() => {
+                const overflow = this.container.offsetWidth < this.container.scrollWidth;
+                this.$data.showTooltip = this.tooltip || overflow;
+            }, this.delay);
         }
     }
 
