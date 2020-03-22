@@ -33,14 +33,15 @@
     }
 
     .trigger-name {
-        background-color: rgb(65, 91, 124);
+        background-color: var(--main-button-color);
         max-width: 280px;
         margin-top: 3px;
         margin-left: 2px;
         margin-right: 3px;
 
         &:hover {
-            box-shadow: inset -3px -3px 7px rgb(109, 136, 170), inset 3px 3px 5px rgb(49, 70, 97);
+            box-shadow: inset -3px -3px 7px var(--main-button-light-shadow-color),
+                        inset 3px 3px 5px var(--main-button-dark-shadow-color);
         }
 
         .url {

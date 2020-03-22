@@ -1,19 +1,20 @@
 .branch-badge-container {
     color: rgb(255, 255, 255);
-    background-color: rgb(51, 153, 255);
+    background-color: var(--main-button-color);
     box-shadow: -3px -3px 7px var(--light-shadow-color), 3px 3px 5px var(--dark-shadow-color);
 
     &:hover.enabled {
-        background-color: rgb(91, 163, 235);
-        box-shadow: inset -3px -3px 7px rgb(57, 171, 255), inset 3px 3px 5px rgb(45, 135, 224);
+        background-color: var(--main-button-color);
+        box-shadow: inset -3px -3px 7px var(--main-button-light-shadow-color),
+                    inset 3px 3px 5px var(--main-button-dark-shadow-color);
     }
 
     &:active.enabled {
-        background-color: rgb(47, 135, 223);
+        background-color: var(--main-button-active-color);
     }
 
     .branch-icon {
-        color: rgb(62, 224, 30);
+        color: var(--main-button-icon-color);
         margin-top: 1px;
         margin-right: 2.5px;
         width: 11px;
