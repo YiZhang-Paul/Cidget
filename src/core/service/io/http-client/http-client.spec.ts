@@ -3,7 +3,7 @@ import { assert as sinonExpect, spy } from 'sinon';
 import axios from '../../../../mocks/third-party/axios';
 import Types from '../../../ioc/types';
 import Container from '../../../ioc/container';
-import IHttpClient from '../../../interface/general/http-client.interface';
+import IHttpClient from '../../../interface/generic/http-client.interface';
 
 import HttpClient from './http-client';
 

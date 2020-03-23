@@ -5,12 +5,14 @@ import IWebhook from '../../../interface/webhook/webhook.interface';
 import IWebhookQuery from '../../../interface/webhook/webhook-query.interface';
 import IWebhookProvider from '../../../interface/webhook/webhook-provider.interface';
 import IOutlookWebhookContext from '../../../interface/webhook/outlook/outlook-webhook-context.interface';
-import OutlookApiProvider from '../../mail/outlook/outlook-api-provider';
+import OutlookApiProvider from '../../email/outlook/outlook-api-provider/outlook-api-provider';
 import AppSettings from '../../io/app-settings/app-settings';
+import TimeUtility from '../../../utility/time-utility/time-utility';
 
 @injectable()
 export default class OutlookWebhookProvider implements IWebhookProvider<IWebhookQuery, IOutlookWebhookContext> {
     private _webhookPath = 'mail.outlook.webhooks';
+    private _timeToLive = 60000 * 4230;
     private _graphApi: OutlookApiProvider;
     private _settings: AppSettings;
 
@@ -22,12 +24,12 @@ export default class OutlookWebhookProvider implements IWebhookProvider<IWebhook
         this._settings = settings;
     }
 
-    private get expireTime(): Date {
-        return new Date(Date.now() + 60000 * 4230);
+    private get expireTime(): string {
+        return TimeUtility.fromNow(this._timeToLive).toISOString();
     }
 
     private isExpired(hook: IWebhook): boolean {
-        return Date.now() - hook.createdOn.getTime() >= 60000 * 4230;
+        return TimeUtility.elapsedMilliseconds(hook.createdOn) >= this._timeToLive;
     }
 
     public async listWebhooks(): Promise<IWebhook[]> {
@@ -57,7 +59,7 @@ export default class OutlookWebhookProvider implements IWebhookProvider<IWebhook
             changeType: events.join(','),
             notificationUrl: callback,
             resource,
-            expirationDateTime: this.expireTime.toISOString(),
+            expirationDateTime: this.expireTime,
             clientState: state
         });
 
@@ -117,7 +119,7 @@ export default class OutlookWebhookProvider implements IWebhookProvider<IWebhook
                 return null;
             }
 
-            await request.patch({ expirationDateTime: this.expireTime.toISOString() });
+            await request.patch({ expirationDateTime: this.expireTime });
             this._settings.set(this._webhookPath, hooks);
 
             return hooks[index];

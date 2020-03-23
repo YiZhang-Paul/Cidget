@@ -1,6 +1,6 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
 
-import '../../../../element-ui-test.js';
+import '../../../../startups/element-ui-test.js';
 
 import StepSummary from './step-summary';
 

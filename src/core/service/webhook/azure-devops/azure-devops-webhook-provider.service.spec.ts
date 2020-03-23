@@ -2,7 +2,7 @@ import { assert as sinonExpect, stub } from 'sinon';
 
 import Types from '../../../ioc/types';
 import Container from '../../../ioc/container';
-import IHttpClient from '../../../interface/general/http-client.interface';
+import IHttpClient from '../../../interface/generic/http-client.interface';
 import IWebhookQuery from '../../../interface/webhook/webhook-query.interface';
 import IAzureDevopsWebhookContext from '../../../interface/webhook/azure-devops/azure-devops-webhook-context.interface';
 

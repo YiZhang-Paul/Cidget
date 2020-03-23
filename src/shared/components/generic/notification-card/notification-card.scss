@@ -1,21 +1,250 @@
-.notification-card-container {
-    $avatar-width: 80px;
-    $container-width: 600px;
-    $container-height: 110px;
+$avatar-width: 80px;
+$container-width: 600px;
+$container-height: 110px;
 
+@keyframes avatar-load {
+    from {
+        width: 30px;
+        height: 30px;
+        left: -15px;
+        opacity: 0;
+    }
+    20% {
+        width: 30px;
+        height: 30px;
+        left: -15px;
+        opacity: 1;
+    }
+    55% {
+        width: calc(#{$avatar-width} + 10px);
+        height: calc(#{$avatar-width} + 10px);
+        left: calc(-#{$avatar-width} / 2 - 5px);
+        opacity: 1;
+    }
+    65% {
+        width: calc(#{$avatar-width} - 6px);
+        height: calc(#{$avatar-width} - 6px);
+        left: calc(-#{$avatar-width} / 2 + 3px);
+        opacity: 1;
+    }
+    80% {
+        width: calc(#{$avatar-width} + 6px);
+        height: calc(#{$avatar-width} + 6px);
+        left: calc(-#{$avatar-width} / 2 - 3px);
+        opacity: 1;
+    }
+    to {
+        width: $avatar-width;
+        height: $avatar-width;
+        left: calc(-#{$avatar-width} / 2);
+        opacity: 1;
+    }
+}
+
+@keyframes avatar-remove {
+    from {
+        width: $avatar-width;
+        height: $avatar-width;
+        left: calc(-#{$avatar-width} / 2);
+    }
+    25% {
+        width: $avatar-width;
+        height: $avatar-width;
+        left: calc(-#{$avatar-width} / 2);
+    }
+    50% {
+        width: calc(#{$avatar-width} + 10px);
+        height: calc(#{$avatar-width} + 10px);
+        left: calc(-#{$avatar-width} / 2 - 5px);
+    }
+    70% {
+        width: calc(#{$avatar-width} + 10px);
+        height: calc(#{$avatar-width} + 10px);
+        left: calc(-#{$avatar-width} / 2 - 5px);
+    }
+    85% {
+        width: calc(#{$avatar-width} - 14px);
+        height: calc(#{$avatar-width} - 14px);
+        left: calc(-#{$avatar-width} / 2 + 7px);
+    }
+    to {
+        width: calc(#{$avatar-width});
+        height: calc(#{$avatar-width});
+        left: calc(-#{$avatar-width} / 2);
+    }
+}
+
+@keyframes body-load {
+    from {
+        width: 0;
+        box-shadow: none;
+    }
+    70% {
+        width: 0;
+    }
+    to {
+        width: $container-width;
+    }
+}
+
+@keyframes body-remove {
+    from {
+        margin-top: 0;
+        width: $container-width;
+        height: $container-height;
+    }
+    50% {
+        margin-top: 0;
+        margin-bottom: 0;
+        width: $container-width;
+        height: $container-height;
+    }
+    88% {
+        margin-top: 35px;
+        margin-bottom: 35px;
+        width: 20px;
+        height: calc(#{$container-height} - 70px);
+    }
+    to {
+        margin-top: calc(#{$container-height} / 2);
+        margin-bottom: calc(#{$container-height} / 2);
+        width: 0;
+        height: 0;
+    }
+}
+
+@keyframes content-load {
+    from {
+        opacity: 0;
+    }
+    76% {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes content-remove {
+    from {
+        opacity: 1;
+    }
+    55% {
+        opacity: 1;
+    }
+    80% {
+        opacity: 0;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes button-load {
+    from {
+        width: 0;
+        height: 0;
+        top: 18px;
+        right: 19px;
+        color: rgba(228, 70, 97, 0.9);
+        background-color: rgba(228, 70, 97, 0.9);
+        opacity: 0;
+    }
+    55% {
+        width: 0;
+        height: 0;
+        top: 18px;
+        right: 19px;
+        color: rgba(228, 70, 97, 0.9);
+        opacity: 0;
+    }
+    75% {
+        width: 22px;
+        height: 22px;
+        top: 7px;
+        right: 8px;
+        color: rgba(228, 70, 97, 0.9);
+        opacity: 1;
+    }
+    to {
+        width: 20px;
+        height: 20px;
+        top: 8px;
+        right: 9px;
+        color: rgb(245, 245, 245);
+        background-color: rgba(228, 70, 97, 0.9);
+        opacity: 1;
+    }
+}
+
+@keyframes button-exit {
+    from {
+        width: 20px;
+        height: 20px;
+        top: 8px;
+        right: 9px;
+        color: rgb(245, 245, 245);
+        background-color: rgba(228, 70, 97, 0.9);
+        opacity: 1;
+    }
+    10% {
+        width: 20px;
+        height: 20px;
+        top: 8px;
+        right: 9px;
+        color: transparent;
+        background-color: rgba(228, 70, 97, 0.9);
+        opacity: 0.9;
+    }
+    to {
+        width: 0;
+        height: 0;
+        top: 18px;
+        right: 19px;
+        color: transparent;
+        background-color: rgba(228, 70, 97, 0.9);
+        opacity: 0;
+    }
+}
+
+.notification-card-container-enter {
+    animation-name: body-load;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+}
+
+.notification-card-container-exit {
+    animation-name: body-remove;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+}
+
+.notification-card-container {
     position: relative;
-    width: $container-width;
     height: $container-height;
     display: flex;
     align-items: center;
     justify-content: space-between;
     border-radius: 6px;
     background-color: var(--main-background-color);
+    box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.35);
     cursor: default;
 
     .service-provider-avatar {
         position: absolute;
         left: calc(-#{$avatar-width} / 2);
+    }
+
+    .service-provider-avatar-enter {
+        animation-name: avatar-load;
+        animation-duration: 0.8s;
+        animation-fill-mode: forwards;
+    }
+
+    .service-provider-avatar-exit {
+        animation-name: avatar-remove;
+        animation-duration: 0.8s;
+        animation-fill-mode: forwards;
     }
 
     .content {
@@ -43,13 +272,47 @@
         }
     }
 
+    .close-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        padding: 1px;
+        font-size: 0.85em;
+        border: 1px solid var(--border-color);
+        border-radius: 50%;
+        box-shadow: -3px -3px 7px var(--light-shadow-color), 3px 3px 5px var(--dark-shadow-color);
+        transition: color 0.4s ease;
+        cursor: pointer;
+
+        &:hover {
+            color: rgb(215, 215, 215);
+            box-shadow: inset -3px -3px 7px rgba(206, 35, 63, 0.9), inset 3px 3px 5px rgba(172, 28, 52, 0.9);
+        }
+    }
+
+    .close-icon-enter {
+        animation-name: button-load;
+        animation-duration: 1.7s;
+        animation-fill-mode: forwards;
+    }
+
+    .close-icon-exit {
+        animation-name: button-exit;
+        animation-duration: 0.6s;
+        animation-fill-mode: forwards;
+    }
+
     .actions {
         $actions-width: 60px;
 
         display: flex;
+        position: absolute;
         flex-direction: column;
         padding-top: 4px;
         padding-bottom: 1px;
+        right: 3px;
+        bottom: 20px;
         width: $actions-width;
         height: 10%;
         opacity: 0;
@@ -65,38 +328,51 @@
         }
     }
 
-    &:hover .actions {
-        opacity: 1;
-    }
-
     .time {
         position: absolute;
         top: 8px;
         right: 45px;
     }
 
-    .close-icon {
+    .content-enter, .time-enter {
+        animation-name: content-load;
+        animation-duration: 1.5s;
+        animation-fill-mode: forwards;
+    }
+
+    .content-exit, .time-exit {
+        animation-name: content-remove;
+        animation-duration: 0.5s;
+        animation-fill-mode: forwards;
+    }
+
+    .option-icon {
         display: flex;
         align-items: center;
         justify-content: center;
         position: absolute;
-        top: 8px;
+        padding: 1px;
+        bottom: 8px;
         right: 9px;
         width: 20px;
         height: 20px;
-        padding: 1px;
         font-size: 0.85em;
-        background-color: rgba(228, 70, 97, 0.9);
+        color: var(--main-font-color);
         border: 1px solid var(--border-color);
         border-radius: 50%;
         box-shadow: -3px -3px 7px var(--light-shadow-color), 3px 3px 5px var(--dark-shadow-color);
-        color: rgb(245, 245, 245);
-        transition: color 0.4s ease;
         cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.5s ease;
 
         &:hover {
-            color: rgb(215, 215, 215);
-            box-shadow: inset -3px -3px 7px rgba(206, 35, 63, 0.9), inset 3px 3px 5px rgba(172, 28, 52, 0.9);
+            box-shadow: inset -3px -3px 7px var(--light-shadow-color), inset 3px 3px 5px var(--dark-shadow-color);
+        }
+    }
+
+    &:hover {
+        .actions, .option-icon {
+            opacity: 1;
         }
     }
 }

@@ -1,7 +1,7 @@
 import { injectable, inject } from 'inversify';
 
 import Types from '../../../ioc/types';
-import IHttpClient from '../../../interface/general/http-client.interface';
+import IHttpClient from '../../../interface/generic/http-client.interface';
 import IWebhook from '../../../interface/webhook/webhook.interface';
 import IWebhookQuery from '../../../interface/webhook/webhook-query.interface';
 import IWebhookProvider from '../../../interface/webhook/webhook-provider.interface';
@@ -44,26 +44,30 @@ export default class GithubWebhookProviderService implements IWebhookProvider<IW
     }
 
     public async addWebhook(context: IGithubWebhookContext): Promise<IWebhook> {
-        const { callback, events, project } = context;
+        const { callback, project } = context;
         const existingHook = await this.getWebhook({ name: project, callback });
 
         if (existingHook) {
             return existingHook;
         }
+        const body = this.getWebhookRequestBody(context);
+        const endpoint = `${this._url}/repos/${this._user}/${project}/hooks`;
+        const { data } = await this._httpClient.post(endpoint, body, { headers: this.headers });
 
-        const body = {
+        return this.toWebhook(data);
+    }
+
+    private getWebhookRequestBody(context: IGithubWebhookContext): any {
+        const { callback, events } = context;
+
+        return ({
             events,
             config: {
                 url: callback,
                 content_type: 'json',
                 insecure_ssl: '0'
             }
-        };
-
-        const endpoint = `${this._url}/repos/${this._user}/${project}/hooks`;
-        const { data } = await this._httpClient.post(endpoint, body, { headers: this.headers });
-
-        return this.toWebhook(data);
+        });
     }
 
     private toWebhook(data: any): IWebhook {

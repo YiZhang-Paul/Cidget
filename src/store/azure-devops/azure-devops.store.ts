@@ -3,10 +3,11 @@ import { ActionContext, StoreOptions } from 'vuex';
 
 import Types from '../../core/ioc/types';
 import Container from '../../core/ioc/container';
-import ICiBuild from '../../core/interface/pipeline/ci-build.interface';
-import ICdRelease from '../../core/interface/pipeline/cd-release.interface';
-import AzureDevopsCiBuildService from '../../core/service/pipeline/azure-devops/azure-devops-ci-build/azure-devops-ci-build.service';
-import AzureDevopsCdReleaseService from '../../core/service/pipeline/azure-devops/azure-devops-cd-release/azure-devops-cd-release.service';
+import NotificationType from '../../core/enum/notification-type.enum';
+import ICiBuild from '../../core/interface/devops/ci/ci-build.interface';
+import ICdRelease from '../../core/interface/devops/cd/cd-release.interface';
+import AzureDevopsCiBuildService from '../../core/service/devops/azure-devops/azure-devops-ci-build/azure-devops-ci-build.service';
+import AzureDevopsCdReleaseService from '../../core/service/devops/azure-devops/azure-devops-cd-release/azure-devops-cd-release.service';
 
 type State = {
     ciBuilds: ICiBuild[],
@@ -44,19 +45,25 @@ const actions = {
         Vue.notify({
             group: 'notification',
             duration: 10000,
-            data: { type: 'ci-build', id: build.id, model: build }
+            data: { type: NotificationType.CiBuild, id: build.id, model: build }
         });
     },
-    async addCdRelease(context: ActionContext<State, any>, payload: any): Promise<any> {
-        const { commit, getters, dispatch } = context;
+    async manageCdRelease(context: ActionContext<State, any>, payload: any): Promise<any> {
+        const { dispatch } = context;
         const release = await releaseService.toCdRelease(payload);
-        const lastStageStatus = release.stages?.slice(-1)[0]?.status ?? 'succeeded';
-        const isApproval = release.status === 'approved';
-        const shouldSkipSuccess = release.status === 'succeeded' && lastStageStatus !== 'succeeded';
+        const finalStatus = release.stages?.slice(-1)[0]?.status ?? 'succeeded';
 
-        if (isApproval || shouldSkipSuccess) {
-            return isApproval ? dispatch('notifyApproval', release) : null;
+        if (release.status === 'succeeded' && finalStatus !== 'succeeded') {
+            return;
         }
+        dispatch('addCdRelease', release);
+
+        if (release.status === 'approved') {
+            dispatch('notifyApproval', release);
+        }
+    },
+    addCdRelease(context: ActionContext<State, any>, release: ICdRelease): any {
+        const { commit, getters } = context;
         const action = getters.hasCdRelease(release) ? 'updateCdRelease' : 'addCdRelease';
         commit(action, release);
         autoNotifyAfterApproval = false;
@@ -64,17 +71,10 @@ const actions = {
         Vue.notify({
             group: 'notification',
             duration: release.status === 'needs approval' ? -1 : 10000,
-            data: { type: 'cd-release', id: release.id, model: release }
+            data: { type: NotificationType.CdRelease, id: release.id, model: release }
         });
     },
     notifyApproval(context: ActionContext<State, any>, release: ICdRelease): void {
-        if (release.status !== 'approved') {
-            throw new Error('Invalid status for approval notification');
-        }
-        const { commit } = context;
-        const [group, duration, type, id] = ['notification', 10000, 'cd-release', release.id];
-        commit('addCdRelease', release);
-        Vue.notify({ group, duration, data: { type, id, model: release } });
         autoNotifyAfterApproval = true;
 
         setTimeout(() => {
@@ -82,9 +82,7 @@ const actions = {
                 return;
             }
             const clone = Object.assign({}, release, { status: 'in progress' });
-            commit('updateCdRelease', clone);
-            Vue.notify({ group, duration, data: { type, id, model: clone } });
-            autoNotifyAfterApproval = false;
+            context.dispatch('addCdRelease', clone);
         }, 3000);
     }
 };

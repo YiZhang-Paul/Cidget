@@ -13,21 +13,40 @@ export default class NotificationCard extends tsx.Component<any> {
     @Prop({ default: () => new Date() }) public time!: Date;
     @Prop() public closeHandler!: () => void;
 
+    public data(): any {
+        return ({ closing: false });
+    }
+
+    private getClass(name: string): string {
+        const type = this.$data.closing ? '-exit' : '-enter';
+
+        return `${name} ${name + type}`;
+    }
+
+    private onClose(): void {
+        this.$data.closing = true;
+        setTimeout(() => this.closeHandler(), 1000);
+    }
+
     public render(): any {
         return (
-            <div class="notification-card-container">
-                <UserAvatar class="service-provider-avatar"
+            <div class={this.getClass('notification-card-container')}>
+                <UserAvatar class={this.getClass('service-provider-avatar')}
                     url={this.logoUrl}
                     showPopover={this.showLogoPopover}>
                 </UserAvatar>
 
-                <div class="content">{this.$slots.default}</div>
+                <div class={this.getClass('content')}>{this.$slots.default}</div>
                 <div class="actions">{this.$slots.actions}</div>
 
-                <RelativeTimeDisplay class="time" time={this.time} />
+                <RelativeTimeDisplay class={this.getClass('time')} time={this.time} />
 
-                <div class="close-icon" onClick={this.closeHandler}>
+                <div class={this.getClass('close-icon')} onClick={this.onClose}>
                     <i class="fas fa-times"></i>
+                </div>
+
+                <div class="option-icon">
+                    <i class="fas fa-ellipsis-h"></i>
                 </div>
             </div>
         );

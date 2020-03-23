@@ -1,13 +1,13 @@
 import { Component, Prop } from 'vue-property-decorator';
 import * as tsx from 'vue-tsx-support';
 
-import IGithubUser from '../../../core/interface/repository/github/github-user.interface';
-import IPullRequest from '../../../core/interface/repository/pull-request.interface';
+import IGithubUser from '../../../core/interface/source-control/github/github-user.interface';
+import IPullRequest from '../../../core/interface/source-control/pull-request/pull-request.interface';
 import NotificationCard from '../../../shared/components/generic/notification-card/notification-card';
 import WeblinkDisplay from '../../../shared/components/generic/weblink-display/weblink-display';
 import ChangeStatsSummary from '../../../shared/components/generic/change-stats-summary/change-stats-summary';
-import BranchBadge from '../../../shared/components/repository/branch-badge/branch-badge';
-import RepositoryBadge from '../../../shared/components/repository/repository-badge/repository-badge';
+import BranchBadge from '../../../shared/components/source-control/branch-badge/branch-badge';
+import RepositoryBadge from '../../../shared/components/source-control/repository-badge/repository-badge';
 
 import './pull-request-card.scss';
 
@@ -37,6 +37,7 @@ export default class PullRequestCard extends tsx.Component<any> {
     }
 
     public render(): any {
+        const actionClass = this.action === 'Rejected' ? 'rejected' : '';
         let statusClass = 'pending';
 
         if (this.pullRequest.mergeable !== null) {
@@ -51,13 +52,13 @@ export default class PullRequestCard extends tsx.Component<any> {
                 <div class="pull-request-message-container">
                     <div class="pull-request-message-wrapper">
                         <WeblinkDisplay class="pull-request-message"
-                            text={`PR#${this.pullRequest.number} ${this.pullRequest.message}`}
+                            text={`PR #${this.pullRequest.number}`}
                             url={this.pullRequest.pullRequestUrl}>
                         </WeblinkDisplay>
                         <div class={`check-status ${statusClass}`}></div>
                     </div>
 
-                    <div class="pull-request-action">{this.action}</div>
+                    <div class={`pull-request-action ${actionClass}`}>{this.action}</div>
 
                     <div class="reviewers-summary">
                         <i class="fas fa-user-check reviewers-icon"></i>
@@ -90,12 +91,6 @@ export default class PullRequestCard extends tsx.Component<any> {
                         repository={this.pullRequest.repository}
                         showPopover={false}>
                     </RepositoryBadge>
-                </div>
-
-                <div class="pull-request-card-actions" slot="actions">
-                    <div class="open-options">
-                        <i class="fas fa-ellipsis-h"></i>
-                    </div>
                 </div>
             </NotificationCard>
         );
