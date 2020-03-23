@@ -50,65 +50,65 @@ describe('relative time display component unit test', () => {
         test('should return proper relative time in seconds', () => {
             wrapper.setProps({ time: new Date(Date.now() - 1000) });
 
-            expect(wrapper.vm['relativeTime']).toBe('1 second');
+            expect(wrapper.vm['relative']).toBe('1 second');
 
             wrapper.setProps({ time: new Date(Date.now() - 15 * 1000) });
 
-            expect(wrapper.vm['relativeTime']).toBe('15 seconds');
+            expect(wrapper.vm['relative']).toBe('15 seconds');
         });
 
         test('should return proper relative time in minutes', () => {
             wrapper.setProps({ time: new Date(Date.now() - 60 * 1000) });
 
-            expect(wrapper.vm['relativeTime']).toBe('1 minute');
+            expect(wrapper.vm['relative']).toBe('1 minute');
 
             wrapper.setProps({ time: new Date(Date.now() - 15 * 60 * 1000) });
 
-            expect(wrapper.vm['relativeTime']).toBe('15 minutes');
+            expect(wrapper.vm['relative']).toBe('15 minutes');
         });
 
         test('should return proper relative time in hours', () => {
             wrapper.setProps({ time: new Date(Date.now() - 60 * 60 * 1000) });
 
-            expect(wrapper.vm['relativeTime']).toBe('1 hour');
+            expect(wrapper.vm['relative']).toBe('1 hour');
 
             wrapper.setProps({ time: new Date(Date.now() - 15 * 60 * 60 * 1000) });
 
-            expect(wrapper.vm['relativeTime']).toBe('15 hours');
+            expect(wrapper.vm['relative']).toBe('15 hours');
         });
 
         test('should return proper relative time in days', () => {
             wrapper.setProps({ time: new Date(Date.now() - 23.5 * 60 * 60 * 1000) });
 
-            expect(wrapper.vm['relativeTime']).toBe('1 day');
+            expect(wrapper.vm['relative']).toBe('1 day');
 
             wrapper.setProps({ time: new Date(Date.now() - 24 * 60 * 60 * 1000) });
 
-            expect(wrapper.vm['relativeTime']).toBe('1 day');
+            expect(wrapper.vm['relative']).toBe('1 day');
 
             wrapper.setProps({ time: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000) });
 
-            expect(wrapper.vm['relativeTime']).toBe('15 days');
+            expect(wrapper.vm['relative']).toBe('15 days');
         });
 
         test('should return proper relative time in months', () => {
             wrapper.setProps({ time: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) });
 
-            expect(wrapper.vm['relativeTime']).toBe('1 month');
+            expect(wrapper.vm['relative']).toBe('1 month');
 
             wrapper.setProps({ time: new Date(Date.now() - 5 * 30 * 24 * 60 * 60 * 1000) });
 
-            expect(wrapper.vm['relativeTime']).toBe('5 months');
+            expect(wrapper.vm['relative']).toBe('5 months');
         });
 
         test('should return proper relative time in years', () => {
             wrapper.setProps({ time: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000) });
 
-            expect(wrapper.vm['relativeTime']).toBe('1 year');
+            expect(wrapper.vm['relative']).toBe('1 year');
 
             wrapper.setProps({ time: new Date(Date.now() - 2.5 * 365 * 24 * 60 * 60 * 1000) });
 
-            expect(wrapper.vm['relativeTime']).toBe('3 years');
+            expect(wrapper.vm['relative']).toBe('3 years');
         });
     });
 
@@ -117,28 +117,28 @@ describe('relative time display component unit test', () => {
             const time = new Date(Date.now() - 30 * 1000);
             wrapper.setProps({ time });
 
-            expect(wrapper.vm['absoluteTime']).toBe(`today ${time.toLocaleTimeString()}`);
+            expect(wrapper.vm['absolute']).toBe(`today ${time.toLocaleTimeString()}`);
         });
 
         test('should return proper absolute time for today', () => {
             const time = new Date(Date.now() - 2 * 60 * 60 * 1000);
             wrapper.setProps({ time });
 
-            expect(wrapper.vm['absoluteTime']).toBe(`today ${time.toLocaleTimeString()}`);
+            expect(wrapper.vm['absolute']).toBe(`today ${time.toLocaleTimeString()}`);
         });
 
         test('should return proper absolute time for yesterday', () => {
             const time = new Date(Date.now() - 24 * 60 * 60 * 1000);
             wrapper.setProps({ time });
 
-            expect(wrapper.vm['absoluteTime']).toBe(`yesterday ${time.toLocaleTimeString()}`);
+            expect(wrapper.vm['absolute']).toBe(`yesterday ${time.toLocaleTimeString()}`);
         });
 
         test('should return proper absolute time for specific date', () => {
             const time = new Date(2020, 1, 2);
             wrapper.setProps({ time });
 
-            expect(wrapper.vm['absoluteTime']).toBe(`Feb 2 ${time.toLocaleTimeString()}`);
+            expect(wrapper.vm['absolute']).toBe(`Feb 2 ${time.toLocaleTimeString()}`);
         });
     });
 });

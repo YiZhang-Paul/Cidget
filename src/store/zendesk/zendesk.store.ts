@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import { ActionContext, StoreOptions } from 'vuex';
 
+import NotificationType from '../../core/enum/notification-type.enum';
 import ISupportTicket from '../../core/interface/customer-support/support-ticket.interface';
 
 type State = {
@@ -29,7 +30,7 @@ const actions = {
         Vue.notify({
             group: 'notification',
             duration: -1,
-            data: { type: 'support-ticket', id: ticket.id, model: ticket }
+            data: { type: NotificationType.SupportTicket, id: ticket.id, model: ticket }
         });
     }
 };

@@ -7,6 +7,7 @@ import { createLocalVue, mount, Wrapper } from '@vue/test-utils';
 import { assert as sinonExpect, stub } from 'sinon';
 import { remote } from 'electron';
 
+import NotificationType from './core/enum/notification-type.enum';
 import Store from './store';
 import App from './app';
 
@@ -41,12 +42,12 @@ describe('app component unit test', () => {
         vue.notify({
             group: 'notification',
             duration: -1,
-            data: { type: 'support-ticket', id: 'ticket_id' }
+            data: { type: NotificationType.SupportTicket, id: 'ticket_id' }
         });
 
         sinonExpect.calledOnce(moveTopStub);
         expect(getList(wrapper).length).toBe(1);
-        expect(getList(wrapper)[0].data.type).toBe('support-ticket');
+        expect(getList(wrapper)[0].data.type).toBe(NotificationType.SupportTicket);
         expect(getList(wrapper)[0].data.id).toBe('ticket_id');
     });
 
@@ -56,12 +57,12 @@ describe('app component unit test', () => {
         vue.notify({
             group: 'notification',
             duration: -1,
-            data: { type: 'ci-build', id: 'build_id' }
+            data: { type: NotificationType.CiBuild, id: 'build_id' }
         });
 
         sinonExpect.calledOnce(moveTopStub);
         expect(getList(wrapper).length).toBe(1);
-        expect(getList(wrapper)[0].data.type).toBe('ci-build');
+        expect(getList(wrapper)[0].data.type).toBe(NotificationType.CiBuild);
         expect(getList(wrapper)[0].data.id).toBe('build_id');
     });
 
@@ -71,12 +72,12 @@ describe('app component unit test', () => {
         vue.notify({
             group: 'notification',
             duration: -1,
-            data: { type: 'cd-release', id: 'release_id' }
+            data: { type: NotificationType.CdRelease, id: 'release_id' }
         });
 
         sinonExpect.calledOnce(moveTopStub);
         expect(getList(wrapper).length).toBe(1);
-        expect(getList(wrapper)[0].data.type).toBe('cd-release');
+        expect(getList(wrapper)[0].data.type).toBe(NotificationType.CdRelease);
         expect(getList(wrapper)[0].data.id).toBe('release_id');
     });
 
@@ -86,12 +87,12 @@ describe('app component unit test', () => {
         vue.notify({
             group: 'notification',
             duration: -1,
-            data: { type: 'commit', id: 'commit_id' }
+            data: { type: NotificationType.Commit, id: 'commit_id' }
         });
 
         sinonExpect.calledOnce(moveTopStub);
         expect(getList(wrapper).length).toBe(1);
-        expect(getList(wrapper)[0].data.type).toBe('commit');
+        expect(getList(wrapper)[0].data.type).toBe(NotificationType.Commit);
         expect(getList(wrapper)[0].data.id).toBe('commit_id');
     });
 
@@ -101,12 +102,12 @@ describe('app component unit test', () => {
         vue.notify({
             group: 'notification',
             duration: -1,
-            data: { type: 'pull-request', id: 'pull_request_id' }
+            data: { type: NotificationType.PullRequest, id: 'pull_request_id' }
         });
 
         sinonExpect.calledOnce(moveTopStub);
         expect(getList(wrapper).length).toBe(1);
-        expect(getList(wrapper)[0].data.type).toBe('pull-request');
+        expect(getList(wrapper)[0].data.type).toBe(NotificationType.PullRequest);
         expect(getList(wrapper)[0].data.id).toBe('pull_request_id');
     });
 
@@ -119,7 +120,7 @@ describe('app component unit test', () => {
         vue.notify({
             group: 'notification',
             duration: -1,
-            data: { type: 'pull-request', id: 'pull_request_id_1' }
+            data: { type: NotificationType.PullRequest, id: 'pull_request_id_1' }
         });
 
         const notificationId = getList(wrapper)[0].id;
@@ -127,30 +128,26 @@ describe('app component unit test', () => {
         vue.notify({
             group: 'notification',
             duration: -1,
-            data: { type: 'pull-request', id: 'pull_request_id_2' }
+            data: { type: NotificationType.PullRequest, id: 'pull_request_id_2' }
         });
 
         expect(getList(wrapper).length).toBe(2);
         expect(getList(wrapper)[0].id).toBeGreaterThan(notificationId);
-        expect(getList(wrapper)[0].data.type).toBe('pull-request');
+        expect(getList(wrapper)[0].data.type).toBe(NotificationType.PullRequest);
         expect(getList(wrapper)[0].data.id).toBe('pull_request_id_2');
         expect(getList(wrapper)[1].id).toBe(notificationId);
-        expect(getList(wrapper)[1].data.type).toBe('pull-request');
+        expect(getList(wrapper)[1].data.type).toBe(NotificationType.PullRequest);
         expect(getList(wrapper)[1].data.id).toBe('pull_request_id_1');
     });
 
     test('should update existing notification for same event', () => {
         jest.useFakeTimers();
-        const classListStub = stub({ add() {}, remove() {} });
-        const elements = [{ classList: classListStub }, { classList: classListStub }];
-        const getElementsStub = stub((global as any).document, 'getElementsByClassName');
-        getElementsStub.returns(elements);
         Store.store.state[Store.githubStoreName].pullRequests = [{ id: 'pull_request_id', status: 'status_1' }];
 
         vue.notify({
             group: 'notification',
             duration: -1,
-            data: { type: 'pull-request', id: 'pull_request_id' }
+            data: { type: NotificationType.PullRequest, id: 'pull_request_id' }
         });
 
         const notificationId = getList(wrapper)[0].id;
@@ -159,7 +156,7 @@ describe('app component unit test', () => {
         vue.notify({
             group: 'notification',
             duration: -1,
-            data: { type: 'pull-request', id: 'pull_request_id' }
+            data: { type: NotificationType.PullRequest, id: 'pull_request_id' }
         });
 
         Store.store.state[Store.githubStoreName].pullRequests = [{ id: 'pull_request_id', status: 'status_3' }];
@@ -167,17 +164,14 @@ describe('app component unit test', () => {
         vue.notify({
             group: 'notification',
             duration: -1,
-            data: { type: 'pull-request', id: 'pull_request_id' }
+            data: { type: NotificationType.PullRequest, id: 'pull_request_id' }
         });
 
         jest.advanceTimersByTime(5000);
-        getElementsStub.restore();
 
-        sinonExpect.callCount(classListStub.remove, 2 * elements.length);
-        sinonExpect.callCount(classListStub.add, 2 * elements.length);
         expect(getList(wrapper).length).toBe(1);
-        expect(getList(wrapper)[0].id).toBe(notificationId);
-        expect(getList(wrapper)[0].data.type).toBe('pull-request');
+        expect(getList(wrapper)[0].id).not.toBe(notificationId);
+        expect(getList(wrapper)[0].data.type).toBe(NotificationType.PullRequest);
         expect(getList(wrapper)[0].data.id).toBe('pull_request_id');
     });
 
@@ -185,7 +179,7 @@ describe('app component unit test', () => {
         vue.notify({
             group: 'notification',
             duration: 1000,
-            data: { type: 'pull-request', id: 'pull_request_id' }
+            data: { type: NotificationType.PullRequest, id: 'pull_request_id' }
         });
 
         expect(getList(wrapper).length).toBe(1);
@@ -201,7 +195,7 @@ describe('app component unit test', () => {
         vue.notify({
             group: 'notification',
             duration: 1000,
-            data: { type: 'pull-request', id: 'pull_request_id' }
+            data: { type: NotificationType.PullRequest, id: 'pull_request_id' }
         });
 
         expect(getList(wrapper).length).toBe(1);
@@ -217,7 +211,7 @@ describe('app component unit test', () => {
         vue.notify({
             group: 'notification',
             duration: -1,
-            data: { type: 'pull-request', id: 'pull_request_id' }
+            data: { type: NotificationType.PullRequest, id: 'pull_request_id' }
         });
 
         getList(wrapper)[0].timer = undefined;
@@ -231,7 +225,7 @@ describe('app component unit test', () => {
         vue.notify({
             group: 'notification',
             duration: 1000,
-            data: { type: 'pull-request', id: 'pull_request_id' }
+            data: { type: NotificationType.PullRequest, id: 'pull_request_id' }
         });
 
         getList(wrapper)[0].timer = null;
@@ -247,7 +241,7 @@ describe('app component unit test', () => {
         vue.notify({
             group: 'notification',
             duration: 1000,
-            data: { type: 'pull-request', id: 'pull_request_id' }
+            data: { type: NotificationType.PullRequest, id: 'pull_request_id' }
         });
 
         jest.advanceTimersByTime(999);
@@ -272,7 +266,7 @@ describe('app component unit test', () => {
         vue.notify({
             group: 'notification',
             duration: 1000,
-            data: { type: 'pull-request', id: 'pull_request_id' }
+            data: { type: NotificationType.PullRequest, id: 'pull_request_id' }
         });
 
         getList(wrapper)[0].timer = null;
@@ -286,7 +280,7 @@ describe('app component unit test', () => {
         vue.notify({
             group: 'notification',
             duration: 1000,
-            data: { type: 'pull-request', id: 'pull_request_id' }
+            data: { type: NotificationType.PullRequest, id: 'pull_request_id' }
         });
 
         const timer = getList(wrapper)[0].timer;
@@ -301,7 +295,7 @@ describe('app component unit test', () => {
         vue.notify({
             group: 'notification',
             duration: 1000,
-            data: { type: 'pull-request', id: 'pull_request_id' }
+            data: { type: NotificationType.PullRequest, id: 'pull_request_id' }
         });
 
         const timer = getList(wrapper)[0].timer;

@@ -3,9 +3,9 @@ import { assert as sinonExpect, stub } from 'sinon';
 
 import Types from '../../../ioc/types';
 import Container from '../../../ioc/container';
-import IEmail from '../../../interface/general/email.interface';
+import IEmail from '../../../interface/generic/email.interface';
 import AppSettings from '../../io/app-settings/app-settings';
-import OutlookApiProvider from '../../mail/outlook/outlook-api-provider';
+import OutlookApiProvider from '../../email/outlook/outlook-api-provider/outlook-api-provider';
 
 import OutlookWebhookProvider from './outlook-webhook-provider';
 
@@ -19,8 +19,7 @@ describe('outlook webhook provider service unit test', () => {
         apiProviderStub = stub({
             promptAuthorization(): void { },
             async authorize(_: string): Promise<void> { },
-            async startGraphRequest(_: string): Promise<GraphRequest | null> { return null; },
-            toMail(_: any): IEmail { return ({} as IEmail); }
+            async startGraphRequest(_: string): Promise<GraphRequest | null> { return null; }
         } as OutlookApiProvider);
 
         Container

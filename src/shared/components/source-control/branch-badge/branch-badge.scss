@@ -1,0 +1,32 @@
+.branch-badge-container {
+    color: rgb(255, 255, 255);
+    background-color: var(--main-button-color);
+    box-shadow: -3px -3px 7px var(--light-shadow-color), 3px 3px 5px var(--dark-shadow-color);
+
+    &:hover.enabled {
+        background-color: var(--main-button-color);
+        box-shadow: inset -3px -3px 7px var(--main-button-light-shadow-color),
+                    inset 3px 3px 5px var(--main-button-dark-shadow-color);
+    }
+
+    &:active.enabled {
+        background-color: var(--main-button-active-color);
+    }
+
+    .branch-icon {
+        color: var(--main-button-icon-color);
+        margin-top: 1px;
+        margin-right: 2.5px;
+        width: 11px;
+        height: 14px;
+    }
+
+    .url {
+        cursor: pointer;
+        color: rgb(255, 255, 255);
+    }
+}
+
+.disabled .url {
+    cursor: no-drop;
+}

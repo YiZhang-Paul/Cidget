@@ -2,6 +2,7 @@ import { Component, Ref } from 'vue-property-decorator';
 import * as tsx from 'vue-tsx-support';
 import { remote } from 'electron';
 
+import NotificationType from './core/enum/notification-type.enum';
 import SupportTicketCard from './features/zendesk/support-ticket-card/support-ticket-card';
 import BuildPipelineCard from './features/azure-devops/build-pipeline-card/build-pipeline-card';
 import ReleasePipelineCard from './features/azure-devops/release-pipeline-card/release-pipeline-card';
@@ -12,16 +13,42 @@ import PullRequestCard from './features/github/pull-request-card/pull-request-ca
 export default class App extends tsx.Component<any> {
     @Ref('cards') private _cards: any;
 
+    public mounted(): void {
+        const original = this._cards.destroy;
+        // monkey patch destroy() to play exit animation on card exit
+        this._cards.destroy = (item: any) => {
+            const identifier = this.getIdentifier(item.data);
+
+            if (!this.$refs[identifier]) {
+                original(item);
+
+                return;
+            }
+            const instance: any = this.$refs[identifier];
+            const notificationCard = instance.$children[0];
+            const list = this._cards.$data.list;
+            const isDuplicate = list.filter((_: any) => _.data.id === item.data.id).length === 2;
+
+            if (!notificationCard || notificationCard.$data.closing && !isDuplicate) {
+                original(item);
+
+                return;
+            }
+
+            if (notificationCard.$data.closing && isDuplicate) {
+                return;
+            }
+            notificationCard.$data.closing = true;
+            setTimeout(() => original(item), 1000);
+        };
+    }
+
     private getNotificationCard(props: any): any {
-        const { type, id } = props.item.data;
-        const identifier = `${type}_card_${id}`;
+        const { data } = props.item;
+        const { id } = data;
+        const identifier = this.getIdentifier(data);
         remote.getCurrentWindow().moveTop();
-
-        if (this.updateCard(id)) {
-            this.applyEffect(identifier);
-
-            return null;
-        }
+        this.removeDuplicate(id);
 
         return (
             <div class="notification-wrapper"
@@ -31,6 +58,18 @@ export default class App extends tsx.Component<any> {
                 {this.getEventCard(props, identifier)}
             </div>
         );
+    }
+
+    private getIdentifier(data: any): string {
+        return `${data.type}_card_${data.id}`;
+    }
+
+    private removeDuplicate(id: string): void {
+        const cards = this._cards.$data.list.filter((_: any) => _.data.id === id);
+
+        if (cards.length === 2) {
+            this._cards.destroy(cards[1]);
+        }
     }
 
     private stopTimer(id: string): void {
@@ -63,44 +102,17 @@ export default class App extends tsx.Component<any> {
         const { type, model } = props.item.data;
 
         switch (type) {
-            case 'support-ticket':
-                return <SupportTicketCard class={className} ticket={model} closeHandler={props.close} />;
-            case 'ci-build':
-                return <BuildPipelineCard class={className} build={model} closeHandler={props.close} />;
-            case 'cd-release':
-                return <ReleasePipelineCard class={className} release={model} closeHandler={props.close} />;
-            case 'commit':
-                return <CommitCard class={className} commit={model} closeHandler={props.close} />;
-            case 'pull-request':
-                return <PullRequestCard class={className} pullRequest={model} closeHandler={props.close} />;
+            case NotificationType.SupportTicket:
+                return <SupportTicketCard ref={className} class={className} ticket={model} closeHandler={props.close} />;
+            case NotificationType.CiBuild:
+                return <BuildPipelineCard ref={className} class={className} build={model} closeHandler={props.close} />;
+            case NotificationType.CdRelease:
+                return <ReleasePipelineCard ref={className} class={className} release={model} closeHandler={props.close} />;
+            case NotificationType.Commit:
+                return <CommitCard ref={className} class={className} commit={model} closeHandler={props.close} />;
+            case NotificationType.PullRequest:
+                return <PullRequestCard ref={className} class={className} pullRequest={model} closeHandler={props.close} />;
         }
-    }
-
-    private updateCard(id: string): boolean {
-        const cards = this._cards.$data.list.filter((_: any) => _.data.id === id);
-
-        if (cards.length !== 2) {
-            return false;
-        }
-        const [current, previous] = cards;
-        // destroy out of date card
-        this._cards.destroyById(previous.id);
-        // move up to date card to start of the list and reuse previous id for animation
-        const index = this._cards.$data.list.findIndex((_: any) => _.data.id === id);
-        this._cards.$data.list.splice(index, 1);
-        this._cards.$data.list.unshift(current);
-        current.id = previous.id;
-
-        return true;
-    }
-
-    private applyEffect(id: string, effectClass = 'updated-card'): void {
-        const elements = document.getElementsByClassName(id);
-
-        Array.prototype.forEach.call(elements, _ => {
-            _.classList.remove(effectClass);
-            setTimeout(() => _.classList.add(effectClass));
-        });
     }
 
     public render(): any {

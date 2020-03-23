@@ -1,7 +1,9 @@
 import Vue from 'vue';
 import Vuex, { Store } from 'vuex';
 import VueNotification from 'vue-notification';
-import { assert as sinonExpect, stub, spy } from 'sinon';
+import { assert as sinonExpect, spy } from 'sinon';
+
+import NotificationType from '../../core/enum/notification-type.enum';
 
 import { createStore } from './zendesk.store';
 
@@ -44,7 +46,7 @@ describe('zendesk store unit test', () => {
             sinonExpect.calledOnce(notifySpy);
             expect(notifySpy.args[0][0].group).toBe('notification');
             expect(notifySpy.args[0][0].duration).toBe(-1);
-            expect(notifySpy.args[0][0].data.type).toBe('support-ticket');
+            expect(notifySpy.args[0][0].data.type).toBe(NotificationType.SupportTicket);
             expect(notifySpy.args[0][0].data.id).toBe('147');
             expect(notifySpy.args[0][0].data.model).toStrictEqual(ticket);
             expect(store.getters.getTickets.length).toBe(1);

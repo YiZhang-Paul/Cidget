@@ -27,6 +27,7 @@ export default class SupportTicketCard extends tsx.Component<any> {
         const rightArrow = <i class="fas fa-arrow-alt-circle-right right-arrow"></i>;
         const highlighted = this.statusText === 'Reopened' || this.statusText === 'YOU';
         const statusTextClass = `status-text ${highlighted ? 'highlighted' : ''}`;
+        const htmlTooltip = `<div class="zendesk-data">${this.ticket.htmlContent}</div>`;
 
         return (
             <NotificationCard time={this.ticket.createdOn}
@@ -35,7 +36,7 @@ export default class SupportTicketCard extends tsx.Component<any> {
 
                 <div class="ticket-message-container">
                     <WeblinkDisplay class="ticket-message"
-                        text={`#${this.ticket.id} ${this.ticket.title}`}
+                        text={`Ticket #${this.ticket.id}`}
                         noTooltip={true}
                         url={this.ticket.url}>
                     </WeblinkDisplay>
@@ -47,15 +48,9 @@ export default class SupportTicketCard extends tsx.Component<any> {
                 <div class="ticket-info-container">
                     <ConversationPreviewBadge class="ticket-info"
                         username={this.ticket.requester.name}
-                        conversation={this.ticket.content}
-                        tooltip={this.ticket.htmlContent}>
+                        conversation={this.ticket.title}
+                        tooltip={htmlTooltip}>
                     </ConversationPreviewBadge>
-                </div>
-
-                <div class="support-ticket-card-actions" slot="actions">
-                    <div class="open-options">
-                        <i class="fas fa-ellipsis-h"></i>
-                    </div>
                 </div>
             </NotificationCard>
         );

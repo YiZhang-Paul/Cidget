@@ -6,7 +6,7 @@ import { shallowMount, Wrapper } from '@vue/test-utils';
 import { assert as sinonExpect, spy } from 'sinon';
 import { shell } from 'electron';
 
-import '../../../../element-ui-test.js';
+import '../../../../startups/element-ui-test.js';
 
 import WeblinkDisplay from './weblink-display';
 
@@ -29,17 +29,6 @@ describe('weblink display component unit test', () => {
         expect(wrapper.vm.$props.text).toBe('link_text');
         expect(wrapper.vm.$props.url).toBe('link_url');
         expect(wrapper.vm.$props.tooltipPosition).toBe('top-start');
-        expect(wrapper.vm.$props.isDarkMode).toBeFalsy();
-    });
-
-    test('should change color mode', () => {
-        wrapper.setProps({ isDarkMode: true });
-
-        expect(wrapper.vm['colorMode']).toBe('dark');
-
-        wrapper.setProps({ isDarkMode: false });
-
-        expect(wrapper.vm['colorMode']).toBe('light');
     });
 
     test('should open external link when url is specified', () => {

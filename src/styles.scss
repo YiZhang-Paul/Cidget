@@ -4,6 +4,12 @@
     --border-color: rgba(240, 240, 240, 0.4);
     --light-shadow-color: rgba(255, 255, 255, 0.8);
     --dark-shadow-color: rgba(94, 104, 121, 0.55);
+    --main-button-color: rgb(65, 91, 124);
+    --main-button-active-color: rgb(57, 80, 110);
+    --main-button-light-shadow-color: rgb(109, 136, 170);
+    --main-button-dark-shadow-color: rgb(49, 70, 97);
+    --main-button-icon-color: rgb(62, 224, 30);
+    --main-icon-color: rgb(95, 122, 156);
     --main-font-color: rgb(80, 98, 126);
     --secondary-font-color: rgb(114, 123, 138);
 }
@@ -23,40 +29,14 @@ html, body {
 
 .notification {
     margin-top: 60px;
-    margin-left: 52px;
+    margin-left: 46px;
     z-index: 0 !important;
 }
 
 .vue-notification-wrapper {
     overflow: visible !important;
-    margin-bottom: 8px !important;
     border-radius: 6px !important;
-    box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.35) !important;
-}
-
-.updated-card {
-    -webkit-animation-name: updated-notify;
-    -webkit-animation-duration: 2s;
-    animation-name: updated-notify;
-    animation-duration: 2s;
-}
-
-@-webkit-keyframes updated-notify {
-    from {
-        background-color: rgb(132, 138, 143);
-    }
-    to {
-        background-color: var(--main-background-color);
-    }
-}
-
-@keyframes updated-notify {
-    from {
-        background-color: rgb(132, 138, 143);
-    }
-    to {
-        background-color: var(--main-background-color);
-    }
+    padding: 4px;
 }
 
 .el-tooltip__popper, .zd-comment, .zd-comment p {

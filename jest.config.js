@@ -9,11 +9,11 @@ module.exports = {
         '!**/node_modules/**',
         '!**/mocks/**',
         '!src/**/*.spec.{js,ts}',
-        '!src/background.ts',
-        '!src/element-ui-non-test.js',
         '!src/main.ts',
-        '!src/outlook-auth.ts',
-        '!src/socket.ts',
+        '!src/background.ts',
+        '!src/startups/socket.ts',
+        '!src/startups/outlook-auth.ts',
+        '!src/startups/element-ui-prod.js',
         '!src/store/index.ts'
     ],
     moduleNameMapper: {

@@ -4,7 +4,7 @@ import Types from '../../../ioc/types';
 import IWebhook from '../../../interface/webhook/webhook.interface';
 import IWebhookQuery from '../../../interface/webhook/webhook-query.interface';
 import IWebhookProvider from '../../../interface/webhook/webhook-provider.interface';
-import IHttpClient from '../../../interface/general/http-client.interface';
+import IHttpClient from '../../../interface/generic/http-client.interface';
 import IAzureDevopsWebhookContext from '../../../interface/webhook/azure-devops/azure-devops-webhook-context.interface';
 import AppSettings from '../../io/app-settings/app-settings';
 
@@ -54,31 +54,35 @@ export default class AzureDevopsWebhookProviderService implements IWebhookProvid
     }
 
     public async addWebhook(context: IAzureDevopsWebhookContext): Promise<IWebhook> {
-        const { project: name, callback, publisherId, eventType, isRelease } = context;
+        const { project: name, callback, isRelease } = context;
         const existingHook = await this.getWebhook({ name, callback });
 
         if (existingHook) {
             return existingHook;
         }
+        const body = await this.getWebhookRequestBody(context);
+        const endpoint = isRelease ? this._releaseEndpoint : this._buildEndpoint;
+        const { data } = await this._httpClient.post(endpoint, body, { headers: this.headers });
+
+        return this.toWebhook(data);
+    }
+
+    private async getWebhookRequestBody(context: IAzureDevopsWebhookContext): Promise<any> {
+        const { project: name, callback, publisherId, eventType, isRelease } = context;
         const project = await this.getProject(name);
 
         if (!project) {
             throw new Error(`project with name ${name} does not exist.`);
         }
 
-        const body = {
+        return ({
             publisherId,
             eventType,
             consumerId: 'webHooks',
             consumerActionId: 'httpRequest',
             publisherInputs: { projectId: project.id },
             consumerInputs: { url: callback }
-        };
-
-        const endpoint = isRelease ? this._releaseEndpoint : this._buildEndpoint;
-        const { data } = await this._httpClient.post(endpoint, body, { headers: this.headers });
-
-        return this.toWebhook(data);
+        });
     }
 
     private async getProject(idOrName: string): Promise<{ id: string; name: string } | null> {

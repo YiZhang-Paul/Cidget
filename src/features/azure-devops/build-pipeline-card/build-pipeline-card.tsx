@@ -1,11 +1,12 @@
 import { Component, Prop } from 'vue-property-decorator';
 import * as tsx from 'vue-tsx-support';
 
-import ICiBuild from '../../../core/interface/pipeline/ci-build.interface';
+import ICiBuild from '../../../core/interface/devops/ci/ci-build.interface';
 import NotificationCard from '../../../shared/components/generic/notification-card/notification-card';
 import WeblinkDisplay from '../../../shared/components/generic/weblink-display/weblink-display';
-import BranchBadge from '../../../shared/components/repository/branch-badge/branch-badge';
-import RepositoryBadge from '../../../shared/components/repository/repository-badge/repository-badge';
+import BranchBadge from '../../../shared/components/source-control/branch-badge/branch-badge';
+import RepositoryBadge from '../../../shared/components/source-control/repository-badge/repository-badge';
+import TimeUtility from '../../../core/utility/time-utility/time-utility';
 
 import './build-pipeline-card.scss';
 
@@ -27,22 +28,15 @@ export default class BuildPipelineCard extends tsx.Component<any> {
         return capitalized.join(' ').replace(/^Is\s/, 'is ');
     }
 
-    private get elapsedSeconds(): number {
-        const start = this.build.startedOn;
-        const end = this.build.finishedOn || new Date();
-
-        return Math.floor((end.getTime() - start.getTime()) / 1000);
-    }
-
     private get isSlowBuild(): boolean {
-        return this.elapsedSeconds >= 300;
+        const { startedOn: start, finishedOn: end } = this.build;
+
+        return Math.floor(TimeUtility.elapsedSeconds(start, end)) >= 300;
     }
 
     private get elapsedTime(): string {
-        const elapsed = this.elapsedSeconds;
-        const hours = Math.floor(elapsed / 3600);
-        const minutes = Math.floor(elapsed % 3600 / 60);
-        const seconds = elapsed % 3600 % 60;
+        const { startedOn: start, finishedOn: end } = this.build;
+        const [hours, minutes, seconds] = TimeUtility.elapsedTime(start, end);
 
         return [[hours, 'h'], [minutes, 'm'], [seconds, 's']]
             .filter(_ => _[0])
@@ -96,12 +90,6 @@ export default class BuildPipelineCard extends tsx.Component<any> {
                         repository={triggeredBy}
                         showPopover={false}>
                     </RepositoryBadge>
-                </div>
-
-                <div class="build-pipeline-card-actions" slot="actions">
-                    <div class="open-options">
-                        <i class="fas fa-ellipsis-h"></i>
-                    </div>
                 </div>
             </NotificationCard>
         );

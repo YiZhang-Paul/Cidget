@@ -3,11 +3,13 @@ import { ActionContext, StoreOptions } from 'vuex';
 
 import Types from '../../core/ioc/types';
 import Container from '../../core/ioc/container';
-import ICommit from '../../core/interface/repository/commit.interface';
-import IPullRequest from '../../core/interface/repository/pull-request.interface';
-import IGithubUser from '../../core/interface/repository/github/github-user.interface';
-import GithubCommitService from '../../core/service/repository/github/github-commit/github-commit.service';
-import GithubPullRequestService from '../../core/service/repository/github/github-pull-request/github-pull-request.service';
+import NotificationType from '../../core/enum/notification-type.enum';
+import ICommit from '../../core/interface/source-control/code-commit/commit.interface';
+import IPullRequest from '../../core/interface/source-control/pull-request/pull-request.interface';
+import IGithubUser from '../../core/interface/source-control/github/github-user.interface';
+import GithubCommitService from '../../core/service/source-control/github/github-commit/github-commit.service';
+import GithubPullRequestService from '../../core/service/source-control/github/github-pull-request/github-pull-request.service';
+import PullRequestAction from '../../core/enum/pull-request-action.enum';
 
 type State = {
     commits: ICommit<IGithubUser>[],
@@ -43,7 +45,7 @@ const actions = {
         Vue.notify({
             group: 'notification',
             duration: 10000,
-            data: { type: 'commit', id: push.id, model: push }
+            data: { type: NotificationType.Commit, id: push.id, model: push }
         });
     },
     async addPullRequest(context: ActionContext<State, any>, payload: any): Promise<void> {
@@ -56,38 +58,25 @@ const actions = {
 
         Vue.notify({
             group: 'notification',
-            duration: pullRequest.isActive ? -1 : 10000,
-            data: { type: 'pull-request', id: pullRequest.id, model: pullRequest }
+            duration: pullRequest.action === 'needs review' ? -1 : 10000,
+            data: { type: NotificationType.PullRequest, id: pullRequest.id, model: pullRequest }
         });
     },
     async addPullRequestReview(context: ActionContext<State, any>, payload: any): Promise<void> {
         const { commit, state } = context;
         const { pullRequestId, type, reviewer } = await pullRequestService.toReview(payload);
-        const pullRequest = state.pullRequests.find(_ => _.id === pullRequestId);
+        const pullRequest = shallowClone(state.pullRequests.find(_ => _.id === pullRequestId));
 
-        if (!pullRequest || type === 'commented') {
+        if (!pullRequest || !setReviewer(pullRequest, type, reviewer)) {
             return;
         }
-        const { requested, approved } = pullRequest.reviewers;
-        const isReviewer = requested.some(_ => _.name === reviewer.name);
-        const isApprover = approved.some(_ => _.name === reviewer.name);
-
-        if (!isReviewer || type === 'approved' && isApprover || type === 'change' && !isApprover) {
-            return;
-        }
-
-        if (type === 'approved') {
-            pullRequest.reviewers.approved.push(reviewer);
-        }
-        else {
-            pullRequest.reviewers.approved = approved.filter(_ => _.name !== reviewer.name);
-        }
+        pullRequest.action = type === 'approved' ? PullRequestAction.Approved : PullRequestAction.Rejected;
         commit('updatePullRequest', pullRequest);
 
         Vue.notify({
             group: 'notification',
-            duration: -1,
-            data: { type: 'pull-request', id: pullRequest.id, model: pullRequest }
+            duration: 10000,
+            data: { type: NotificationType.PullRequest, id: pullRequest.id, model: pullRequest }
         });
     },
     async addPullRequestCheck(context: ActionContext<State, any>, payload: any): Promise<void> {
@@ -96,18 +85,25 @@ const actions = {
         const { name, owner } = repository;
         const { ref, status } = await commitService.getStatus(name, sha, owner.login);
         const isMergeable = status === 'pending' ? null : status === 'success';
-        const pullRequest = state.pullRequests.find(_ => _.headCommitSha === ref);
+        const pullRequest = shallowClone(state.pullRequests.find(_ => _.headCommitSha === ref));
 
         if (!pullRequest || !pullRequest.isActive || pullRequest.mergeable === isMergeable) {
             return;
+        }
+
+        if (isMergeable === null) {
+            pullRequest.action = PullRequestAction.CheckRunning;
+        }
+        else {
+            pullRequest.action = isMergeable ? PullRequestAction.CheckPassed : PullRequestAction.CheckFailed;
         }
         pullRequest.mergeable = isMergeable;
         commit('updatePullRequest', pullRequest);
 
         Vue.notify({
             group: 'notification',
-            duration: -1,
-            data: { type: 'pull-request', id: pullRequest.id, model: pullRequest }
+            duration: 10000,
+            data: { type: NotificationType.PullRequest, id: pullRequest.id, model: pullRequest }
         });
     }
 };
@@ -125,6 +121,33 @@ const getters = {
         return state.pullRequests;
     }
 };
+
+function setReviewer(pullRequest: IPullRequest<IGithubUser>, type: string, reviewer: IGithubUser): boolean {
+    const { requested, approved } = pullRequest.reviewers;
+    const isApprover = approved.some(_ => _.name === reviewer.name);
+    const shouldInclude = type === 'approved' && !isApprover;
+    const shouldExclude = type === 'change' && isApprover;
+
+    if (!shouldInclude && !shouldExclude) {
+        return false;
+    }
+
+    if (type === 'approved') {
+        pullRequest.reviewers.approved.push(reviewer);
+    }
+    else {
+        pullRequest.reviewers.approved = approved.filter(_ => _.name !== reviewer.name);
+    }
+
+    if (requested.every(_ => _.name !== reviewer.name)) {
+        requested.push(reviewer);
+    }
+    return true;
+}
+
+function shallowClone(data: any): any {
+    return data ? Object.assign({}, data) : null;
+}
 
 export const createStore = () => {
     commitService = Container.get<GithubCommitService>(Types.GithubCommitService);
