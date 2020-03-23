@@ -209,7 +209,7 @@ describe('github store unit test', () => {
             expect(notifySpy.args[0][0].duration).toBe(10000);
             expect(notifySpy.args[0][0].data.type).toBe(NotificationType.PullRequest);
             expect(notifySpy.args[0][0].data.id).toBe('pull_request_id');
-            expect(notifySpy.args[0][0].data.model).toStrictEqual(pullRequest);
+            expect(notifySpy.args[0][0].data.model.id).toBe(pullRequest.id);
         });
 
         test('should add approver when needed', async () => {
@@ -301,13 +301,14 @@ describe('github store unit test', () => {
 
         test('should update pull request', async () => {
             await store.dispatch('addPullRequestCheck', payload);
+            const result = store.state.pullRequests[0];
 
             sinonExpect.calledOnce(commitServiceStub.getStatus);
             expect(commitServiceStub.getStatus.args[0][0]).toBe('cidget');
             expect(commitServiceStub.getStatus.args[0][1]).toBe('head_sha');
             expect(commitServiceStub.getStatus.args[0][2]).toBe('user_name');
-            expect(pullRequest.action).toBe('check running');
-            expect(pullRequest.mergeable).toBeNull();
+            expect(result.action).toBe('check running');
+            expect(result.mergeable).toBeNull();
         });
 
         test('should update pull request action when check passed', async () => {
@@ -315,16 +316,18 @@ describe('github store unit test', () => {
             status.status = 'success';
 
             await store.dispatch('addPullRequestCheck', payload);
+            const result = store.state.pullRequests[0];
 
-            expect(pullRequest.action).toBe('check passed');
+            expect(result.action).toBe('check passed');
         });
 
         test('should update pull request action when check failed', async () => {
             status.status = 'failure';
 
             await store.dispatch('addPullRequestCheck', payload);
+            const result = store.state.pullRequests[0];
 
-            expect(pullRequest.action).toBe('check failed');
+            expect(result.action).toBe('check failed');
         });
 
         test('should trigger notification', async () => {

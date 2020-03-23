@@ -142,10 +142,6 @@ describe('app component unit test', () => {
 
     test('should update existing notification for same event', () => {
         jest.useFakeTimers();
-        const classListStub = stub({ add() {}, remove() {} });
-        const elements = [{ classList: classListStub }, { classList: classListStub }];
-        const getElementsStub = stub((global as any).document, 'getElementsByClassName');
-        getElementsStub.returns(elements);
         Store.store.state[Store.githubStoreName].pullRequests = [{ id: 'pull_request_id', status: 'status_1' }];
 
         vue.notify({
@@ -172,12 +168,9 @@ describe('app component unit test', () => {
         });
 
         jest.advanceTimersByTime(5000);
-        getElementsStub.restore();
 
-        sinonExpect.callCount(classListStub.remove, 2 * elements.length);
-        sinonExpect.callCount(classListStub.add, 2 * elements.length);
         expect(getList(wrapper).length).toBe(1);
-        expect(getList(wrapper)[0].id).toBe(notificationId);
+        expect(getList(wrapper)[0].id).not.toBe(notificationId);
         expect(getList(wrapper)[0].data.type).toBe(NotificationType.PullRequest);
         expect(getList(wrapper)[0].data.id).toBe('pull_request_id');
     });

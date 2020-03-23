@@ -146,7 +146,7 @@ function setReviewer(pullRequest: IPullRequest<IGithubUser>, type: string, revie
 }
 
 function shallowClone(data: any): any {
-    return Object.assign({}, data);
+    return data ? Object.assign({}, data) : null;
 }
 
 export const createStore = () => {
