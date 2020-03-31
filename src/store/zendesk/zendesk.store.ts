@@ -43,15 +43,7 @@ const getters = {
         return (ticket: ISupportTicket): boolean => {
             const existing = state.tickets.find(_ => _.id === ticket.id);
 
-            if (!existing) {
-                return false;
-            }
-            return existing.assignedToUser === ticket.assignedToUser
-                && existing.content === ticket.content
-                && existing.htmlContent === ticket.htmlContent
-                && existing.group === ticket.group
-                && existing.status === ticket.status
-                && existing.title === ticket.title;
+            return existing ? existing.createdOn.getTime() === ticket.createdOn.getTime() : false;
         };
     },
     hasTicket(state: State): Function {
