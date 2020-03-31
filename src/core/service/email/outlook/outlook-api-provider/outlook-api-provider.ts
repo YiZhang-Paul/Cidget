@@ -6,7 +6,6 @@ import { GraphRequest } from '@microsoft/microsoft-graph-client';
 
 import Types from '../../../../ioc/types';
 import IOAuthProvider from '../../../../interface/generic/oauth-provider.interface';
-import { logger } from '../../../io/logger/logger';
 import AppSettings from '../../../io/app-settings/app-settings';
 import TimeUtility from '../../../../utility/time-utility/time-utility';
 
@@ -93,7 +92,6 @@ export default class OutlookApiProvider implements IOAuthProvider {
         }
         catch (error) {
             log.error(error);
-            logger.log(error);
             this.promptAuthorization();
 
             return null;

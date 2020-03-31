@@ -3,7 +3,6 @@ import socketClient from 'socket.io-client';
 import Store from '../store';
 import Types from '../core/ioc/types';
 import Container from '../core/ioc/container';
-import { logger } from '../core/service/io/logger/logger';
 import OutlookApiProvider from '../core/service/email/outlook/outlook-api-provider/outlook-api-provider';
 import OutlookEmailService from '../core/service/email/outlook/outlook-email/outlook-email.service';
 import ZendeskTicketEmailProvider from '../core/service/customer-support/zendesk/zendesk-ticket-email-provider.service';
@@ -16,8 +15,8 @@ const zendeskService = Container.get<ZendeskTicketEmailProvider>(Types.ZendeskTi
 const settings = Container.get<AppSettings>(Types.AppSettings);
 const socket = socketClient(settings.get('cidget.server').host);
 
-socket.on('connect', () => logger.log('socket connected.'));
-socket.on('disconnect', () => logger.log('socket disconnected.'));
+socket.on('connect', () => log.info('socket connected.'));
+socket.on('disconnect', () => log.info('socket disconnected.'));
 
 socket.on('outlook-mail', async (payload: any) => {
     try {
@@ -37,7 +36,6 @@ socket.on('outlook-mail', async (payload: any) => {
     }
     catch (error) {
         log.error(error);
-        logger.log(error);
     }
 });
 
