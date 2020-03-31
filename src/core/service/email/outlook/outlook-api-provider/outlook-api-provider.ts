@@ -15,6 +15,7 @@ const log = require('electron-log');
 @injectable()
 export default class OutlookApiProvider implements IOAuthProvider {
     private _tokenPath = 'mail.outlook.token';
+    private _authorizing = false;
     private _token!: any;
     private _client!: graph.Client;
     private _window!: BrowserWindow;
@@ -32,7 +33,6 @@ export default class OutlookApiProvider implements IOAuthProvider {
         this._scope = scope;
         this._settings = settings;
         this._oauth2 = require('simple-oauth2').create({ client, auth });
-        this.authorizeToken(this._settings.get(this._tokenPath));
     }
 
     private get authorizeContext(): any {
@@ -40,7 +40,11 @@ export default class OutlookApiProvider implements IOAuthProvider {
     }
 
     public promptAuthorization(): void {
+        if (this._authorizing) {
+            return;
+        }
         const url = this._oauth2.authorizationCode.authorizeURL(this.authorizeContext);
+        this._authorizing = true;
         this._window?.close();
         this._window = new remote.BrowserWindow({ width: 800, height: 600 });
         this._window.loadURL(url);
@@ -58,6 +62,9 @@ export default class OutlookApiProvider implements IOAuthProvider {
         catch (error) {
             log.error(error);
             this.promptAuthorization();
+        }
+        finally {
+            this._authorizing = false;
         }
     }
 
@@ -94,10 +101,14 @@ export default class OutlookApiProvider implements IOAuthProvider {
     }
 
     private async refreshToken(): Promise<void> {
+        if (!this._token) {
+            throw new Error('Token does not exist.');
+        }
+
         if (!this._token.expired()) {
             return;
         }
-        const token = await this._token.refresh();
+        const { token } = await this._token.refresh();
         token.created = new Date().toISOString();
         this.authorizeToken(token);
     }

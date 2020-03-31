@@ -23,7 +23,12 @@ socket.on('outlook-mail', async (payload: any) => {
     try {
         const id = payload.value[0].resourceData['@odata.id'];
         const request = await outlookApiProvider.startGraphRequest(id);
-        const mail = outlookEmailService.toMail(await request?.get());
+        const data = await request?.get();
+
+        if (!data) {
+            return;
+        }
+        const mail = outlookEmailService.toMail(data);
 
         if (zendeskService.isZendeskEmail(mail)) {
             const action = `${Store.zendeskStoreName}/addTicketFromMail`;
