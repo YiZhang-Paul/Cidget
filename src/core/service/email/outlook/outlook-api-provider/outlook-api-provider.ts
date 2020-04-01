@@ -32,10 +32,19 @@ export default class OutlookApiProvider implements IOAuthProvider {
         this._scope = scope;
         this._settings = settings;
         this._oauth2 = require('simple-oauth2').create({ client, auth });
+        this.loadToken();
     }
 
     private get authorizeContext(): any {
         return ({ redirect_uri: this._callback, scope: this._scope });
+    }
+
+    private loadToken(): void {
+        const token = this._settings.get(this._token);
+
+        if (token) {
+            this.authorizeToken(token);
+        }
     }
 
     public promptAuthorization(): void {
