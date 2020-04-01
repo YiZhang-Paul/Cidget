@@ -1,11 +1,13 @@
 import Vue from 'vue';
+import { injectable } from 'inversify';
 
 import INotificationOption from '../../../interface/generic/notification-option.interface';
 
+@injectable()
 export default class NotificationHandler {
     private _events = new Map<string, INotificationOption>();
 
-    public push(name: string, data: any, duration = 2000): void {
+    public push(name: string, data: any, duration = 4000): void {
         if (!this._events.has(name)) {
             this._events.set(name, { locked: false, data });
         }
@@ -14,18 +16,16 @@ export default class NotificationHandler {
         if (!event) {
             return;
         }
+        event.data = data;
 
-        if (event.locked) {
-            event.data = data;
-        }
-        else {
+        if (!event.locked) {
             this.sendNotification(name, event, duration);
         }
     }
 
     private sendNotification(name: string, event: INotificationOption, duration: number): void {
         event.locked = true;
-        Vue.notify(event.data);
+        Vue.notify(Object.assign({}, event.data));
         event.data = null;
 
         setTimeout(() => {
