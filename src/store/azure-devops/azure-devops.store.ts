@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import { ActionContext, StoreOptions } from 'vuex';
 
 import Types from '../../core/ioc/types';
@@ -8,6 +7,7 @@ import ICiBuild from '../../core/interface/devops/ci/ci-build.interface';
 import ICdRelease from '../../core/interface/devops/cd/cd-release.interface';
 import AzureDevopsCiBuildService from '../../core/service/devops/azure-devops/azure-devops-ci-build/azure-devops-ci-build.service';
 import AzureDevopsCdReleaseService from '../../core/service/devops/azure-devops/azure-devops-cd-release/azure-devops-cd-release.service';
+import NotificationHandler from '../../core/service/io/notification-handler/notification-handler';
 
 type State = {
     ciBuilds: ICiBuild[],
@@ -17,6 +17,7 @@ type State = {
 let autoNotifyAfterApproval: boolean;
 let buildService: AzureDevopsCiBuildService;
 let releaseService: AzureDevopsCdReleaseService;
+let notificationHandler: NotificationHandler;
 
 const mutations = {
     addCiBuild(state: State, build: ICiBuild): void {
@@ -42,7 +43,7 @@ const actions = {
         const action = getters.hasCiBuild(build) ? 'updateCiBuild' : 'addCiBuild';
         commit(action, build);
 
-        Vue.notify({
+        notificationHandler.push(NotificationType.CiBuild, {
             group: 'notification',
             duration: 10000,
             data: { type: NotificationType.CiBuild, id: build.id, model: build }
@@ -68,7 +69,7 @@ const actions = {
         commit(action, release);
         autoNotifyAfterApproval = false;
 
-        Vue.notify({
+        notificationHandler.push(NotificationType.CdRelease, {
             group: 'notification',
             duration: release.status === 'needs approval' ? -1 : 10000,
             data: { type: NotificationType.CdRelease, id: release.id, model: release }
@@ -107,10 +108,11 @@ const getters = {
 };
 
 export const createStore = () => {
+    const state: State = { ciBuilds: [], cdReleases: [] };
     autoNotifyAfterApproval = false;
     buildService = Container.get<AzureDevopsCiBuildService>(Types.AzureDevopsCiBuildService);
     releaseService = Container.get<AzureDevopsCdReleaseService>(Types.AzureDevopsCdReleaseService);
-    const state: State = { ciBuilds: [], cdReleases: [] };
+    notificationHandler = Container.get<NotificationHandler>(Types.NotificationHandler);
 
     return ({
         namespaced: true,

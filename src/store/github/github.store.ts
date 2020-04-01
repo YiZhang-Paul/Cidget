@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import { ActionContext, StoreOptions } from 'vuex';
 
 import Types from '../../core/ioc/types';
@@ -10,6 +9,7 @@ import IGithubUser from '../../core/interface/source-control/github/github-user.
 import GithubCommitService from '../../core/service/source-control/github/github-commit/github-commit.service';
 import GithubPullRequestService from '../../core/service/source-control/github/github-pull-request/github-pull-request.service';
 import PullRequestAction from '../../core/enum/pull-request-action.enum';
+import NotificationHandler from '../../core/service/io/notification-handler/notification-handler';
 
 type State = {
     commits: ICommit<IGithubUser>[],
@@ -18,6 +18,7 @@ type State = {
 
 let commitService: GithubCommitService;
 let pullRequestService: GithubPullRequestService;
+let notificationHandler: NotificationHandler;
 
 const mutations = {
     addCommit(state: State, commit: ICommit<IGithubUser>): void {
@@ -42,7 +43,7 @@ const actions = {
         }
         commit('addCommit', push);
 
-        Vue.notify({
+        notificationHandler.push(NotificationType.Commit, {
             group: 'notification',
             duration: 10000,
             data: { type: NotificationType.Commit, id: push.id, model: push }
@@ -56,7 +57,7 @@ const actions = {
         pullRequest.mergeable = existing ? existing.mergeable : pullRequest.mergeable;
         commit(action, pullRequest);
 
-        Vue.notify({
+        notificationHandler.push(NotificationType.PullRequest, {
             group: 'notification',
             duration: pullRequest.action === 'needs review' ? -1 : 10000,
             data: { type: NotificationType.PullRequest, id: pullRequest.id, model: pullRequest }
@@ -73,7 +74,7 @@ const actions = {
         pullRequest.action = type === 'approved' ? PullRequestAction.Approved : PullRequestAction.Rejected;
         commit('updatePullRequest', pullRequest);
 
-        Vue.notify({
+        notificationHandler.push(NotificationType.PullRequest, {
             group: 'notification',
             duration: 10000,
             data: { type: NotificationType.PullRequest, id: pullRequest.id, model: pullRequest }
@@ -100,7 +101,7 @@ const actions = {
         pullRequest.mergeable = isMergeable;
         commit('updatePullRequest', pullRequest);
 
-        Vue.notify({
+        notificationHandler.push(NotificationType.PullRequest, {
             group: 'notification',
             duration: 10000,
             data: { type: NotificationType.PullRequest, id: pullRequest.id, model: pullRequest }
@@ -150,9 +151,10 @@ function shallowClone(data: any): any {
 }
 
 export const createStore = () => {
+    const state: State = { commits: [], pullRequests: [] };
     commitService = Container.get<GithubCommitService>(Types.GithubCommitService);
     pullRequestService = Container.get<GithubPullRequestService>(Types.GithubPullRequestService);
-    const state: State = { commits: [], pullRequests: [] };
+    notificationHandler = Container.get<NotificationHandler>(Types.NotificationHandler);
 
     return ({
         namespaced: true,

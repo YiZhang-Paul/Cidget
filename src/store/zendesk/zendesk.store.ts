@@ -1,12 +1,16 @@
-import Vue from 'vue';
 import { ActionContext, StoreOptions } from 'vuex';
 
+import Types from '../../core/ioc/types';
+import Container from '../../core/ioc/container';
 import NotificationType from '../../core/enum/notification-type.enum';
 import ISupportTicket from '../../core/interface/customer-support/support-ticket.interface';
+import NotificationHandler from '../../core/service/io/notification-handler/notification-handler';
 
 type State = {
     tickets: ISupportTicket[];
 };
+
+let notificationHandler: NotificationHandler;
 
 const mutations = {
     addTicket(state: State, ticket: ISupportTicket): void {
@@ -27,7 +31,7 @@ const actions = {
         }
         commit(getters.hasTicket(ticket) ? 'updateTicket' : 'addTicket', ticket);
 
-        Vue.notify({
+        notificationHandler.push(NotificationType.SupportTicket, {
             group: 'notification',
             duration: -1,
             data: { type: NotificationType.SupportTicket, id: ticket.id, model: ticket }
@@ -55,6 +59,7 @@ const getters = {
 
 export const createStore = () => {
     const state: State = { tickets: [] };
+    notificationHandler = Container.get<NotificationHandler>(Types.NotificationHandler);
 
     return ({
         namespaced: true,
