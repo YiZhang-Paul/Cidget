@@ -40,7 +40,7 @@ export default class OutlookApiProvider implements IOAuthProvider {
     }
 
     private loadToken(): void {
-        const token = this._settings.get(this._token);
+        const token = this._settings.get(this._tokenPath);
 
         if (token) {
             this.authorizeToken(token);
