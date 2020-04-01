@@ -5,18 +5,19 @@ import INotificationOption from '../../../interface/generic/notification-option.
 
 @injectable()
 export default class NotificationHandler {
+    private _counter = 0;
     private _events = new Map<string, INotificationOption>();
 
-    public push(name: string, data: any, duration = 4000): void {
+    public push(name: string, payload: any, duration = 2500): void {
         if (!this._events.has(name)) {
-            this._events.set(name, { locked: false, data });
+            this._events.set(name, { locked: false, payload });
         }
         const event = this._events.get(name);
 
         if (!event) {
             return;
         }
-        event.data = data;
+        event.payload = payload;
 
         if (!event.locked) {
             this.sendNotification(name, event, duration);
@@ -25,14 +26,15 @@ export default class NotificationHandler {
 
     private sendNotification(name: string, event: INotificationOption, duration: number): void {
         event.locked = true;
-        Vue.notify(Object.assign({}, event.data));
-        event.data = null;
+        event.payload.data.counter = this._counter++;
+        Vue.notify(Object.assign({}, event.payload));
+        event.payload = null;
 
         setTimeout(() => {
             event.locked = false;
 
-            if (event.data) {
-                this.push(name, event.data, duration);
+            if (event.payload) {
+                this.push(name, event.payload, duration);
             }
         }, duration);
     }

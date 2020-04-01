@@ -1,4 +1,4 @@
 export default interface INotificationOption {
     locked: boolean;
-    data: any;
+    payload: any;
 }

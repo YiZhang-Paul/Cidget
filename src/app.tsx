@@ -55,7 +55,9 @@ export default class App extends tsx.Component<any> {
     }
 
     private getIdentifier(data: any): string {
-        return `${data.type}_card_${data.id}`;
+        const { type, id, counter } = data;
+
+        return `${type}_card_${id}_${counter}`;
     }
 
     private removeDuplicate(id: string): void {
@@ -96,20 +98,20 @@ export default class App extends tsx.Component<any> {
         }
     }
 
-    private getEventCard(props: any, className: string): any {
+    private getEventCard(props: any, identifier: string): any {
         const { type, model } = props.item.data;
 
         switch (type) {
             case NotificationType.SupportTicket:
-                return <SupportTicketCard ref={className} class={className} ticket={model} closeHandler={props.close} />;
+                return <SupportTicketCard ref={identifier} ticket={model} closeHandler={props.close} />;
             case NotificationType.CiBuild:
-                return <BuildPipelineCard ref={className} class={className} build={model} closeHandler={props.close} />;
+                return <BuildPipelineCard ref={identifier} build={model} closeHandler={props.close} />;
             case NotificationType.CdRelease:
-                return <ReleasePipelineCard ref={className} class={className} release={model} closeHandler={props.close} />;
+                return <ReleasePipelineCard ref={identifier} release={model} closeHandler={props.close} />;
             case NotificationType.Commit:
-                return <CommitCard ref={className} class={className} commit={model} closeHandler={props.close} />;
+                return <CommitCard ref={identifier} commit={model} closeHandler={props.close} />;
             case NotificationType.PullRequest:
-                return <PullRequestCard ref={className} class={className} pullRequest={model} closeHandler={props.close} />;
+                return <PullRequestCard ref={identifier} pullRequest={model} closeHandler={props.close} />;
         }
     }
 
