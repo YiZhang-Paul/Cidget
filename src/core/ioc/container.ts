@@ -18,6 +18,7 @@ import AzureDevopsCiBuildService from '../service/devops/azure-devops/azure-devo
 import AzureDevopsCdReleaseService from '../service/devops/azure-devops/azure-devops-cd-release/azure-devops-cd-release.service';
 import AzureDevopsApiProvider from '../service/devops/azure-devops/azure-devops-api-provider/azure-devops-api-provider.service';
 import AzureDevopsPipelineProvider from '../service/devops/azure-devops/azure-devops-pipeline-provider/azure-devops-pipeline-provider.service';
+import NotificationHandler from '../service/io/notification-handler/notification-handler';
 import AppSettings from '../service/io/app-settings/app-settings';
 
 import Types from './types';
@@ -103,6 +104,11 @@ container
 container
     .bind<AzureDevopsPipelineProvider>(Types.AzureDevopsPipelineProvider)
     .to(AzureDevopsPipelineProvider)
+    .inSingletonScope();
+
+container
+    .bind<NotificationHandler>(Types.NotificationHandler)
+    .to(NotificationHandler)
     .inSingletonScope();
 
 container
