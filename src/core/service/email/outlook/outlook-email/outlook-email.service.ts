@@ -7,12 +7,12 @@ import IEmail from '../../../../interface/generic/email.interface';
 export default class OutlookEmailService {
 
     public toMail(data: any): IEmail {
-        const { subject, body, createdDateTime, from, toRecipients } = data;
+        const { subject, body, sentDateTime, from, toRecipients } = data;
 
         return ({
             subject,
             body: body.content,
-            created: new Date(createdDateTime),
+            created: new Date(sentDateTime),
             from: this.getUser(from),
             to: toRecipients.map(this.getUser.bind(this))
         }) as IEmail;

@@ -9,37 +9,31 @@ import ReleasePipelineCard from './features/azure-devops/release-pipeline-card/r
 import CommitCard from './features/github/commit-card/commit-card';
 import PullRequestCard from './features/github/pull-request-card/pull-request-card';
 
+const log = require('electron-log');
+
 @Component
 export default class App extends tsx.Component<any> {
     @Ref('cards') private _cards: any;
 
     public mounted(): void {
-        const original = this._cards.destroy;
+        const destroy = this._cards.destroy;
         // monkey patch destroy() to play exit animation on card exit
         this._cards.destroy = (item: any) => {
             const identifier = this.getIdentifier(item.data);
 
             if (!this.$refs[identifier]) {
-                original(item);
+                destroy(item);
 
                 return;
             }
             const instance: any = this.$refs[identifier];
             const notificationCard = instance.$children[0];
-            const list = this._cards.$data.list;
-            const isDuplicate = list.filter((_: any) => _.data.id === item.data.id).length === 2;
 
-            if (!notificationCard || notificationCard.$data.closing && !isDuplicate) {
-                original(item);
-
-                return;
-            }
-
-            if (notificationCard.$data.closing && isDuplicate) {
+            if (notificationCard.$data.closing) {
                 return;
             }
             notificationCard.$data.closing = true;
-            setTimeout(() => original(item), 1000);
+            setTimeout(() => destroy(item), 1000);
         };
     }
 
@@ -61,11 +55,17 @@ export default class App extends tsx.Component<any> {
     }
 
     private getIdentifier(data: any): string {
-        return `${data.type}_card_${data.id}`;
+        const { type, id, counter } = data;
+
+        return `${type}_card_${id}_${counter}`;
     }
 
     private removeDuplicate(id: string): void {
         const cards = this._cards.$data.list.filter((_: any) => _.data.id === id);
+
+        if (cards.length > 2) {
+            log.error('More than 2 duplicate notification cards found.');
+        }
 
         if (cards.length === 2) {
             this._cards.destroy(cards[1]);
@@ -98,20 +98,20 @@ export default class App extends tsx.Component<any> {
         }
     }
 
-    private getEventCard(props: any, className: string): any {
+    private getEventCard(props: any, identifier: string): any {
         const { type, model } = props.item.data;
 
         switch (type) {
             case NotificationType.SupportTicket:
-                return <SupportTicketCard ref={className} class={className} ticket={model} closeHandler={props.close} />;
+                return <SupportTicketCard ref={identifier} ticket={model} closeHandler={props.close} />;
             case NotificationType.CiBuild:
-                return <BuildPipelineCard ref={className} class={className} build={model} closeHandler={props.close} />;
+                return <BuildPipelineCard ref={identifier} build={model} closeHandler={props.close} />;
             case NotificationType.CdRelease:
-                return <ReleasePipelineCard ref={className} class={className} release={model} closeHandler={props.close} />;
+                return <ReleasePipelineCard ref={identifier} release={model} closeHandler={props.close} />;
             case NotificationType.Commit:
-                return <CommitCard ref={className} class={className} commit={model} closeHandler={props.close} />;
+                return <CommitCard ref={identifier} commit={model} closeHandler={props.close} />;
             case NotificationType.PullRequest:
-                return <PullRequestCard ref={className} class={className} pullRequest={model} closeHandler={props.close} />;
+                return <PullRequestCard ref={identifier} pullRequest={model} closeHandler={props.close} />;
         }
     }
 

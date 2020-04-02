@@ -1,12 +1,16 @@
-import Vue from 'vue';
 import { ActionContext, StoreOptions } from 'vuex';
 
+import Types from '../../core/ioc/types';
+import Container from '../../core/ioc/container';
 import NotificationType from '../../core/enum/notification-type.enum';
 import ISupportTicket from '../../core/interface/customer-support/support-ticket.interface';
+import NotificationHandler from '../../core/service/io/notification-handler/notification-handler';
 
 type State = {
     tickets: ISupportTicket[];
 };
+
+let notificationHandler: NotificationHandler;
 
 const mutations = {
     addTicket(state: State, ticket: ISupportTicket): void {
@@ -27,7 +31,7 @@ const actions = {
         }
         commit(getters.hasTicket(ticket) ? 'updateTicket' : 'addTicket', ticket);
 
-        Vue.notify({
+        notificationHandler.push(NotificationType.SupportTicket, {
             group: 'notification',
             duration: -1,
             data: { type: NotificationType.SupportTicket, id: ticket.id, model: ticket }
@@ -43,15 +47,7 @@ const getters = {
         return (ticket: ISupportTicket): boolean => {
             const existing = state.tickets.find(_ => _.id === ticket.id);
 
-            if (!existing) {
-                return false;
-            }
-            return existing.assignedToUser === ticket.assignedToUser
-                && existing.content === ticket.content
-                && existing.htmlContent === ticket.htmlContent
-                && existing.group === ticket.group
-                && existing.status === ticket.status
-                && existing.title === ticket.title;
+            return existing ? existing.createdOn.getTime() === ticket.createdOn.getTime() : false;
         };
     },
     hasTicket(state: State): Function {
@@ -63,6 +59,7 @@ const getters = {
 
 export const createStore = () => {
     const state: State = { tickets: [] };
+    notificationHandler = Container.get<NotificationHandler>(Types.NotificationHandler);
 
     return ({
         namespaced: true,

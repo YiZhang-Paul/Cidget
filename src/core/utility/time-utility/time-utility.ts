@@ -33,7 +33,7 @@ export default class TimeUtility {
         const elapsed = this.elapsedSeconds(start, end);
         const hours = Math.floor(elapsed / 3600);
         const minutes = Math.floor(elapsed % 3600 / 60);
-        const seconds = elapsed % 3600 % 60;
+        const seconds = Math.floor(elapsed % 3600 % 60);
 
         return [hours, minutes, seconds];
     }

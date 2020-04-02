@@ -17,7 +17,7 @@ jest.mock('simple-oauth2', () => ({
                         token: { access_token: 'access_token' },
                         expired(): boolean { return true },
                         async refresh(): Promise<any> {
-                            return ({ access_token: 'refreshed_access_token' });
+                            return ({ token: { access_token: 'refreshed_access_token' } });
                         }
                     });
                 }
