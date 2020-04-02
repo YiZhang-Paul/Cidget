@@ -15,7 +15,7 @@ describe('outlook email service unit test', () => {
             const payload = {
                 subject: 'email_subject',
                 body: { content: 'email_content' },
-                createdDateTime: new Date(2019, 2, 5),
+                sentDateTime: new Date(2019, 2, 5),
                 from: { emailAddress: { name: 'name_1', address: 'address_1' } },
                 toRecipients: [
                     { emailAddress: { name: 'name_2', address: 'address_2' } },

@@ -21,12 +21,15 @@ export default class WeblinkDisplay extends tsx.Component<any> {
     }
 
     public mounted(): void {
-        if (!this.noTooltip) {
-            setTimeout(() => {
-                const overflow = this.container.offsetWidth < this.container.scrollWidth;
-                this.$data.showTooltip = this.tooltip || overflow;
-            }, this.delay);
+        if (this.noTooltip) {
+            return;
         }
+        setTimeout(() => {
+            if (this.container) {
+                const { offsetWidth, scrollWidth } = this.container;
+                this.$data.showTooltip = this.tooltip || offsetWidth < scrollWidth;
+            }
+        }, this.delay);
     }
 
     private toUrl(): void {

@@ -30,7 +30,7 @@ describe('zendesk store unit test', () => {
             ticket = {
                 id: '147',
                 assignedToUser: false,
-                content: 'ticket_content',
+                createdOn: new Date(2020, 1, 1),
                 htmlContent: 'ticket_html_content',
                 group: 'group_name',
                 status: 'opened',
@@ -61,7 +61,7 @@ describe('zendesk store unit test', () => {
         });
 
         test('should update support ticket when ticket has changes', async () => {
-            store.state.tickets = [Object.assign({}, ticket, { status: 'reopened' })];
+            store.state.tickets = [Object.assign({}, ticket, { createdOn: new Date() })];
 
             await store.dispatch('addTicketFromMail', ticket);
 

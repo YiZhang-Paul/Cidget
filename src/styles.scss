@@ -32,11 +32,11 @@ html, body {
     margin-left: 46px;
     z-index: 0 !important;
 }
-
+// rules here need to be !important
 .vue-notification-wrapper {
     overflow: visible !important;
     border-radius: 6px !important;
-    padding: 4px;
+    padding: 4px !important;
 }
 
 .el-tooltip__popper, .zd-comment, .zd-comment p {
