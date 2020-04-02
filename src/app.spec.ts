@@ -140,41 +140,6 @@ describe('app component unit test', () => {
         expect(getList(wrapper)[1].data.id).toBe('pull_request_id_1');
     });
 
-    test('should update existing notification for same event', () => {
-        jest.useFakeTimers();
-        Store.store.state[Store.githubStoreName].pullRequests = [{ id: 'pull_request_id', status: 'status_1' }];
-
-        vue.notify({
-            group: 'notification',
-            duration: -1,
-            data: { type: NotificationType.PullRequest, id: 'pull_request_id' }
-        });
-
-        const notificationId = getList(wrapper)[0].id;
-        Store.store.state[Store.githubStoreName].pullRequests = [{ id: 'pull_request_id', status: 'status_2' }];
-
-        vue.notify({
-            group: 'notification',
-            duration: -1,
-            data: { type: NotificationType.PullRequest, id: 'pull_request_id' }
-        });
-
-        Store.store.state[Store.githubStoreName].pullRequests = [{ id: 'pull_request_id', status: 'status_3' }];
-
-        vue.notify({
-            group: 'notification',
-            duration: -1,
-            data: { type: NotificationType.PullRequest, id: 'pull_request_id' }
-        });
-
-        jest.advanceTimersByTime(5000);
-
-        expect(getList(wrapper).length).toBe(1);
-        expect(getList(wrapper)[0].id).not.toBe(notificationId);
-        expect(getList(wrapper)[0].data.type).toBe(NotificationType.PullRequest);
-        expect(getList(wrapper)[0].data.id).toBe('pull_request_id');
-    });
-
     test('should stop timer on mouse enter', () => {
         vue.notify({
             group: 'notification',
@@ -233,33 +198,6 @@ describe('app component unit test', () => {
 
         expect(getList(wrapper).length).toBe(1);
         expect(getList(wrapper)[0].timer).toBeNull();
-    });
-
-    test('should restore timer on mouse leave to extend card timer', () => {
-        jest.useFakeTimers();
-
-        vue.notify({
-            group: 'notification',
-            duration: 1000,
-            data: { type: NotificationType.PullRequest, id: 'pull_request_id' }
-        });
-
-        jest.advanceTimersByTime(999);
-
-        expect(getList(wrapper).length).toBe(1);
-        expect(isNaN(getList(wrapper)[0].timer)).toBeFalsy();
-
-        wrapper.find('.notification-wrapper').trigger('mouseenter');
-        wrapper.find('.notification-wrapper').trigger('mouseleave');
-
-        jest.advanceTimersByTime(999);
-
-        expect(getList(wrapper).length).toBe(1);
-        expect(isNaN(getList(wrapper)[0].timer)).toBeFalsy();
-
-        jest.advanceTimersByTime(1);
-
-        expect(getList(wrapper).length).toBe(0);
     });
 
     test('should restore timer on mouse leave when timer is already cleared', () => {

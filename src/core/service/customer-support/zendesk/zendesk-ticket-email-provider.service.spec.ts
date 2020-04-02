@@ -66,29 +66,11 @@ describe('zendesk ticket by mail provider unit test', () => {
         });
 
         test('should convert zendesk email into zendesk ticket', () => {
-            const message = `
-                <table class="MsoNormalTable">
-                <tbody>
-                    <tr>
-                        <td><p>this ticket has been assigned to group "group_name", of which you are a member</p></td>
-                        <td><p>link to ticket: https://zendesk.com/agent/tickets/451258</p></td>
-                    </tr>
-                </tbody>
-                </table>
-                <table class="MsoNormalTable">
-                    <tbody>
-                        <tr>
-                            <td><p>Hello, I need some help</p></td>
-                        </tr>
-                    </tbody>
-                </table>
-            `;
-
             const ticket = service.toTicket(email);
 
             expect(ticket.id).toBe('451258');
             expect(ticket.title).toBe('Can I remove this item from my cart');
-            expect(removeWhiteSpace(ticket.htmlContent)).toBe(removeWhiteSpace(message));
+            expect(removeWhiteSpace(ticket.htmlContent)).toBe(removeWhiteSpace(email.body));
             expect(ticket.createdOn.getTime()).toBe(new Date(2019, 10, 5).getTime());
             expect(ticket.url).toBe('https://zendesk.com/agent/tickets/451258');
             expect(ticket.status).toBe('opened');
