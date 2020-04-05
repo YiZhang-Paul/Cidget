@@ -61,6 +61,17 @@ All notable changes to this project will be documented in this file.
 * fixed a bug where notification cards have no margin between each other
 * fixed other minor bugs
 
+## 0.4.2 - 2020/04/05
+
+### Changed
+
+* pull request notification will show 'needs review' instead of 'opened' when opened with pre-selected reviewers
+
+### Fixed
+
+* fixed a bug where notification cards won't close after clicking close button
+* fixed a bug where system issued commit message is not properly ignored
+
 ## Unreleased
 
 ## 0.5.0 - TBD
