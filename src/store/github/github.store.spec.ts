@@ -88,8 +88,8 @@ describe('github store unit test', () => {
             expect(store.getters.getCommits[0].initiator.name).toBe('john');
         });
 
-        test('should not add commit when the initiator is web flow', async () => {
-            commit.initiator.name = 'web-flow';
+        test('should not add commit when the initiator is auto commit', async () => {
+            commit.initiator.name = 'auto-commit';
             store.state.commits = [];
 
             await store.dispatch('addCommit', {});
