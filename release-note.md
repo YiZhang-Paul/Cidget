@@ -1,10 +1,10 @@
-# Release Note v0.4.1 - 2020/04/01
+# Release Note v0.4.2 - 2020/04/05
+
+### Changed
+
+* pull request notification will show 'needs review' instead of 'opened' when opened with pre-selected reviewers
 
 ### Fixed
 
-* fixed a bug where review requests for pull request will trigger duplicate notifications
-* fixed a bug where notification card does not go away after exit animation has finished
-* fixed a bug where Zendesk ticket conversations are not showing in the tooltip
-* fixed a bug where CI build completion time is not properly rounded to integer
-* fixed a bug where notification cards have no margin between each other
-* fixed other minor bugs
+* fixed a bug where notification cards won't close after clicking close button
+* fixed a bug where system issued commit message is not properly ignored

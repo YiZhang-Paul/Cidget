@@ -23,11 +23,6 @@ export default class NotificationCard extends tsx.Component<any> {
         return `${name} ${name + type}`;
     }
 
-    private onClose(): void {
-        this.$data.closing = true;
-        setTimeout(() => this.closeHandler(), 1000);
-    }
-
     public render(): any {
         return (
             <div class={this.getClass('notification-card-container')}>
@@ -41,7 +36,7 @@ export default class NotificationCard extends tsx.Component<any> {
 
                 <RelativeTimeDisplay class={this.getClass('time')} time={this.time} />
 
-                <div class={this.getClass('close-icon')} onClick={this.onClose}>
+                <div class={this.getClass('close-icon')} onClick={this.closeHandler}>
                     <i class="fas fa-times"></i>
                 </div>
 
