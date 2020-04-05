@@ -53,6 +53,10 @@ const actions = {
         const { commit, state } = context;
         const pullRequest = await pullRequestService.toPullRequest(payload);
         const existing = state.pullRequests.find(_ => _.id === pullRequest.id);
+
+        if (existing?.action === 'needs review' && pullRequest.action === 'opened') {
+            return;
+        }
         const action = existing ? 'updatePullRequest' : 'addPullRequest';
         pullRequest.mergeable = existing ? existing.mergeable : pullRequest.mergeable;
         commit(action, pullRequest);
