@@ -38,7 +38,7 @@ const actions = {
         const { commit, getters } = context;
         const push = await commitService.toCommit(payload);
 
-        if (getters.hasCommit(push) || push.initiator.name === 'web-flow') {
+        if (getters.hasCommit(push) || push.initiator.name === 'auto-commit') {
             return;
         }
         commit('addCommit', push);
