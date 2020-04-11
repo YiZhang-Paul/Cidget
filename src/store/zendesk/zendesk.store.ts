@@ -34,7 +34,12 @@ const actions = {
         notificationHandler.push(NotificationType.SupportTicket, {
             group: 'notification',
             duration: -1,
-            data: { type: NotificationType.SupportTicket, id: ticket.id, model: ticket }
+            data: {
+                type: NotificationType.SupportTicket,
+                id: ticket.id,
+                logoUrl: require('../../../public/images/zendesk-logo.png'),
+                model: ticket
+            }
         });
     }
 };

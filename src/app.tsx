@@ -3,7 +3,7 @@ import * as tsx from 'vue-tsx-support';
 import { remote } from 'electron';
 
 import NotificationType from './core/enum/notification-type.enum';
-import SupportTicketCard from './features/zendesk/support-ticket-card/support-ticket-card';
+import SupportTicketCard from './features/customer-support/support-ticket-card/support-ticket-card';
 import BuildPipelineCard from './features/azure-devops/build-pipeline-card/build-pipeline-card';
 import ReleasePipelineCard from './features/azure-devops/release-pipeline-card/release-pipeline-card';
 import CommitCard from './features/github/commit-card/commit-card';
@@ -98,11 +98,17 @@ export default class App extends tsx.Component<any> {
     }
 
     private getEventCard(props: any, identifier: string): any {
-        const { type, model } = props.item.data;
+        const { type, logoUrl, model } = props.item.data;
 
         switch (type) {
             case NotificationType.SupportTicket:
-                return <SupportTicketCard ref={identifier} ticket={model} closeHandler={props.close} />;
+                return (
+                    <SupportTicketCard ref={identifier}
+                        ticket={model}
+                        logoUrl={logoUrl}
+                        closeHandler={props.close}>
+                    </SupportTicketCard>
+                );
             case NotificationType.CiBuild:
                 return <BuildPipelineCard ref={identifier} build={model} closeHandler={props.close} />;
             case NotificationType.CdRelease:
