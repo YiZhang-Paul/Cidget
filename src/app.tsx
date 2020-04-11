@@ -118,7 +118,13 @@ export default class App extends tsx.Component<any> {
                     </BuildPipelineCard>
                 );
             case NotificationType.CdRelease:
-                return <ReleasePipelineCard ref={identifier} release={model} closeHandler={props.close} />;
+                return (
+                    <ReleasePipelineCard ref={identifier}
+                        release={model}
+                        logoUrl={logoUrl}
+                        closeHandler={props.close}>
+                    </ReleasePipelineCard>
+                );
             case NotificationType.Commit:
                 return (
                     <CommitCard ref={identifier}

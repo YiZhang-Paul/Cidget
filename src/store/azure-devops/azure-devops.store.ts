@@ -73,7 +73,7 @@ const actions = {
         notificationHandler.push(NotificationType.CdRelease, {
             group: 'notification',
             duration: release.status === 'needs approval' ? -1 : 10000,
-            data: { type: NotificationType.CdRelease, id: release.id, model: release }
+            data: { type: NotificationType.CdRelease, id: release.id, logoUrl, model: release }
         });
     },
     notifyApproval(context: ActionContext<State, any>, release: ICdRelease): void {
