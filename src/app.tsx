@@ -4,8 +4,8 @@ import { remote } from 'electron';
 
 import NotificationType from './core/enum/notification-type.enum';
 import SupportTicketCard from './features/customer-support/support-ticket-card/support-ticket-card';
-import BuildPipelineCard from './features/azure-devops/build-pipeline-card/build-pipeline-card';
-import ReleasePipelineCard from './features/azure-devops/release-pipeline-card/release-pipeline-card';
+import BuildPipelineCard from './features/devops/build-pipeline-card/build-pipeline-card';
+import ReleasePipelineCard from './features/devops/release-pipeline-card/release-pipeline-card';
 import CommitCard from './features/source-control/commit-card/commit-card';
 import PullRequestCard from './features/source-control/pull-request-card/pull-request-card';
 
