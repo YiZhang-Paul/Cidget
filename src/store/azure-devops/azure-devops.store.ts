@@ -18,6 +18,7 @@ let autoNotifyAfterApproval: boolean;
 let buildService: AzureDevopsCiBuildService;
 let releaseService: AzureDevopsCdReleaseService;
 let notificationHandler: NotificationHandler;
+const logoUrl = require('../../../public/images/azure-devops-logo.png');
 
 const mutations = {
     addCiBuild(state: State, build: ICiBuild): void {
@@ -46,7 +47,7 @@ const actions = {
         notificationHandler.push(NotificationType.CiBuild, {
             group: 'notification',
             duration: 10000,
-            data: { type: NotificationType.CiBuild, id: build.id, model: build }
+            data: { type: NotificationType.CiBuild, id: build.id, logoUrl, model: build }
         });
     },
     async manageCdRelease(context: ActionContext<State, any>, payload: any): Promise<any> {

@@ -110,7 +110,13 @@ export default class App extends tsx.Component<any> {
                     </SupportTicketCard>
                 );
             case NotificationType.CiBuild:
-                return <BuildPipelineCard ref={identifier} build={model} closeHandler={props.close} />;
+                return (
+                    <BuildPipelineCard ref={identifier}
+                        build={model}
+                        logoUrl={logoUrl}
+                        closeHandler={props.close}>
+                    </BuildPipelineCard>
+                );
             case NotificationType.CdRelease:
                 return <ReleasePipelineCard ref={identifier} release={model} closeHandler={props.close} />;
             case NotificationType.Commit:
