@@ -19,6 +19,7 @@ type State = {
 let commitService: GithubCommitService;
 let pullRequestService: GithubPullRequestService;
 let notificationHandler: NotificationHandler;
+const logoUrl = require('../../../public/images/github-logo.png');
 
 const mutations = {
     addCommit(state: State, commit: ICommit<IGithubUser>): void {
@@ -46,12 +47,7 @@ const actions = {
         notificationHandler.push(NotificationType.Commit, {
             group: 'notification',
             duration: 10000,
-            data: {
-                type: NotificationType.Commit,
-                id: push.id,
-                logoUrl: require('../../../public/images/github-logo.png'),
-                model: push
-            }
+            data: { type: NotificationType.Commit, id: push.id, logoUrl, model: push }
         });
     },
     async addPullRequest(context: ActionContext<State, any>, payload: any): Promise<void> {
@@ -69,7 +65,7 @@ const actions = {
         notificationHandler.push(NotificationType.PullRequest, {
             group: 'notification',
             duration: pullRequest.action === 'needs review' ? -1 : 10000,
-            data: { type: NotificationType.PullRequest, id: pullRequest.id, model: pullRequest }
+            data: { type: NotificationType.PullRequest, id: pullRequest.id, logoUrl, model: pullRequest }
         });
     },
     async addPullRequestReview(context: ActionContext<State, any>, payload: any): Promise<void> {
@@ -86,7 +82,7 @@ const actions = {
         notificationHandler.push(NotificationType.PullRequest, {
             group: 'notification',
             duration: 10000,
-            data: { type: NotificationType.PullRequest, id: pullRequest.id, model: pullRequest }
+            data: { type: NotificationType.PullRequest, id: pullRequest.id, logoUrl, model: pullRequest }
         });
     },
     async addPullRequestCheck(context: ActionContext<State, any>, payload: any): Promise<void> {
@@ -113,7 +109,7 @@ const actions = {
         notificationHandler.push(NotificationType.PullRequest, {
             group: 'notification',
             duration: 10000,
-            data: { type: NotificationType.PullRequest, id: pullRequest.id, model: pullRequest }
+            data: { type: NotificationType.PullRequest, id: pullRequest.id, logoUrl, model: pullRequest }
         });
     }
 };

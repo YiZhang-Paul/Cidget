@@ -122,7 +122,13 @@ export default class App extends tsx.Component<any> {
                     </CommitCard>
                 );
             case NotificationType.PullRequest:
-                return <PullRequestCard ref={identifier} pullRequest={model} closeHandler={props.close} />;
+                return (
+                    <PullRequestCard ref={identifier}
+                        pullRequest={model}
+                        logoUrl={logoUrl}
+                        closeHandler={props.close}>
+                    </PullRequestCard>
+                );
         }
     }
 

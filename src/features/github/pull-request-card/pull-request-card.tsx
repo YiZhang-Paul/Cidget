@@ -1,7 +1,6 @@
 import { Component, Prop } from 'vue-property-decorator';
 import * as tsx from 'vue-tsx-support';
 
-import IGithubUser from '../../../core/interface/source-control/github/github-user.interface';
 import IPullRequest from '../../../core/interface/source-control/pull-request/pull-request.interface';
 import NotificationCard from '../../../shared/components/generic/notification-card/notification-card';
 import WeblinkDisplay from '../../../shared/components/generic/weblink-display/weblink-display';
@@ -13,7 +12,8 @@ import './pull-request-card.scss';
 
 @Component
 export default class PullRequestCard extends tsx.Component<any> {
-    @Prop() public pullRequest!: IPullRequest<IGithubUser>;
+    @Prop() public pullRequest!: IPullRequest;
+    @Prop() public logoUrl!: string;
     @Prop() public closeHandler!: () => void;
 
     private get action(): string {
@@ -45,10 +45,7 @@ export default class PullRequestCard extends tsx.Component<any> {
         }
 
         return (
-            <NotificationCard time={this.pullRequest.updatedOn}
-                closeHandler={this.closeHandler}
-                logoUrl={require('../../../../public/images/github-logo.png')}>
-
+            <NotificationCard time={this.pullRequest.updatedOn} closeHandler={this.closeHandler} logoUrl={this.logoUrl}>
                 <div class="pull-request-message-container">
                     <div class="pull-request-message-wrapper">
                         <WeblinkDisplay class="pull-request-message"
