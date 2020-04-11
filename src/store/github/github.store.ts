@@ -46,7 +46,12 @@ const actions = {
         notificationHandler.push(NotificationType.Commit, {
             group: 'notification',
             duration: 10000,
-            data: { type: NotificationType.Commit, id: push.id, model: push }
+            data: {
+                type: NotificationType.Commit,
+                id: push.id,
+                logoUrl: require('../../../public/images/github-logo.png'),
+                model: push
+            }
         });
     },
     async addPullRequest(context: ActionContext<State, any>, payload: any): Promise<void> {
