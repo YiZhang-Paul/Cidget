@@ -46,7 +46,7 @@ const actions = {
 
         notificationHandler.push(NotificationType.CiBuild, {
             group: 'notification',
-            duration: 10000,
+            duration: 4500,
             data: { type: NotificationType.CiBuild, id: build.id, logoUrl, model: build }
         });
     },
@@ -72,7 +72,7 @@ const actions = {
 
         notificationHandler.push(NotificationType.CdRelease, {
             group: 'notification',
-            duration: release.status === 'needs approval' ? -1 : 10000,
+            duration: release.status === 'needs approval' ? -1 : 4500,
             data: { type: NotificationType.CdRelease, id: release.id, logoUrl, model: release }
         });
     },

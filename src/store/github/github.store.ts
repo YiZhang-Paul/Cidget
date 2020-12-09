@@ -46,7 +46,7 @@ const actions = {
 
         notificationHandler.push(NotificationType.Commit, {
             group: 'notification',
-            duration: 10000,
+            duration: 4500,
             data: { type: NotificationType.Commit, id: push.id, logoUrl, model: push }
         });
     },
@@ -64,7 +64,7 @@ const actions = {
 
         notificationHandler.push(NotificationType.PullRequest, {
             group: 'notification',
-            duration: pullRequest.action === 'needs review' ? -1 : 10000,
+            duration: pullRequest.action === 'needs review' ? -1 : 4500,
             data: { type: NotificationType.PullRequest, id: pullRequest.id, logoUrl, model: pullRequest }
         });
     },
@@ -81,7 +81,7 @@ const actions = {
 
         notificationHandler.push(NotificationType.PullRequest, {
             group: 'notification',
-            duration: 10000,
+            duration: 4500,
             data: { type: NotificationType.PullRequest, id: pullRequest.id, logoUrl, model: pullRequest }
         });
     },
@@ -108,7 +108,7 @@ const actions = {
 
         notificationHandler.push(NotificationType.PullRequest, {
             group: 'notification',
-            duration: 10000,
+            duration: 4500,
             data: { type: NotificationType.PullRequest, id: pullRequest.id, logoUrl, model: pullRequest }
         });
     }
