@@ -31,7 +31,7 @@ export default class App extends tsx.Component<any> {
 
             if (!notificationCard.$data.closing) {
                 notificationCard.$data.closing = true;
-                setTimeout(() => destroy(item), 1000);
+                setTimeout(() => destroy(item), 500);
             }
         };
     }

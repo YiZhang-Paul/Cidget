@@ -209,13 +209,13 @@ $container-height: 110px;
 
 .notification-card-container-enter {
     animation-name: body-load;
-    animation-duration: 1s;
+    animation-duration: 0.75s;
     animation-fill-mode: forwards;
 }
 
 .notification-card-container-exit {
     animation-name: body-remove;
-    animation-duration: 0.5s;
+    animation-duration: 0.55s;
     animation-fill-mode: forwards;
 }
 
@@ -237,13 +237,13 @@ $container-height: 110px;
 
     .service-provider-avatar-enter {
         animation-name: avatar-load;
-        animation-duration: 0.8s;
+        animation-duration: 0.65s;
         animation-fill-mode: forwards;
     }
 
     .service-provider-avatar-exit {
         animation-name: avatar-remove;
-        animation-duration: 0.8s;
+        animation-duration: 0.5s;
         animation-fill-mode: forwards;
     }
 
@@ -293,13 +293,13 @@ $container-height: 110px;
 
     .close-icon-enter {
         animation-name: button-load;
-        animation-duration: 1.7s;
+        animation-duration: 1.4s;
         animation-fill-mode: forwards;
     }
 
     .close-icon-exit {
         animation-name: button-exit;
-        animation-duration: 0.6s;
+        animation-duration: 0.3s;
         animation-fill-mode: forwards;
     }
 
@@ -336,13 +336,13 @@ $container-height: 110px;
 
     .content-enter, .time-enter {
         animation-name: content-load;
-        animation-duration: 1.5s;
+        animation-duration: 0.95s;
         animation-fill-mode: forwards;
     }
 
     .content-exit, .time-exit {
         animation-name: content-remove;
-        animation-duration: 0.5s;
+        animation-duration: 0.35s;
         animation-fill-mode: forwards;
     }
 
