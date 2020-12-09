@@ -40,7 +40,10 @@ export default class App extends tsx.Component<any> {
         const { data } = props.item;
         const { id } = data;
         const identifier = this.getIdentifier(data);
-        remote.getCurrentWindow().moveTop();
+        const currentWindow = remote.getCurrentWindow();
+        currentWindow.focus();
+        currentWindow.setAlwaysOnTop(true);
+        currentWindow.moveTop();
         this.removeDuplicate(id);
 
         return (
