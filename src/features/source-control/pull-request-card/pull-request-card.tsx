@@ -48,10 +48,13 @@ export default class PullRequestCard extends tsx.Component<any> {
             <NotificationCard time={this.pullRequest.updatedOn} closeHandler={this.closeHandler} logoUrl={this.logoUrl}>
                 <div class="pull-request-message-container">
                     <div class="pull-request-message-wrapper">
-                        <WeblinkDisplay class="pull-request-message"
-                            text={`PR #${this.pullRequest.number}`}
-                            url={this.pullRequest.pullRequestUrl}>
-                        </WeblinkDisplay>
+                        <div onClick={this.closeHandler}>
+                            <WeblinkDisplay class="pull-request-message"
+                                text={`PR #${this.pullRequest.number}`}
+                                url={this.pullRequest.pullRequestUrl}>
+                            </WeblinkDisplay>
+                        </div>
+
                         <div class={`check-status ${statusClass}`}></div>
                     </div>
 
