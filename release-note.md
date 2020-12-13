@@ -1,4 +1,4 @@
-# Release Note v0.5.0 - 2020/12/09
+# Release Note v0.4.3 - 2020/12/12
 
 ### Changed
 
