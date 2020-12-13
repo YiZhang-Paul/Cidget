@@ -3,7 +3,6 @@ import * as tsx from 'vue-tsx-support';
 import { shell } from 'electron';
 
 import ICommit from '../../../core/interface/source-control/code-commit/commit.interface';
-import IGithubUser from '../../../core/interface/source-control/github/github-user.interface';
 import NotificationCard from '../../../shared/components/generic/notification-card/notification-card';
 import WeblinkDisplay from '../../../shared/components/generic/weblink-display/weblink-display';
 import ChangeStatsSummary from '../../../shared/components/generic/change-stats-summary/change-stats-summary';
@@ -14,7 +13,8 @@ import './commit-card.scss';
 
 @Component
 export default class CommitCard extends tsx.Component<any> {
-    @Prop() public commit!: ICommit<IGithubUser>;
+    @Prop() public commit!: ICommit;
+    @Prop() public logoUrl!: string;
     @Prop() public closeHandler!: () => void;
 
     private get added(): number {
@@ -41,7 +41,7 @@ export default class CommitCard extends tsx.Component<any> {
         return (
             <NotificationCard time={this.commit.time}
                 closeHandler={this.closeHandler}
-                logoUrl={require('../../../../public/images/github-logo.png')}>
+                logoUrl={this.logoUrl}>
 
                 <div class="commit-message-container">
                     <WeblinkDisplay class="commit-message"

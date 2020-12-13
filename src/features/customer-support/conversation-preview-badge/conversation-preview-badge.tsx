@@ -1,7 +1,7 @@
 import { Component, Prop } from 'vue-property-decorator';
 import * as tsx from 'vue-tsx-support';
 
-import WeblinkDisplay from '../../generic/weblink-display/weblink-display';
+import WeblinkDisplay from '../../../shared/components/generic/weblink-display/weblink-display';
 
 import './conversation-preview-badge.scss';
 

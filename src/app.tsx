@@ -3,11 +3,11 @@ import * as tsx from 'vue-tsx-support';
 import { remote } from 'electron';
 
 import NotificationType from './core/enum/notification-type.enum';
-import SupportTicketCard from './features/zendesk/support-ticket-card/support-ticket-card';
-import BuildPipelineCard from './features/azure-devops/build-pipeline-card/build-pipeline-card';
-import ReleasePipelineCard from './features/azure-devops/release-pipeline-card/release-pipeline-card';
-import CommitCard from './features/github/commit-card/commit-card';
-import PullRequestCard from './features/github/pull-request-card/pull-request-card';
+import SupportTicketCard from './features/customer-support/support-ticket-card/support-ticket-card';
+import BuildPipelineCard from './features/devops/build-pipeline-card/build-pipeline-card';
+import ReleasePipelineCard from './features/devops/release-pipeline-card/release-pipeline-card';
+import CommitCard from './features/source-control/commit-card/commit-card';
+import PullRequestCard from './features/source-control/pull-request-card/pull-request-card';
 
 const log = require('electron-log');
 
@@ -31,7 +31,7 @@ export default class App extends tsx.Component<any> {
 
             if (!notificationCard.$data.closing) {
                 notificationCard.$data.closing = true;
-                setTimeout(() => destroy(item), 1000);
+                setTimeout(() => destroy(item), 500);
             }
         };
     }
@@ -40,7 +40,10 @@ export default class App extends tsx.Component<any> {
         const { data } = props.item;
         const { id } = data;
         const identifier = this.getIdentifier(data);
-        remote.getCurrentWindow().moveTop();
+        const currentWindow = remote.getCurrentWindow();
+        currentWindow.focus();
+        currentWindow.setAlwaysOnTop(true);
+        currentWindow.moveTop();
         this.removeDuplicate(id);
 
         return (
@@ -98,19 +101,49 @@ export default class App extends tsx.Component<any> {
     }
 
     private getEventCard(props: any, identifier: string): any {
-        const { type, model } = props.item.data;
+        const { type, logoUrl, model } = props.item.data;
 
         switch (type) {
             case NotificationType.SupportTicket:
-                return <SupportTicketCard ref={identifier} ticket={model} closeHandler={props.close} />;
+                return (
+                    <SupportTicketCard ref={identifier}
+                        ticket={model}
+                        logoUrl={logoUrl}
+                        closeHandler={props.close}>
+                    </SupportTicketCard>
+                );
             case NotificationType.CiBuild:
-                return <BuildPipelineCard ref={identifier} build={model} closeHandler={props.close} />;
+                return (
+                    <BuildPipelineCard ref={identifier}
+                        build={model}
+                        logoUrl={logoUrl}
+                        closeHandler={props.close}>
+                    </BuildPipelineCard>
+                );
             case NotificationType.CdRelease:
-                return <ReleasePipelineCard ref={identifier} release={model} closeHandler={props.close} />;
+                return (
+                    <ReleasePipelineCard ref={identifier}
+                        release={model}
+                        logoUrl={logoUrl}
+                        closeHandler={props.close}>
+                    </ReleasePipelineCard>
+                );
             case NotificationType.Commit:
-                return <CommitCard ref={identifier} commit={model} closeHandler={props.close} />;
+                return (
+                    <CommitCard ref={identifier}
+                        commit={model}
+                        logoUrl={logoUrl}
+                        closeHandler={props.close}>
+                    </CommitCard>
+                );
             case NotificationType.PullRequest:
-                return <PullRequestCard ref={identifier} pullRequest={model} closeHandler={props.close} />;
+                return (
+                    <PullRequestCard ref={identifier}
+                        pullRequest={model}
+                        logoUrl={logoUrl}
+                        closeHandler={props.close}>
+                    </PullRequestCard>
+                );
         }
     }
 

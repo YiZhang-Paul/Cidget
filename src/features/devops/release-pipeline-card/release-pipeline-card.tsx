@@ -11,6 +11,7 @@ import './release-pipeline-card.scss';
 @Component
 export default class ReleasePipelineCard extends tsx.Component<any> {
     @Prop() public release!: ICdRelease;
+    @Prop() public logoUrl!: string;
     @Prop() public closeHandler!: () => void;
 
     private get stages(): { name: string; status: string; scale: number; isActive: boolean }[] {
@@ -56,10 +57,7 @@ export default class ReleasePipelineCard extends tsx.Component<any> {
         const className = `release-name ${this.release.status === 'abandoned' ? 'abandoned' : ''}`;
 
         return (
-            <NotificationCard time={this.release.createdOn}
-                closeHandler={this.closeHandler}
-                logoUrl={require('../../../../public/images/azure-devops-logo.png')}>
-
+            <NotificationCard time={this.release.createdOn} closeHandler={this.closeHandler} logoUrl={this.logoUrl}>
                 <div class="release-pipeline-message-container">
                     <WeblinkDisplay class={className}
                         text={`${this.release.name} ${this.release.pipeline.name}`}
