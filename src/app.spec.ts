@@ -16,13 +16,23 @@ vue.use(VueNotification);
 
 describe('app component unit test', () => {
     let wrapper: Wrapper<App>;
+    let focusStub: any;
+    let setAlwaysOnTopStub: any;
     let moveTopStub: any;
     let getCurrentWindowStub: any;
 
     beforeEach(() => {
+        focusStub = stub();
+        setAlwaysOnTopStub = stub();
         moveTopStub = stub();
         getCurrentWindowStub = stub(remote, 'getCurrentWindow');
-        getCurrentWindowStub.returns({ moveTop: moveTopStub });
+
+        getCurrentWindowStub.returns({
+            focus: focusStub,
+            setAlwaysOnTop: setAlwaysOnTopStub,
+            moveTop: moveTopStub
+        });
+
         wrapper = mount(App, { localVue: vue, store: Store.store });
     });
 

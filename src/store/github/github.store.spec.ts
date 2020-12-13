@@ -105,7 +105,7 @@ describe('github store unit test', () => {
             sinonExpect.calledOnce(notifySpy);
             expect(notifySpy.args[0][0].data.type).toBe(NotificationType.Commit);
             expect(notifySpy.args[0][0].data.id).toBe('147');
-            expect(notifySpy.args[0][0].duration).toBe(10000);
+            expect(notifySpy.args[0][0].duration).toBe(4500);
         });
     });
 
@@ -145,7 +145,7 @@ describe('github store unit test', () => {
             await store.dispatch('addPullRequest', {});
 
             sinonExpect.calledOnce(notifySpy);
-            expect(notifySpy.args[0][0].duration).toBe(10000);
+            expect(notifySpy.args[0][0].duration).toBe(4500);
             expect(notifySpy.args[0][0].data.id).toBe('147');
             expect(notifySpy.args[0][0].data.type).toBe(NotificationType.PullRequest);
         });
@@ -158,7 +158,7 @@ describe('github store unit test', () => {
             await store.dispatch('addPullRequest', {});
 
             sinonExpect.calledOnce(notifySpy);
-            expect(notifySpy.args[0][0].duration).toBe(10000);
+            expect(notifySpy.args[0][0].duration).toBe(4500);
             expect(notifySpy.args[0][0].data.id).toBe('147');
             expect(notifySpy.args[0][0].data.type).toBe(NotificationType.PullRequest);
         });
@@ -171,7 +171,7 @@ describe('github store unit test', () => {
             await store.dispatch('addPullRequest', {});
 
             sinonExpect.calledOnce(notifySpy);
-            expect(notifySpy.args[0][0].duration).toBe(10000);
+            expect(notifySpy.args[0][0].duration).toBe(4500);
         });
     });
 
@@ -206,7 +206,7 @@ describe('github store unit test', () => {
 
             sinonExpect.calledOnce(notifySpy);
             expect(notifySpy.args[0][0].group).toBe('notification');
-            expect(notifySpy.args[0][0].duration).toBe(10000);
+            expect(notifySpy.args[0][0].duration).toBe(4500);
             expect(notifySpy.args[0][0].data.type).toBe(NotificationType.PullRequest);
             expect(notifySpy.args[0][0].data.id).toBe('pull_request_id');
             expect(notifySpy.args[0][0].data.model.id).toBe(pullRequest.id);
@@ -334,7 +334,7 @@ describe('github store unit test', () => {
             await store.dispatch('addPullRequestCheck', payload);
 
             sinonExpect.calledOnce(notifySpy);
-            expect(notifySpy.args[0][0].duration).toBe(10000);
+            expect(notifySpy.args[0][0].duration).toBe(4500);
             expect(notifySpy.args[0][0].data.id).toBe('147');
             expect(notifySpy.args[0][0].data.type).toBe(NotificationType.PullRequest);
         });
