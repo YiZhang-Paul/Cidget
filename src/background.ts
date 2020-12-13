@@ -1,8 +1,9 @@
 import { app, protocol, BrowserWindow } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 
-const isDevelopment = process.env.NODE_ENV !== 'production';
 let window: BrowserWindow | null;
+const clickThrough = true;
+const isDevelopment = process.env.NODE_ENV !== 'production';
 // scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }]);
 
@@ -12,18 +13,23 @@ function createWindow() {
         y: 0,
         width: 800,
         height: 850,
-        transparent: true,
-        frame: false,
-        alwaysOnTop: true,
-        resizable: false,
-        maximizable: false,
-        minimizable: false,
+        transparent: clickThrough,
+        frame: !clickThrough,
+        alwaysOnTop: clickThrough,
+        resizable: !clickThrough,
+        maximizable: !clickThrough,
+        minimizable: !clickThrough,
         webPreferences: {
             nodeIntegration: true
         }
     });
 
-    window.setIgnoreMouseEvents(true, { forward: true });
+    if (clickThrough) {
+        window.setIgnoreMouseEvents(true, { forward: true });
+    }
+    else {
+        window.webContents.openDevTools();
+    }
 
     if (process.env.WEBPACK_DEV_SERVER_URL) {
         window.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string);

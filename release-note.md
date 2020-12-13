@@ -1,10 +1,11 @@
-# Release Note v0.4.2 - 2020/04/05
+# Release Note v0.4.3 - 2020/12/12
 
 ### Changed
 
-* pull request notification will show 'needs review' instead of 'opened' when opened with pre-selected reviewers
+* opening pull request url will automatically close the notification cards
+* decreased default active time for notification cards from 10 seconds to 4.5 seconds
+* increased loading and exiting animation speed for notification cards
 
 ### Fixed
 
-* fixed a bug where notification cards won't close after clicking close button
-* fixed a bug where system issued commit message is not properly ignored
+* fixed a bug where notification cards are not on top of other windows and applications

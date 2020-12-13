@@ -4,13 +4,14 @@ import * as tsx from 'vue-tsx-support';
 import ISupportTicket from '../../../core/interface/customer-support/support-ticket.interface';
 import WeblinkDisplay from '../../../shared/components/generic/weblink-display/weblink-display';
 import NotificationCard from '../../../shared/components/generic/notification-card/notification-card';
-import ConversationPreviewBadge from '../../../shared/components/customer-support/conversation-preview-badge/conversation-preview-badge';
+import ConversationPreviewBadge from '../conversation-preview-badge/conversation-preview-badge';
 
 import './support-ticket-card.scss';
 
 @Component
 export default class SupportTicketCard extends tsx.Component<any> {
     @Prop() public ticket!: ISupportTicket;
+    @Prop() public logoUrl!: string;
     @Prop() public closeHandler!: () => void;
 
     private get statusText(): string {
@@ -27,13 +28,10 @@ export default class SupportTicketCard extends tsx.Component<any> {
         const rightArrow = <i class="fas fa-arrow-alt-circle-right right-arrow"></i>;
         const highlighted = this.statusText === 'Reopened' || this.statusText === 'YOU';
         const statusTextClass = `status-text ${highlighted ? 'highlighted' : ''}`;
-        const htmlTooltip = `<div class="zendesk-data">${this.ticket.htmlContent}</div>`;
+        const htmlTooltip = `<div class="support-ticket-conversation">${this.ticket.htmlContent}</div>`;
 
         return (
-            <NotificationCard time={this.ticket.createdOn}
-                closeHandler={this.closeHandler}
-                logoUrl={require('../../../../public/images/zendesk-logo.png')}>
-
+            <NotificationCard time={this.ticket.createdOn} closeHandler={this.closeHandler} logoUrl={this.logoUrl}>
                 <div class="ticket-message-container">
                     <WeblinkDisplay class="ticket-message"
                         text={`Ticket #${this.ticket.id}`}
